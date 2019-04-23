@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.platform.model.system.GlobalType">
+	<resultMap id="GlobalType" type="com.suneee.platform.model.system.GlobalType">
+		<id property="typeId" column="typeId" jdbcType="NUMERIC"/>
+		<result property="typeName" column="typeName" jdbcType="VARCHAR"/>
+		<result property="nodePath" column="nodePath" jdbcType="VARCHAR"/>
+		<result property="depth" column="depth" jdbcType="NUMERIC"/>
+		<result property="parentId" column="parentId" jdbcType="NUMERIC"/>
+		<result property="parentName" column="parentName" jdbcType="VARCHAR"/>
+		<result property="nodeKey" column="nodeKey" jdbcType="VARCHAR"/>
+		<result property="sn" column="sn" jdbcType="NUMERIC"/>
+		<result property="userId" column="userId" jdbcType="NUMERIC"/>
+		<result property="depId" column="depId" jdbcType="NUMERIC"/>
+		<result property="type" column="type" jdbcType="NUMERIC"/>
+		<result property="catKey" column="catKey" jdbcType="VARCHAR"/>
+		<result property="isLeaf" column="isLeaf" jdbcType="NUMERIC"/>
+		<result property="isType" column="isType" jdbcType="NUMERIC"/>
+		<result property="nodeCode" column="nodeCode" jdbcType="VARCHAR"/>
+		<result property="nodeCodeType" column="nodeCodeType" jdbcType="VARCHAR"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap type="com.suneee.platform.model.system.GlobalType" id="GlobalTypeExt">
+		<result property="childNodes" column="childNodes" jdbcType="NUMERIC"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		typeId,typeName,nodePath,depth,parentId,nodeKey,sn,userId,depId,type,catKey,isLeaf,isType,nodeCode,nodeCodeType,parentName,enterprise_code
+	</sql>
+
+	<sql id="dynamicWhere">
+		and 1=1
+		<if test="@Ognl@isNotEmpty(typeName)"> AND typeName  LIKE #{typeName}  </if>
+		<if test="@Ognl@isNotEmpty(nodePath)"> AND nodePath  LIKE #{nodePath}  AND nodePath  != #{nodePath}</if>
+		<if test="@Ognl@isNotEmpty(nodeKey)"> AND nodeKey  = #{nodeKey}  </if>
+		<if test="@Ognl@isNotEmpty(catkey)">
+			AND catKey = #{catkey}
+		</if>
+		<if test="@Ognl@isNotEmpty(ecodes)">
+			AND enterprise_code IN
+			<foreach collection="ecodes" index="index" item="ecodes" open="(" close=")" separator=",">
+				#{ecodes}
+			</foreach>
+		</if>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.GlobalType" useGeneratedKeys="true" keyProperty="typeId">
+		INSERT INTO sys_gl_type
+		(<include refid="columns"/>)
+		VALUES
+		(#{typeId,jdbcType=NUMERIC}, #{typeName,jdbcType=VARCHAR}, #{nodePath,jdbcType=VARCHAR},
+		#{depth,jdbcType=NUMERIC}, #{parentId,jdbcType=NUMERIC}, #{nodeKey,jdbcType=VARCHAR},
+		#{sn,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{depId,jdbcType=NUMERIC},
+		#{type,jdbcType=NUMERIC}, #{catKey,jdbcType=VARCHAR}, #{isLeaf,jdbcType=NUMERIC},
+		#{isType,jdbcType=NUMERIC},#{nodeCode,jdbcType=VARCHAR}, #{nodeCodeType,jdbcType=NUMERIC}
+		, #{parentName,jdbcType=VARCHAR},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_GL_TYPE
+		WHERE
+		typeId=#{typeId}
+	</delete>
+
+
+	<update id="update" parameterType="com.suneee.platform.model.system.GlobalType">
+		UPDATE sys_gl_type
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="typeName!=null">
+				typeName=#{typeName,jdbcType=VARCHAR},
+			</if>
+			<if test="nodePath!=null">
+				nodePath=#{nodePath,jdbcType=VARCHAR},
+			</if>
+			<if test="depth!=null">
+				depth=#{depth,jdbcType=NUMERIC},
+			</if>
+			<if test="nodeKey!=null">
+				nodeKey=#{nodeKey,jdbcType=VARCHAR},
+			</if>
+			<if test="sn!=null">
+				sn=#{sn,jdbcType=NUMERIC},
+			</if>
+			<if test="parentId!=null">
+				parentId=#{parentId,jdbcType=NUMERIC},
+			</if>
+			<if test="userId!=null">
+				userId=#{userId,jdbcType=NUMERIC},
+			</if>
+			<if test="depId!=null">
+				depId=#{depId,jdbcType=NUMERIC},
+			</if>
+			<if test="type!=null">
+				type=#{type,jdbcType=NUMERIC},
+			</if>
+			<if test="catKey!=null">
+				catKey=#{catKey,jdbcType=VARCHAR},
+			</if>
+			<if test="isLeaf!=null">
+				isLeaf=#{isLeaf,jdbcType=NUMERIC},
+			</if>
+			<if test="isType!=0">
+				isType=#{isType,jdbcType=NUMERIC},
+			</if>
+			<if test="nodeCode!=null">
+				nodeCode=#{nodeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="parentName!=null">
+				parentName=#{parentName,jdbcType=VARCHAR},
+			</if>
+			<if test="nodeCodeType!=null">
+				nodeCodeType=#{nodeCodeType,jdbcType=NUMERIC},
+			</if>
+			<if test="enterpriseCode!=null">
+				enterprise_code=#{enterpriseCode,jdbcType=NUMERIC},
+			</if>
+		</trim>
+		WHERE
+		typeId=#{typeId}
+	</update>
+
+	<!--更新路径及企业信息-->
+	<update id="updateTypeInfo" parameterType="com.suneee.platform.model.system.GlobalType">
+		UPDATE sys_gl_type
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="typeName!=null">
+				typeName=#{typeName,jdbcType=VARCHAR},
+			</if>
+			<if test="nodePath!=null">
+				nodePath=#{nodePath,jdbcType=VARCHAR},
+			</if>
+			<if test="enterpriseCode!=null">
+				enterprise_code=#{enterpriseCode,jdbcType=VARCHAR},
+			</if>
+		</trim>
+		WHERE
+		typeId=#{typeId}
+	</update>
+
+	<update id="updSn" parameterType="com.suneee.platform.model.system.GlobalType">
+		UPDATE sys_gl_type SET sn=#{sn,jdbcType=NUMERIC}  WHERE typeId=#{typeId}
+	</update>
+
+
+
+
+	<!-- 按表单分类及用户id，取得有权限访问的表单分类 -->
+	<select id="getByFormRights" resultMap="GlobalType">
+		select t.* from sys_gl_type t left join BPM_TABLE_TEMPRIGHTS R on t.typeid=r.category_id
+		where t.catkey=#{catKey} and (r.category_id is null or (r.owner_id=#{ownerId} and r.search_type=1)
+		<if test="@Ognl@isNotEmpty(roleIds)">
+			or (r.owner_id in (${roleIds}) and r.search_type=2)
+		</if>
+		<if test="@Ognl@isNotEmpty(orgIds)">
+			or (r.owner_id in (${orgIds}) and r.search_type=3)
+		</if>
+		) order by nodepath desc ,sn asc
+	</select>
+
+
+	<select id="getById" parameterType="java.lang.Long" resultMap="GlobalType">
+		SELECT <include refid="columns"/>
+		FROM SYS_GL_TYPE
+		WHERE
+		TYPEID=#{typeId}
+	</select>
+
+	<select id="getAll" resultMap="GlobalType" parameterType="java.util.Map">
+		SELECT <include refid="columns"/>
+		FROM SYS_GL_TYPE  WHERE CATKEY='FLOW_TYPE'
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by sn
+		</if>
+	</select>
+
+	<select id="getByParentId" parameterType="java.util.Map" resultMap="GlobalTypeExt">
+		select t.*, (select count(*) from sys_gl_type a where a.parentid=t.typeId) childNodes
+		from sys_gl_type t
+		where parentId=#{parentId}
+		<if test="@Ognl@isNotEmpty(catkey)">
+			AND catkey = #{catkey}
+		</if>
+		order by sn
+	</select>
+
+	<select id="getByQueryfilter" parameterType="java.util.Map" resultMap="GlobalTypeExt">
+		select t.*, (select count(*) from sys_gl_type a where a.parentid=t.typeId) childNodes
+		from sys_gl_type t
+		where 1=1
+		<if test="@Ognl@isNotEmpty(parentId)">
+			AND t.PARENTID = #{parentId}
+		</if>
+		<if test="@Ognl@isNotEmpty(catkey)">
+			AND t.CATKEY = #{catkey}
+		</if>
+		<if test="@Ognl@isNotEmpty(isType)">
+			AND t.isType = #{isType}
+		</if>
+		<if test="@Ognl@isNotEmpty(nodePath)">
+			AND t.NODEPATH LIKE #{nodePath}
+		</if>
+		<if test="@Ognl@isNotEmpty(typeName)">
+			AND t.TYPENAME  LIKE #{typeName}
+		</if>
+		<if test="@Ognl@isNotEmpty(type)">
+			AND t.TYPE = #{type}
+		</if>
+		<if test="@Ognl@isNotEmpty(parentName)">
+			AND t.parentName  LIKE #{parentName}
+		</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (t.parentName  LIKE #{searchCondition} OR t.TYPENAME  LIKE #{searchCondition})
+		</if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND t.enterprise_code = #{enterpriseCode}
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by sn
+		</if>
+	</select>
+
+	<select id="isNodeKeyExists" resultType="java.lang.Integer">
+		SELECT count(*) FROM SYS_GL_TYPE WHERE nodeKey =#{nodeKey,jdbcType=VARCHAR} AND catkey =#{catkey,jdbcType=VARCHAR}
+		AND enterprise_code=#{enterprise_code,jdbcType=VARCHAR}
+	</select>
+
+	<select id="isNodeKeyExistsForUpdate" resultType="java.lang.Integer">
+		SELECT count(*) FROM SYS_GL_TYPE where typeId &lt;>#{typeId,jdbcType=NUMERIC} and  nodeKey = #{nodeKey,jdbcType=VARCHAR} and catkey=#{catkey,jdbcType=VARCHAR}
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterprise_code=#{enterpriseCode} </if>
+	</select>
+
+	<!--根据企业编码查询分类是否重复-->
+	<select id="isNodeKeyExistsForEnterprise" resultType="java.lang.Integer">
+		SELECT count(*) FROM SYS_GL_TYPE gt WHERE gt.nodeKey =#{nodeKey,jdbcType=VARCHAR} AND gt.catkey =#{catkey,jdbcType=VARCHAR} AND gt.enterprise_code=#{enterprise_code,jdbcType=VARCHAR}
+		<if test="typeId!=null">
+			AND gt.typeId &lt;>#{typeId,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<select id="getByNodePath" parameterType="String"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE WHERE nodePath LIKE #{nodePath} order by sn
+	</select>
+
+	<select id="getByNodeKey" parameterType="String"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE WHERE nodeKey = #{nodeKey,jdbcType=VARCHAR} order by sn
+	</select>
+
+	<select id="getByCatKey" parameterType="Map"  resultMap="GlobalTypeExt">
+		SELECT t.*, (SELECT COUNT(*) FROM sys_gl_type a WHERE a.parentid=t.typeId) childNodes
+		FROM sys_gl_type t
+		WHERE catkey=#{catkey,jdbcType=VARCHAR}
+		<if test="@Ognl@isNotEmpty(typeIdList)">
+			AND t.typeid IN
+			<foreach item="typeId" collection="typeIdList" open="(" separator="," close=")">
+				#{typeId}
+			</foreach>
+		</if>
+		<if test="@Ognl@isNotEmpty(ecodes)">
+			AND t.enterprise_code IN
+			<foreach item="code" collection="ecodes" open="(" separator="," close=")">
+				#{code}
+			</foreach>
+		</if>
+		<if test="@Ognl@isNotEmpty(ecode)">
+			AND t.enterprise_code =#{ecode}
+		</if>
+		<if test="@Ognl@isNotEmpty(notIds)">
+			AND t.typeid NOT IN
+			<foreach item="typeId" collection="notIds" open="(" separator="," close=")">
+				#{typeId}
+			</foreach>
+		</if>
+		ORDER BY sn,TYPEID asc
+	</select>
+
+	<select id="selectByCatekey"  resultMap="GlobalType">
+		select <include refid="columns"/>
+		FROM sys_gl_type
+		WHERE CATKEY=#{catKey}
+
+	</select>
+
+	<select id="getByDictNodeKey" parameterType="String"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE 	WHERE catKey='DIC' and nodeKey=#{nodeKey,jdbcType=VARCHAR} AND enterprise_code=#{enterprise_code}
+	</select>
+
+	<select id="getByDictNodeKeyAndEid" parameterType="java.util.Map"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE AS gt WHERE gt.catKey='DIC' and gt.nodeKey LIKE #{nodeKey}
+		<!--and gt.enterprise_code=#{enterprise_code,jdbcType=VARCHAR}-->
+		<if test="@Ognl@isNotEmpty(enterprise_code)">
+			AND gt.enterprise_code=#{enterprise_code,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="getByCateKeyAndNodeKey" parameterType="Map"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE 	WHERE catKey=#{catKey,jdbcType=VARCHAR} and nodeKey=#{nodeKey,jdbcType=VARCHAR}
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND enterprise_code = #{enterpriseCode}
+		</if>
+	</select>
+
+	<select id="getPersonType" parameterType="Map"  resultMap="GlobalType">
+		SELECT * FROM SYS_GL_TYPE 	WHERE catkey=#{catkey,jdbcType=VARCHAR} and (userId=0 or userId=#{userId,jdbcType=NUMERIC})
+	</select>
+
+	<select id="getByUserIdFilter" resultMap="GlobalType"  parameterType="java.util.Map" >
+		select <include refid="columns"/> from SYS_GL_TYPE  where TYPEID in(
+		select t.TYPEID from (
+		<foreach collection="relationMap" index="key"  item="ent" separator="union">
+			select gt.TYPEID from SYS_GL_TYPE gt,SYS_KNOWLEDGE_PERMISSION per where per.TYPEID=gt.TYPEID and per.PERMISSIONTYPE=#{key} and gt.CATKEY = 'KNOWLEDGE_TYPE'
+			<if test="@Ognl@notEquals(key,'all') and @Ognl@isNotEmpty(ent)">
+				and per.OWNERID in
+				<foreach collection="ent"  item="id" separator="," open="(" close=")">
+					#{id}
+				</foreach>
+			</if>
+		</foreach>
+		) t
+		)  order by NODEKEY  desc
+	</select>
+
+	<!--根据企业编码查询总分类ID列表-->
+	<select id="getTypeIdsByEcodes" resultType="java.lang.Long">
+		SELECT
+		TYPEID
+		FROM sys_gl_type
+		WHERE enterprise_code IN
+		<foreach collection="ecodes" item="enterpriseCode" open="(" separator="," close=")">
+			#{enterpriseCode}
+		</foreach>
+	</select>
+	<!--根据企业编码查询总分类ID列表-->
+	<select id="getTypeIdsByEcode" resultType="java.lang.Long">
+		SELECT
+		TYPEID
+		FROM sys_gl_type
+		WHERE enterprise_code=#{ecode}
+	</select>
+
+	<!--根据流程分类标识及企业编码获取-->
+	<select id="getByKeyAndCode" resultMap="GlobalType">
+		SELECT
+		*
+		FROM sys_gl_type
+		WHERE enterprise_code=#{enterpriseCode} AND CATKEY=#{catKey} AND NODEKEY=#{nodeKey}
+	</select>
+</mapper>

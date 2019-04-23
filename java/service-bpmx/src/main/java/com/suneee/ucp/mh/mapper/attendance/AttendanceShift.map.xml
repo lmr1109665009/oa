@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.attendance.AttendanceShift">
+	<resultMap id="AttendanceShift" type="com.suneee.ucp.mh.model.attendance.AttendanceShift">
+		<id property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="shiftCode" column="shift_code" jdbcType="VARCHAR"/>
+		<result property="shiftName" column="shift_name" jdbcType="VARCHAR"/>
+		<result property="workHour" column="work_hour" jdbcType="NUMERIC"/>
+		<result property="validScope" column="valid_scope" jdbcType="NUMERIC"/>
+		<result property="floatTime" column="float_time" jdbcType="NUMERIC"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+		<result property="userNames" column="userNames" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="AttendanceShiftDetail" type="com.suneee.ucp.mh.model.attendance.AttendanceShift" extends="AttendanceShift">
+		<result property="reskDays" column="reskDays" jdbcType="VARCHAR"/>
+		<result property="timeList" column="timeList" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		shift_id,shift_code,shift_name,work_hour,valid_scope,float_time,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(shiftCode)"> AND shift_code  LIKE #{shiftCode}  </if>
+			<if test="@Ognl@isNotEmpty(shiftName)"> AND shift_name  LIKE #{shiftName}  </if>
+			<if test="@Ognl@isNotEmpty(workHour)"> AND work_hour  =#{workHour} </if>
+			<if test="@Ognl@isNotEmpty(validScope)"> AND valid_scope  =#{validScope} </if>
+			<if test="@Ognl@isNotEmpty(floatTime)"> AND float_time  =#{floatTime} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.mh.model.attendance.AttendanceShift">
+		INSERT INTO se_attendance_shift
+		(shift_id,shift_code,shift_name,work_hour,valid_scope,float_time,status_,createBy,createtime)
+		VALUES
+		(#{shiftId,jdbcType=NUMERIC}, #{shiftCode,jdbcType=VARCHAR}, #{shiftName,jdbcType=VARCHAR}, #{workHour,jdbcType=NUMERIC}, #{validScope,jdbcType=NUMERIC}, #{floatTime,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_attendance_shift 
+		WHERE
+		shift_id=#{shiftId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.mh.model.attendance.AttendanceShift">
+		UPDATE se_attendance_shift SET
+		shift_code=#{shiftCode,jdbcType=VARCHAR},
+		shift_name=#{shiftName,jdbcType=VARCHAR},
+		work_hour=#{workHour,jdbcType=NUMERIC},
+		valid_scope=#{validScope,jdbcType=NUMERIC},
+		float_time=#{floatTime,jdbcType=NUMERIC},
+		status_=#{status,jdbcType=NUMERIC}
+		WHERE
+		shift_id=#{shiftId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AttendanceShift">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_shift
+		WHERE
+		shift_id=#{shiftId}
+	</select>
+	
+	<select id="getAll" resultMap="AttendanceShift">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_shift   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		ORDER BY shift_id  desc
+		</if>
+	</select>
+	
+	<select id="getShiftList" resultMap="AttendanceShiftDetail">
+		SELECT s.*
+		,(SELECT GROUP_CONCAT(IF(sc.day_type=2,sc.week_,NULL))
+		FROM se_shift_calendar sc 
+		WHERE sc.shift_id = s.shift_id
+		GROUP BY sc.shift_id) AS reskDays
+		,(SELECT GROUP_CONCAT(CONCAT(
+		TIME_FORMAT(st.start_time, '%H:%i 上班'), ' ',
+		TIME_FORMAT(st.end_time, '%H:%i 下班'))) 
+		FROM se_shift_time st 
+		WHERE st.shift_id = s.shift_id AND st.type_=1
+		GROUP BY st.shift_id
+		) AS timeList
+		FROM se_attendance_shift s
+		WHERE s.status_ = 0
+		ORDER BY shift_id  desc
+	</select>
+	
+	<select id="getShiftUsers" resultMap="com.suneee.platform.model.system.SysUser.SysUser">
+		SELECT u.* FROM sys_user u , se_shift_user_setting s 
+		WHERE u.USERID = s.target_id AND s.target_type = 0
+		AND s.setting_id = #{shiftId }
+	</select>
+	
+	<select id="getShiftUserList" resultMap="AttendanceShift">
+		SELECT s.shift_name,s.shift_id,
+			(SELECT GROUP_CONCAT(u.fullname) 
+			FROM sys_user u , se_shift_user_setting su
+			WHERE u.userid = su.target_id AND su.target_type = 0 
+				AND su.setting_id = s.shift_id 
+			GROUP BY s.shift_id) AS userNames
+		FROM se_attendance_shift s 
+		WHERE s.status_ = 0
+	</select>
+	
+	<select id="getShiftByUserDay" resultMap="AttendanceShift">
+		SELECT s.* 
+		FROM se_attendance_shift s, se_shift_user_setting sus 
+		WHERE sus.target_type = 0 AND sus.setting_id = s.shift_id
+		<if test="@Ognl@isNotEmpty(userId)"> AND sus.target_id  =#{userId} </if>
+	</select>
+	
+</mapper>

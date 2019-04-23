@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.attendance.VacationRemain">
+	<resultMap id="VacationRemain" type="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="userId" column="user_id" jdbcType="NUMERIC"/>
+		<result property="vacationType" column="vacation_type" jdbcType="NUMERIC"/>
+		<result property="remained" column="remained" jdbcType="NUMERIC"/>
+		<result property="validDate" column="valid_date" jdbcType="DATE"/>
+		<result property="baseUnit" column="base_unit" jdbcType="NUMERIC"/>
+		<result property="status" column="status" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="DATE"/>
+		<result property="computeYear" column="compute_year" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<sql id="columns">
+		id_,user_id,vacation_type,remained,valid_date,base_unit,status,updatetime, compute_year
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND user_id  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(vacationType)"> AND vacation_type  =#{vacationType} </if>
+			<if test="@Ognl@isNotEmpty(remained)"> AND remained  =#{remained} </if>
+			<if test="@Ognl@isNotEmpty(validDate)"> AND valid_date  =#{validDate} </if>
+			<if test="@Ognl@isNotEmpty(beginvalidDate)"> AND valid_date  >=#{beginvalidDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endvalidDate)"> AND valid_date <![CDATA[ <=#{endvalidDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(baseUnit)"> AND base_unit  =#{baseUnit} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(updatetime)"> AND updatetime  =#{updatetime} </if>
+			<if test="@Ognl@isNotEmpty(beginupdatetime)"> AND updatetime  >=#{beginupdatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endupdatetime)"> AND updatetime <![CDATA[ <=#{endupdatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		INSERT INTO se_vacation_remain
+		(id_,user_id,vacation_type,remained,valid_date,base_unit,status,updatetime, compute_year)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{vacationType,jdbcType=NUMERIC}, #{remained,jdbcType=NUMERIC}, 
+		#{validDate,jdbcType=DATE}, #{baseUnit,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{updatetime,jdbcType=DATE},
+		#{computeYear,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_vacation_remain 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		UPDATE se_vacation_remain SET
+		user_id=#{userId,jdbcType=NUMERIC},
+		vacation_type=#{vacationType,jdbcType=NUMERIC},
+		remained=#{remained,jdbcType=NUMERIC},
+		valid_date=#{validDate,jdbcType=DATE},
+		base_unit=#{baseUnit,jdbcType=NUMERIC},
+		status=#{status,jdbcType=NUMERIC},
+		updatetime=#{updatetime,jdbcType=DATE},
+		compute_year = #{computeYear,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="VacationRemain">
+		SELECT <include refid="columns"/>
+		FROM se_vacation_remain
+		WHERE
+		id_=#{id}
+	</select>
+	<select id="getByUserIdAndType" parameterType="java.util.Map" resultMap="VacationRemain">
+		SELECT <include refid="columns"/>
+		FROM se_vacation_remain
+		WHERE
+		user_id=#{userId} AND vacation_type=#{vacationType}
+	</select>
+	
+	<select id="getAll" resultType="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		SELECT av.userid as userId,av.FULLNAME as userName,av.staff_no as staffNo,
+		GROUP_CONCAT(CONCAT(CASE WHEN vr.remained IS NULL THEN '' ELSE vr.remained END,
+		CASE WHEN vr.remained IS NULL THEN '' WHEN vr.base_unit =1 THEN '天' ELSE '小时' END ) ORDER BY av.id_ DESC) as remainedTime 
+		FROM (SELECT av.*, u.userid,u.FULLNAME,u.staff_no FROM se_attendance_vacation av ,sys_user u 
+		where 1=1
+		<if test="@Ognl@isNotEmpty(userName)"> AND u.FULLNAME like #{userName} </if>
+		<if test="@Ognl@isNotEmpty(staffNo)"> AND u.staff_no like #{staffNo} </if>
+		) av
+		LEFT JOIN se_vacation_remain vr ON av.id_ = vr.vacation_type AND av.userid = vr.user_id
+		GROUP BY av.userid
+		
+	</select>
+	
+	<select id="getByUserId"  resultType="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		SELECT av.name_ as vacationName ,(CONCAT(CASE WHEN vr.remained IS NULL THEN '' ELSE vr.remained END,
+		CASE WHEN vr.remained IS NULL THEN '' WHEN vr.base_unit =1 THEN '天' ELSE '小时' END ) )as remainedName, vr.valid_date as validDate
+		from se_attendance_vacation av 
+		LEFT  JOIN se_vacation_remain vr on av.id_ = vr.vacation_type and vr.user_id = #{userId}
+		ORDER BY av.id_ DESC
+	</select>
+	
+	<select id="getUserRemainDetail" parameterType="java.lang.Long" resultType="com.suneee.ucp.mh.model.attendance.VacationRemain">
+		SELECT av.name_ AS vacationName ,av.unit_ AS baseUnit ,vr.remained, 
+		( SELECT SUM(change_value) FROM se_vacation_log vl
+		WHERE vl.user_id = vr.user_id AND vl.vacation_type = av.id_ 
+		AND DATE_FORMAT(NOW(),'%Y') = DATE_FORMAT(vl.updatetime,'%Y')
+		AND vl.change_type = 2 ) AS used, vr.valid_date as validDate
+		FROM se_attendance_vacation av 
+		LEFT JOIN se_vacation_remain vr ON av.id_ = vr.vacation_type AND vr.user_id = #{userId }
+	</select>
+</mapper>

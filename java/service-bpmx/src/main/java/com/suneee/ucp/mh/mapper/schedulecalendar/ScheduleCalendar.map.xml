@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.schedulecalendar.ScheduleCalendar">
+	<resultMap id="ScheduleCalendar" type="com.suneee.ucp.mh.model.schedulecalendar.ScheduleCalendar">
+		<id property="id" column="schedule_id" jdbcType="NUMERIC"/>
+		<result property="title" column="title" jdbcType="VARCHAR"/>
+		<result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+		<result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+		<result property="url" column="url" jdbcType="VARCHAR"/>
+		<result property="note" column="note" jdbcType="CLOB"/>
+		<result property="allDay" column="all_day" jdbcType="NUMERIC"/>
+		<result property="createBy" column="create_by" jdbcType="NUMERIC"/>
+		<result property="createtime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="update_by" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="update_time" jdbcType="TIMESTAMP"/>
+		<result property="sourceId" column="source_id" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		schedule_id,title,FROM_UNIXTIME(start_time, '%Y-%m-%d %H:%i:%s') AS start_time, FROM_UNIXTIME(end_time, '%Y-%m-%d %H:%i:%s') AS end_time,url,note,all_day,
+		create_by,create_time,update_by,update_time,source_id
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND start_time  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginstartTime)"> AND start_time  >= #{beginstartTime,jdbcType=DATE}</if>
+			<if test="@Ognl@isNotEmpty(endstartTime)"> 
+				AND FROM_UNIXTIME(start_time, '%Y-%m-%d') <![CDATA[ <= DATE_FORMAT(#{endstartTime,jdbcType=DATE}, '%Y-%m-%d')]]> 
+			</if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND end_time  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginendTime)"> 
+				AND FROM_UNIXTIME(end_time, '%Y-%m-%d')  >= DATE_FORMAT(#{beginendTime,jdbcType=DATE}, '%Y-%m-%d') </if>
+			<if test="@Ognl@isNotEmpty(endendTime)"> AND end_time <![CDATA[ <= #{endendTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(allDay)"> AND all_day  =#{allDay} </if>
+			<if test="@Ognl@isNotEmpty(createBy)"> AND create_by  =#{createBy} </if>
+			<if test="@Ognl@isNotEmpty(updateBy)"> AND update_by  =#{updateBy} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.mh.model.schedulecalendar.ScheduleCalendar">
+		INSERT INTO ucp_schedule_calendar
+		(schedule_id,title,start_time,end_time,url,note,all_day,create_by,create_time,update_by,update_time,source_id)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{title,jdbcType=VARCHAR}, UNIX_TIMESTAMP(#{startTime,jdbcType=TIMESTAMP}), 
+		 UNIX_TIMESTAMP(#{endTime,jdbcType=TIMESTAMP}), #{url,jdbcType=VARCHAR}, #{note,jdbcType=CLOB},
+		 #{allDay,jdbcType=NUMERIC}, #{createBy,jdbcType=NUMERIC}, #{createtime,jdbcType=TIMESTAMP},
+		 #{updateBy,jdbcType=NUMERIC}, #{updatetime,jdbcType=TIMESTAMP},#{sourceId,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ucp_schedule_calendar 
+		WHERE schedule_id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.mh.model.schedulecalendar.ScheduleCalendar">
+		UPDATE ucp_schedule_calendar SET
+			title = #{title,jdbcType=VARCHAR},
+			start_time = UNIX_TIMESTAMP(#{startTime,jdbcType=TIMESTAMP}),
+			end_time = UNIX_TIMESTAMP(#{endTime,jdbcType=TIMESTAMP}),
+			url = #{url,jdbcType=VARCHAR},
+			note = #{note,jdbcType=CLOB},
+			all_day = #{allDay,jdbcType=NUMERIC},
+			update_by = #{updateBy,jdbcType=NUMERIC},
+			update_time = #{updatetime,jdbcType=TIMESTAMP},
+			source_id = #{sourceId,jdbcType=NUMERIC}
+		WHERE schedule_id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ScheduleCalendar">
+		SELECT <include refid="columns"/>
+		FROM ucp_schedule_calendar
+		WHERE schedule_id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="ScheduleCalendar">
+		SELECT <include refid="columns"/>
+		FROM ucp_schedule_calendar   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY schedule_id  desc
+		</if>
+	</select>
+	
+	<select id="getListBy" parameterType="java.util.Map" resultMap="ScheduleCalendar">
+		SELECT <include refid="columns"/>
+		FROM ucp_schedule_calendar   
+		<include refid="dynamicWhere" />
+		ORDER BY update_time  desc
+	</select>
+	
+	<select id="getBy" parameterType="java.util.Map" resultMap="ScheduleCalendar">
+		SELECT <include refid="columns"/>
+		FROM ucp_schedule_calendar
+		WHERE schedule_id=#{id} AND create_by = #{createBy}
+	</select>
+	
+	<delete id="delBy" parameterType="java.util.Map">
+		DELETE FROM ucp_schedule_calendar
+		WHERE schedule_id=#{id} AND create_by = #{createBy}
+	</delete>
+
+    <delete id="delBySourceId" parameterType="java.lang.Long">
+        DELETE FROM ucp_schedule_calendar
+        WHERE source_id = #{sourceId}
+    </delete>
+</mapper>

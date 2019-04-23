@@ -1,0 +1,11 @@
+version: '3'
+services:
+  config-server:
+    image: suneee/config-server
+    hostname: config-server
+#    ports:
+#      - 8010:8010
+networks:
+  default:
+    external:
+      name: app_net

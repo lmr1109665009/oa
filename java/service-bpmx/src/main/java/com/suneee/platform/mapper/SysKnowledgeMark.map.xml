@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysKnowledgeMark">
+	<resultMap id="SysKnowledgeMark" type="com.suneee.platform.model.system.SysKnowledgeMark">
+		<result property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="bookmark" column="BOOKMARK" jdbcType="VARCHAR"/>
+		<result property="userId" column="USERID" jdbcType="NUMERIC"/>
+		<result property="knowName" column="KNOWNAME" jdbcType="VARCHAR"/>
+		<result property="createtime" column="CREATETIME" jdbcType="TIMESTAMP"/>
+		
+	</resultMap>
+
+	<sql id="columns">
+		ID,BOOKMARK,USERID,CREATETIME
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(bookmark)"> AND BOOKMARK  LIKE #{bookmark}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysKnowledgeMark">
+		INSERT INTO SYS_KNOWLEDGE_MARK
+		(ID,BOOKMARK,USERID,CREATETIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{bookmark,jdbcType=VARCHAR}, #{userId,jdbcType=NUMERIC},#{createtime})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOWLEDGE_MARK 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysKnowledgeMark">
+		UPDATE SYS_KNOWLEDGE_MARK SET
+		ID=#{id,jdbcType=NUMERIC},
+		BOOKMARK=#{bookmark,jdbcType=VARCHAR},
+		USERID=#{userId,jdbcType=NUMERIC}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysKnowledgeMark">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_MARK
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getByMarkName" parameterType="java.lang.String" resultMap="SysKnowledgeMark">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_MARK
+		WHERE
+		BOOKMARK = #{bookMark}
+	</select>
+	
+	<select id="getAll" resultMap="SysKnowledgeMark">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_MARK   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getByKnowId" parameterType="java.lang.Long" resultMap="SysKnowledgeMark">
+		SELECT <include refid="columns"/> from SYS_KNOWLEDGE_MARK where ID in(
+		 	select MARKID from SYS_KNOW_MARK_REL where KNOWLEDGEID = #{knowledgeId}
+		)
+		order by CREATETIME asc
+	</select>
+</mapper>

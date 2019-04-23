@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.WorkingCalendar">
+	<resultMap id="WorkingCalendar" type="com.suneee.kaoqin.model.kaoqin.WorkingCalendar">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="name" column="name_" jdbcType="VARCHAR"/>
+		<result property="monStatus" column="mon_status" jdbcType="NUMERIC"/>
+		<result property="tueStatus" column="tue_status" jdbcType="NUMERIC"/>
+		<result property="wedStatus" column="wed_status" jdbcType="NUMERIC"/>
+		<result property="thuStatus" column="thu_status" jdbcType="NUMERIC"/>
+		<result property="friStatus" column="fri_status" jdbcType="NUMERIC"/>
+		<result property="satStatus" column="sat_status" jdbcType="NUMERIC"/>
+		<result property="sunStatus" column="sun_status" jdbcType="NUMERIC"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,name_,mon_status,tue_status,wed_status,thu_status,fri_status,sat_status,sun_status,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name_  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(monStatus)"> AND mon_status  =#{monStatus} </if>
+			<if test="@Ognl@isNotEmpty(tueStatus)"> AND tue_status  =#{tueStatus} </if>
+			<if test="@Ognl@isNotEmpty(wedStatus)"> AND wed_status  =#{wedStatus} </if>
+			<if test="@Ognl@isNotEmpty(thuStatus)"> AND thu_status  =#{thuStatus} </if>
+			<if test="@Ognl@isNotEmpty(friStatus)"> AND fri_status  =#{friStatus} </if>
+			<if test="@Ognl@isNotEmpty(satStatus)"> AND sat_status  =#{satStatus} </if>
+			<if test="@Ognl@isNotEmpty(sunStatus)"> AND sun_status  =#{sunStatus} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.WorkingCalendar">
+		INSERT INTO se_working_calendar
+		(id_,name_,mon_status,tue_status,wed_status,thu_status,fri_status,sat_status,sun_status,status_,createBy,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{monStatus,jdbcType=NUMERIC}, #{tueStatus,jdbcType=NUMERIC}, #{wedStatus,jdbcType=NUMERIC}, #{thuStatus,jdbcType=NUMERIC}, #{friStatus,jdbcType=NUMERIC}, #{satStatus,jdbcType=NUMERIC}, #{sunStatus,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_working_calendar 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.WorkingCalendar">
+		UPDATE se_working_calendar SET
+		name_=#{name,jdbcType=VARCHAR},
+		mon_status=#{monStatus,jdbcType=NUMERIC},
+		tue_status=#{tueStatus,jdbcType=NUMERIC},
+		wed_status=#{wedStatus,jdbcType=NUMERIC},
+		thu_status=#{thuStatus,jdbcType=NUMERIC},
+		fri_status=#{friStatus,jdbcType=NUMERIC},
+		sat_status=#{satStatus,jdbcType=NUMERIC},
+		sun_status=#{sunStatus,jdbcType=NUMERIC},
+		status_=#{status,jdbcType=NUMERIC},
+		createBy=#{createby,jdbcType=NUMERIC},
+		createtime=#{createtime,jdbcType=DATE}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="WorkingCalendar">
+		SELECT <include refid="columns"/>
+		FROM se_working_calendar
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="WorkingCalendar">
+		SELECT <include refid="columns"/>
+		FROM se_working_calendar   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	
+</mapper>

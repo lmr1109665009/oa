@@ -1,0 +1,1 @@
+package com.suneee.eas.schedule.dao;import com.suneee.eas.common.dao.BaseDao;import com.suneee.eas.schedule.model.JobLog;import org.springframework.stereotype.Repository;/** * 任务日志dao * @user 子华 * @created 2018/8/29 */@Repositorypublic class JobLogDao extends BaseDao<JobLog>{}

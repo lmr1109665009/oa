@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysKnowledge">
+	<resultMap id="SysKnowledge" type="com.suneee.platform.model.system.SysKnowledge">
+		<result property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="typeid" column="TYPEID" jdbcType="NUMERIC"/>
+		<result property="subject" column="SUBJECT" jdbcType="VARCHAR"/>
+		<result property="content" column="CONTENT" jdbcType="CLOB"/>
+		<result property="creatorid" column="CREATORID" jdbcType="NUMERIC"/>
+		<result property="creator" column="CREATOR" jdbcType="VARCHAR"/>
+		<result property="createtime" column="CREATETIME" jdbcType="DATE"/>
+		<result property="attachment" column="ATTACHMENT" jdbcType="VARCHAR"/>
+		<result property="updatorid" column="UPDATORID" jdbcType="NUMERIC"/>
+		<result property="updator" column="UPDATOR" jdbcType="VARCHAR"/>
+		<result property="updatetime" column="UPDATETIME" jdbcType="DATE"/>
+		<result property="typeName" column="TYPENAME" jdbcType="VARCHAR"/>
+	</resultMap> 
+	
+	
+
+	<sql id="columns">
+		ID,TYPEID,SUBJECT,CONTENT,CREATORID,CREATOR,CREATETIME,ATTACHMENT,UPDATORID,UPDATOR,UPDATETIME
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(typeid)"> AND TYPEID  =#{typeid} </if>
+			<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(content)"> AND CONTENT  LIKE #{content}  </if>
+			<if test="@Ognl@isNotEmpty(creatorid)"> AND CREATORID  =#{creatorid} </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(attachment)"> AND ATTACHMENT  LIKE #{attachment}  </if>
+			<if test="@Ognl@isNotEmpty(updatorid)"> AND UPDATORID  =#{updatorid} </if>
+			<if test="@Ognl@isNotEmpty(updator)"> AND UPDATOR  LIKE #{updator}  </if>
+			<if test="@Ognl@isNotEmpty(updatetime)"> AND UPDATETIME  =#{updatetime} </if>
+			<if test="@Ognl@isNotEmpty(beginupdatetime)"> AND UPDATETIME  >=#{beginupdatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endupdatetime)"> AND UPDATETIME <![CDATA[ <=#{endupdatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysKnowledge">
+		INSERT INTO SYS_KNOWLEDGE
+		(ID,TYPEID,SUBJECT,CONTENT,CREATORID,CREATOR,CREATETIME,ATTACHMENT,UPDATORID,UPDATOR,UPDATETIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{typeid,jdbcType=NUMERIC},
+		 #{subject,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, 
+		 #{creatorid,jdbcType=NUMERIC}, #{creator,jdbcType=VARCHAR}, 
+		 #{createtime,jdbcType=DATE}, #{attachment,jdbcType=VARCHAR}, 
+		 #{updatorid,jdbcType=NUMERIC}, #{updator,jdbcType=VARCHAR}, 
+		 #{updatetime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOWLEDGE 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<delete id="delByType" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOWLEDGE 
+		WHERE
+		TYPEID=#{typeId}
+	</delete>
+	
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysKnowledge">
+		UPDATE SYS_KNOWLEDGE SET
+		ID=#{id,jdbcType=NUMERIC},
+		TYPEID=#{typeid,jdbcType=NUMERIC},
+		SUBJECT=#{subject,jdbcType=VARCHAR},
+		CONTENT=#{content,jdbcType=CLOB},
+		ATTACHMENT=#{attachment,jdbcType=VARCHAR},
+		<if test="@Ognl@isNotEmpty(creatorid)">CREATORID=#{creatorid,jdbcType=NUMERIC}, </if>
+		<if test="@Ognl@isNotEmpty(creator)"> CREATOR=#{creator,jdbcType=VARCHAR}, </if>
+	    <if test="@Ognl@isNotEmpty(createtime)">CREATETIME=#{createtime,jdbcType=DATE},</if> 
+		<if test="@Ognl@isNotEmpty(updatorid)">UPDATORID=#{updatorid,jdbcType=NUMERIC}, </if>
+		<if test="@Ognl@isNotEmpty(updator)">UPDATOR=#{updator,jdbcType=VARCHAR},  </if>
+		<if test="@Ognl@isNotEmpty(updatetime)">UPDATETIME=#{updatetime,jdbcType=DATE}</if>
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysKnowledge">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysKnowledge">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by createtime  desc
+		</if>
+	</select>
+	
+	<!-- 重新设置分类 -->
+	<update id="updateType">
+		UPDATE SYS_KNOWLEDGE SET typeid=#{typeId} where id
+		in <foreach collection="keyList" index="index" item="kowKey" open="(" close=")" separator=",">
+			#{kowKey}
+		</foreach>
+	</update>
+	
+	<select id="getByTypeId" resultMap="SysKnowledge">
+		SELECT 
+		ID,TYPEID,SUBJECT,CREATORID,CREATOR,CREATETIME,ATTACHMENT,UPDATORID,UPDATOR,UPDATETIME
+		FROM SYS_KNOWLEDGE  
+		where  typeid = #{typeId}
+		<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+		<if test="@Ognl@isNotEmpty(typeid)"> AND TYPEID  =#{typeid} </if>
+		<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+		<if test="@Ognl@isNotEmpty(content)"> AND CONTENT  LIKE #{content}  </if>
+		<if test="@Ognl@isNotEmpty(creatorid)"> AND CREATORID  =#{creatorid} </if>
+		<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+		<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+		<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime,jdbcType=DATE} </if>
+		<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		<if test="@Ognl@isNotEmpty(attachment)"> AND ATTACHMENT  LIKE #{attachment}  </if>
+		<if test="@Ognl@isNotEmpty(updatorid)"> AND UPDATORID  =#{updatorid} </if>
+		<if test="@Ognl@isNotEmpty(updator)"> AND UPDATOR  LIKE #{updator}  </if>
+		<if test="@Ognl@isNotEmpty(updatetime)"> AND UPDATETIME  =#{updatetime} </if>
+		<if test="@Ognl@isNotEmpty(beginupdatetime)"> AND UPDATETIME  >=#{beginupdatetime,jdbcType=DATE} </if>
+		<if test="@Ognl@isNotEmpty(endupdatetime)"> AND UPDATETIME <![CDATA[ <=#{endupdatetime,jdbcType=DATE}]]> </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by createtime  desc
+		</if>
+	</select>
+	
+	<select id="getByMarkId" resultMap="SysKnowledge"  parameterType="java.util.Map" >
+		select K.ID,K.TYPEID,K.SUBJECT,K.CREATOR,T.TYPENAME
+			 from SYS_KNOWLEDGE K,SYS_GL_TYPE T where K.TYPEID = T.TYPEID 
+			 and id in
+			 (
+				 select KNOWLEDGEID from SYS_KNOW_MARK_REL where MARKID = #{markId}
+			 )
+		     <if test="isSuperAdmin != true">
+				 and K.TYPEID in (
+				 select t.TYPEID from (
+					<foreach collection="relationMap" index="key"  item="ent" separator="union">
+						   select per.TYPEID from SYS_GL_TYPE gt,SYS_KNOWLEDGE_PERMISSION per where per.TYPEID=gt.TYPEID and per.PERMISSIONTYPE=#{key} and gt.CATKEY = 'KNOWLEDGE_TYPE' 
+						   <if test="@Ognl@notEquals(key,'all') and @Ognl@isNotEmpty(ent)">
+						        and per.OWNERID in 
+								<foreach collection="ent"  item="id" separator="," open="(" close=")">
+									#{id}
+								</foreach>
+							</if> 
+					</foreach>
+				) t)
+			</if>
+	</select>
+</mapper>

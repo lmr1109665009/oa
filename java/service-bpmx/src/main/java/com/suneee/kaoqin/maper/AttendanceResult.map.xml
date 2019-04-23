@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+	<resultMap id="AttendanceResult" type="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		<id property="resultId" column="result_id" jdbcType="NUMERIC"/>
+		<result property="userId" column="user_id" jdbcType="NUMERIC"/>
+		<result property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="seqKey" column="seq_key" jdbcType="NUMERIC"/>
+		<result property="attendanceDate" column="attendance_date" jdbcType="DATE"/>
+		<result property="realTime" column="real_time" jdbcType="TIMESTAMP"/>
+		<result property="standardTime" column="standard_time" jdbcType="TIMESTAMP"/>
+		<result property="recordId" column="record_id" jdbcType="NUMERIC"/>
+		<result property="businessId" column="business_id" jdbcType="NUMERIC"/>
+		<result property="checkType" column="check_type" jdbcType="NUMERIC"/>
+		<result property="resultType" column="result_type" jdbcType="NUMERIC"/>
+		<result property="checkResult" column="check_result" jdbcType="NUMERIC"/>
+		<result property="overTime" column="over_time" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		result_id,user_id,shift_id,seq_key,attendance_date,standard_time,real_time,record_id,business_id,check_type,result_type,check_result,over_time
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(resultId)"> AND result_id  =#{resultId} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND user_id  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(seqKey)"> AND seq_key  =#{seqKey} </if>
+			<if test="@Ognl@isNotEmpty(attendanceDate)"> AND attendance_date  =#{attendanceDate} </if>
+			<if test="@Ognl@isNotEmpty(beginattendanceDate)"> AND attendance_date  >=#{beginattendanceDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endattendanceDate)"> AND attendance_date <![CDATA[ <=#{endattendanceDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(standardTime)"> AND standard_time  =#{standardTime} </if>
+			<if test="@Ognl@isNotEmpty(beginstandardTime)"> AND standard_time  >=#{beginstandardTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endstandardTime)"> AND standard_time <![CDATA[ <=#{endstandardTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(recordId)"> AND record_id  =#{recordId} </if>
+			<if test="@Ognl@isNotEmpty(businessId)"> AND business_id  =#{businessId} </if>
+			<if test="@Ognl@isNotEmpty(checkType)"> AND check_type  =#{checkType} </if>
+			<if test="@Ognl@isNotEmpty(resultType)"> AND result_type  =#{resultType} </if>
+			<if test="@Ognl@isNotEmpty(checkResult)"> AND check_result  =#{checkResult} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		INSERT INTO se_attendance_result
+		(result_id,user_id,shift_id,seq_key,attendance_date,standard_time,real_time,record_id,business_id,check_type,result_type, check_result,over_time)
+		VALUES
+		(#{resultId,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{shiftId,jdbcType=NUMERIC}, #{seqKey,jdbcType=NUMERIC}, #{attendanceDate,jdbcType=DATE}, #{standardTime,jdbcType=TIMESTAMP}, #{realTime,jdbcType=TIMESTAMP}, #{recordId,jdbcType=NUMERIC}, #{businessId,jdbcType=NUMERIC}, #{checkType,jdbcType=NUMERIC}, #{resultType,jdbcType=NUMERIC}, #{checkResult,jdbcType=NUMERIC}, #{overTime,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_attendance_result 
+		WHERE
+		result_id=#{resultId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		UPDATE se_attendance_result SET
+		user_id=#{userId,jdbcType=NUMERIC},
+		shift_id=#{shiftId,jdbcType=NUMERIC},
+		seq_key=#{seqKey,jdbcType=NUMERIC},
+		attendance_date=#{attendanceDate,jdbcType=DATE},
+		standard_time=#{standardTime,jdbcType=TIMESTAMP},
+		real_time=#{realTime,jdbcType=TIMESTAMP},
+		record_id=#{recordId,jdbcType=NUMERIC},
+		business_id=#{businessId,jdbcType=NUMERIC},
+		check_type=#{checkType,jdbcType=NUMERIC},
+		result_type=#{resultType,jdbcType=NUMERIC},
+		check_result=#{checkResult,jdbcType=NUMERIC},
+		over_time=#{overTime,jdbcType=NUMERIC}
+		WHERE
+		result_id=#{resultId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AttendanceResult">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_result
+		WHERE
+		result_id=#{resultId}
+	</select>
+	
+	<select id="getAll" resultMap="AttendanceResult">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_result   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by result_id  desc
+		</if>
+	</select>
+	
+	<select id="getProcessResultList" resultMap="AttendanceResult">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_result   
+		<where>
+			AND shift_id = 0
+			<if test="@Ognl@isNotEmpty(startTime)"> AND standard_time  >=#{startTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND standard_time <![CDATA[ <=#{endTime,jdbcType=TIMESTAMP}]]> </if>
+		</where>
+		order by business_id, seq_key
+	</select>
+	
+	<select id="getDayList" resultType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		SELECT u.staff_no as staffNo , u.fullname, s.shift_name AS shiftName, 
+		tb.attendance_date AS attendanceDate, tb.check_time AS checkTime,
+		tb.check_result checkResult, u.USERID AS userId, s.shift_id AS shiftId
+		FROM sys_user u, se_attendance_shift s,
+		(SELECT sar.user_id, sar.shift_id,sar.attendance_date, 
+		GROUP_CONCAT(IF (sar.real_time IS NULL, '',TIME_FORMAT(sar.real_time , '%H:%i')),'_',sar.check_result ORDER BY sar.seq_key ASC) AS check_time, 
+		MAX(sar.check_result) AS check_result
+		FROM se_attendance_result sar 
+		<!-- LEFT JOIN se_attendance_record ar ON sar.record_id = ar.attendance_id -->
+		<where>
+			AND sar.shift_id != 0
+			<if test="@Ognl@isNotEmpty(beginattendanceDate)"> AND sar.attendance_date  >=#{beginattendanceDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endattendanceDate)"> AND sar.attendance_date <![CDATA[ <#{endattendanceDate,jdbcType=DATE}]]> </if>
+		</where>
+		GROUP BY sar.user_id, sar.shift_id, sar.attendance_date) tb
+		WHERE u.USERID = tb.user_id AND s.shift_id = tb.shift_id
+		<if test="@Ognl@isNotEmpty(fullname)"> AND u.FULLNAME  LIKE #{fullname}  </if>
+		<if test="checkResult==1"> AND tb.check_result = 0 </if>
+		<if test="checkResult==2"> AND tb.check_result != 0 </if>
+	</select>
+	
+	<select id="getSummaryList" resultType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		SELECT u.staff_no as staffNo , u.fullname, so.orgid AS orgId,
+		so.orgname AS orgName, tb.*
+		FROM (SELECT sar.user_id AS userId, 
+		COUNT(CASE WHEN sar.check_result = 1 THEN 1 ELSE NULL END )AS late,
+		COUNT(CASE WHEN sar.check_result = 2 THEN 1 ELSE NULL END )AS early,
+		COUNT(CASE WHEN sar.check_result = 3 AND sar.check_type = 1 THEN 1 ELSE NULL END )AS unup,
+		COUNT(CASE WHEN sar.check_result = 3 AND sar.check_type = 2 THEN 1 ELSE NULL END )AS undown
+		FROM se_attendance_result sar 
+		<where>
+			AND sar.shift_id != 0
+			<if test="@Ognl@isNotEmpty(beginattendanceDate)"> AND sar.attendance_date  >=#{beginattendanceDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endattendanceDate)"> AND sar.attendance_date <![CDATA[ <#{endattendanceDate,jdbcType=DATE}]]> </if>
+		</where>
+		GROUP BY sar.user_id  ) tb
+		INNER JOIN sys_user u ON u.USERID = tb.userId 
+		LEFT JOIN sys_user_pos up ON up.userid = u.userid AND up.ISDELETE = 0
+		<if test="@Ognl@isEmpty(orgId)"> AND up.isprimary = 1 </if>
+		LEFT JOIN sys_org so ON up.orgid = so.orgid
+		WHERE 1=1
+		<if test="@Ognl@isNotEmpty(fullname)"> AND u.FULLNAME  LIKE #{fullname}  </if>
+		<if test="@Ognl@isNotEmpty(orgId)"> AND so.path LIKE #{orgId } </if>
+	</select>
+	
+	<select id="getUserDetailList" resultType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		SELECT u.fullname, so.orgname AS orgName, tb.attendance_date AS attendanceDate, 
+		tb.times, tb.check_time AS checkTime, u.USERID AS userId
+		FROM (SELECT sar.user_id, sar.attendance_date, count(0) as times,
+		GROUP_CONCAT(IF (sar.real_time IS NULL, '',TIME_FORMAT(sar.real_time , '%H:%i')),'_',sar.check_result ORDER BY sar.seq_key ASC) AS check_time, 
+		MAX(sar.check_result) AS check_result
+		FROM se_attendance_result sar 
+		<where>
+			AND sar.shift_id != 0
+			<if test="@Ognl@isNotEmpty(beginattendanceDate)"> AND sar.attendance_date  >=#{beginattendanceDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endattendanceDate)"> AND sar.attendance_date <![CDATA[ <#{endattendanceDate,jdbcType=DATE}]]> </if>
+		</where>
+		GROUP BY sar.user_id, sar.attendance_date) tb
+		INNER JOIN sys_user u ON u.USERID = tb.user_id
+		LEFT JOIN sys_user_pos up ON up.userid = u.userid AND up.ISDELETE = 0 AND up.isprimary = 1
+		LEFT JOIN sys_org so ON up.orgid = so.orgid
+		WHERE 1=1
+		<if test="@Ognl@isNotEmpty(userId)"> AND u.userid = #{userId }  </if>
+	</select>
+	
+	<select id="getOvertimeUsersOfDay" parameterType="java.util.Date" resultMap="com.suneee.platform.model.system.SysUser.SysUser">
+		SELECT su.* FROM sys_user su 
+		WHERE su.userid in ( 
+			SELECT user_id FROM se_attendance_result
+			WHERE attendance_date  = #{date, jdbcType=DATE} AND  result_type = 2
+		)
+	</select>
+	
+	<select id="getMonthAttendance" resultMap="AttendanceResult">
+		SELECT sar.user_id, sar.attendance_date, 
+		MAX(sar.check_result) AS check_result
+		FROM se_attendance_result sar 
+		<where>
+			<if test="@Ognl@isNotEmpty(startDate)"> AND sar.attendance_date  >=#{startDate,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endDate)"> AND sar.attendance_date <![CDATA[ <=#{endDate,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND sar.user_id  = #{userId}  </if>
+		</where>
+		GROUP BY sar.user_id, sar.attendance_date
+		HAVING MAX(sar.check_result) > 0
+	</select>
+	
+	<delete id="removeAllWorkingComputedResult" parameterType="java.util.Date">
+		DELETE FROM se_attendance_result 
+		WHERE shift_id != 0 AND result_type = 1
+		AND attendance_date=#{date,jdbcType=DATE}
+	</delete>
+	
+	<update id="resetProcessResult" parameterType="java.util.Date">
+		UPDATE se_attendance_result SET
+		real_time=null,
+		record_id=null
+		WHERE shift_id = 0
+		AND attendance_date=#{date,jdbcType=DATE}
+	</update>
+	
+	<select id="getOvertimeList" resultType="com.suneee.kaoqin.model.kaoqin.AttendanceResult">
+		SELECT u.staff_no as staffNo , u.fullname, tb.check_time AS checkTime,
+		tb.over_time overTime, u.USERID AS userId
+		FROM sys_user u, 
+		(SELECT sar.user_id, 
+		GROUP_CONCAT(IF (sar.real_time IS NULL, '', DATE_FORMAT(sar.real_time , '%Y-%m-%d %H:%i'))
+			ORDER BY sar.seq_key ASC) AS check_time, 
+		MAX(sar.over_time) AS over_time
+		FROM se_attendance_result sar 
+		<where>
+			AND sar.shift_id = 0 AND sar.result_type = 2
+			<if test="@Ognl@isNotEmpty(beginattendanceDate)"> AND sar.attendance_date  >=#{beginattendanceDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endattendanceDate)"> AND sar.attendance_date <![CDATA[ <#{endattendanceDate,jdbcType=DATE}]]> </if>
+		</where>
+		GROUP BY sar.user_id, sar.business_id) tb
+		WHERE u.USERID = tb.user_id
+		<if test="@Ognl@isNotEmpty(fullname)"> AND u.FULLNAME  LIKE #{fullname}  </if>
+	</select>
+	
+</mapper>

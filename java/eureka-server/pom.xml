@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.suneee.eas</groupId>
+	<artifactId>eureka-server</artifactId>
+	<version>1.0.0-release</version>
+	<packaging>jar</packaging>
+
+	<name>eureka-server</name>
+	<description>服务注册中心</description>
+
+	<parent>
+		<groupId>com.suneee.eas</groupId>
+		<artifactId>eas-parent</artifactId>
+		<version>1.0.0-release</version>
+	</parent>
+
+	<dependencies>
+		<!--日志打印-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<!-- 私有仓库配置，需要settings.xml文件配合serverId对应的服务地址 -->
+					<serverId>docker-suneee</serverId>
+					<registryUrl>${docker.repostory}</registryUrl>
+					<forceTags>true</forceTags>
+					<imageName>${docker.repostory}/${docker.registry.name}/${project.artifactId}</imageName>
+					<imageTags>
+						<imageTag>
+							${env}${maven.build.timestamp}
+						</imageTag>
+					</imageTags>
+					<dockerDirectory>src/main/docker${docker-build-suffix}</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

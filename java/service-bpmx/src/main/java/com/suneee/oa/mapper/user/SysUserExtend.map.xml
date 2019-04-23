@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysUser">
+	<sql id="allColumns">
+		a.userId,a.fullname,a.alias_name,a.account,a.password,a.isExpired,a.isLock,a.createtime,a.status,a.email,a.mobile,a.phone,
+		a.sex,a.picture,a.fromType,a.entryDate,a.userStatus,a.sync_to_uc,a.pwdUpdTime,a.hasSyncToWx,a.weixinid,a.staff_no,
+		a.identification,a.attend_no,a.work_date,a.uc_userid,a.region,a.sn,a.webSignUrl,a.login_account,a.updatetime
+	</sql>
+	
+	<sql id="dynamicCondition">
+		<if test="@Ognl@isNotEmpty(mobile)"> AND a.mobile LIKE #{mobile}</if>
+		<if test="@Ognl@isNotEmpty(status)"> AND a.status = #{status}</if>
+		<if test="@Ognl@isNotEmpty(jobId)">AND up.jobId = #{jobId}</if>
+		<if test="@Ognl@isNotEmpty(roleId)"> AND ur.roleid = #{roleId} </if>
+		<if test="@Ognl@isNotEmpty(fullname)"> AND a.fullname LIKE #{fullname}</if>
+		<if test="@Ognl@isNotEmpty(account)"> AND a.account LIKE #{account}</if>
+		<if test="@Ognl@isNotEmpty(orgPath)"> AND o.path LIKE '#{orgPath}%' </if>
+		<if test="@Ognl@isNotEmpty(begincreatetime)"> and a.createtime >= #{begincreatetime}</if>
+		<if test="@Ognl@isNotEmpty(endcreatetime)"> <![CDATA[and a.createtime <= #{endcreatetime}]]></if>
+		<if test="@Ognl@isNotEmpty(beginupdatetime)"> and a.updatetime >= #{beginupdatetime}</if>
+		<if test="@Ognl@isNotEmpty(endupdatetime)"> <![CDATA[and a.updatetime <= #{endupdatetime}]]></if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (a.fullname LIKE #{searchCondition} OR a.account LIKE #{searchCondition} OR a.alias_name LIKE #{searchCondition})
+		</if> 
+	</sql>
+	<select id="getAllUser" resultMap="SysUser">
+		SELECT DISTINCT <include refid="allColumns"/>
+		FROM sys_user a
+		LEFT JOIN sys_user_pos up ON up.userid=a.userid AND up.isdelete=0 
+		LEFT JOIN sys_org o ON up.orgid = o.orgid AND o.isdelete=0 
+		LEFT JOIN sys_user_role ur ON ur.userid = a.userid
+		LEFT JOIN ucp_user_enterprise ue on ue.userid=a.userid
+		<where>
+			<include refid="dynamicCondition"/>
+			<if test="@Ognl@isEmpty(status)"> AND a.status != -1 </if>
+			AND ue.enterprisecode = #{enterpriseCode}
+			AND ue.isdelete=0
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY CONVERT( a.${orderField} USING gbk ) COLLATE gbk_chinese_ci ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY updatetime DESC, CONVERT( a.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+		</if>
+	</select>
+	
+	<select id="getAllDelUser" resultMap="SysUser">
+		SELECT DISTINCT <include refid="allColumns"/>
+		FROM sys_user a
+		LEFT JOIN ucp_user_enterprise ue on ue.userid=a.userid
+		<where>
+			<if test="@Ognl@isNotEmpty(mobile)"> AND a.mobile LIKE #{mobile}</if>
+			<if test="@Ognl@isNotEmpty(fullname)"> AND a.fullname LIKE #{fullname}</if>
+			<if test="@Ognl@isNotEmpty(account)"> AND a.account LIKE #{account}</if>
+			<if test="@Ognl@isEmpty(status)"> AND a.status != -1 </if>
+			<if test="@Ognl@isNotEmpty(searchCondition)">
+				AND (a.fullname LIKE #{searchCondition} OR a.account LIKE #{searchCondition} 
+					OR a.alias_name LIKE #{searchCondition})
+			</if> 
+			AND ue.enterprisecode = #{enterpriseCode}
+			AND ue.isdelete=1
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY CONVERT( a.${orderField} USING gbk ) COLLATE gbk_chinese_ci ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY updatetime DESC, CONVERT( a.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+		</if>
+	</select>
+	
+	<select id="getAccountCount"  resultType="Integer">
+	    select count(*) from sys_user  where account=#{account}
+	    <if test="@Ognl@isNotEmpty(userId)">
+	    	AND userid != #{userId}
+	    </if>
+	</select>
+	
+	<select id="getEmailCount"  resultType="Integer">
+	    select count(*) from sys_user  where email=#{email}
+	    <if test="@Ognl@isNotEmpty(userId)">
+	    	AND userid != #{userId}
+	    </if>
+	</select>
+	
+	<select id="getMobileCount"  resultType="Integer">
+	    select count(*) from sys_user  where mobile=#{mobile}
+	    <if test="@Ognl@isNotEmpty(userId)">
+	    	AND userid != #{userId}
+	    </if>
+	</select>
+	
+	<update id="updateUser" parameterType="com.suneee.platform.model.system.SysUser">
+		UPDATE sys_user SET
+			fullname = #{fullname, jdbcType=VARCHAR},
+			alias_name = #{aliasName, jdbcType=VARCHAR},
+			account = #{account, jdbcType=VARCHAR},
+			email = #{email, jdbcType=VARCHAR},
+			mobile = #{mobile, jdbcType=VARCHAR},
+			picture = #{picture, jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			status = #{status, jdbcType=NUMERIC},
+			login_account = #{loginAccount, jdbcType=VARCHAR},
+			uc_userid = #{ucUserid, jdbcType=VARCHAR},
+			phone = #{phone, jdbcType=VARCHAR},
+			sync_to_uc = #{syncToUc, jdbcType=NUMERIC},
+			updateby = #{updateBy, jdbcType=NUMERIC},
+			staff_no = #{staffNo, jdbcType=VARCHAR},
+			sex = #{sex,jdbcType=VARCHAR}
+			<if test="@Ognl@isNotEmpty(sn)">
+				, sn = #{sn, jdbcType=NUMERIC}
+			</if>
+			<if test="@Ognl@isNotEmpty(password)">
+				, password = #{password, jdbcType=VARCHAR}
+			</if>
+		WHERE userid = #{userId}
+	</update>
+
+
+	<!--根据行政等级获取用户信息-->
+	<select id="getListByLevel" resultMap="SysUser">
+		SELECT DISTINCT a.userId,a.fullname,a.alias_name,a.account,a.isExpired,a.isLock,a.createtime,a.status,a.email,a.mobile,a.phone,
+		a.sex,a.picture,a.fromType,a.entryDate,a.userStatus,a.sync_to_uc,a.pwdUpdTime,a.hasSyncToWx,a.weixinid,a.staff_no,
+		a.identification,a.attend_no,a.work_date,a.uc_userid,a.region,a.sn,a.login_account,a.updatetime
+		FROM sys_user a
+		LEFT JOIN sys_user_pos up ON up.userid=a.userid
+		LEFT JOIN sys_job sj ON up.`JOBID`=sj.`JOBID`
+		<![CDATA[
+		WHERE a.`STATUS`=1 AND up.isdelete=0 AND (sj.jobCategory=#{grade}) AND sj.`enterprise_code`=#{code}
+		]]>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+	</select>
+</mapper>

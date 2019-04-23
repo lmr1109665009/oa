@@ -1,0 +1,69 @@
+server:
+  port: 8010
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8000/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 每隔10s发送一次心跳
+    lease-renewal-interval-in-seconds: 10
+    # 告知服务端30秒还未收到心跳的话，就将该服务移除列表
+    lease-expiration-duration-in-seconds: 30
+
+spring:
+  application:
+    name: config-server
+  #分布式服务器端配置
+  cloud:
+    config:
+      label: master
+      server:
+        git:
+          search-paths: config
+          uri: https://github.com/huazai2008101/config/
+  #redis配置
+  redis:
+    host: 172.19.7.140
+    password:
+    port: 6379
+    timeout: 180s
+    jedis:
+      pool:
+        max-active: 500
+        min-idle: 0
+        max-idle: 8
+        max-wait: 120s
+
+
+mybatis:
+  mapper-locations: classpath:com/suneee/**/mapper/**/*.xml
+  type-aliases-package: com.suneee.**.model
+  configuration:
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+#数据源配置
+hikari:
+  master:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://172.19.6.127:3306/cloud_lhy_oa?useUnicode=true&characterEncoding=utf8&useSSL=true&allowMultiQueries=true&verifyServerCertificate=false
+    username: root
+    password: suneee
+    maximum-pool-size: 20
+    pool-name: master
+    connection-timeout: 30000
+    idle-timeout: 600000
+    max-lifetime: 1765000
+  slave:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://172.19.6.127:3306/cloud_lhy_oa ?useUnicode=true&characterEncoding=utf8&useSSL=true&allowMultiQueries=true&verifyServerCertificate=false
+    username: root
+    password: suneee
+    maximum-pool-size: 80
+    pool-name: slave
+    connection-timeout: 30000
+    idle-timeout: 600000
+    max-lifetime: 1765000
+    read-only: true

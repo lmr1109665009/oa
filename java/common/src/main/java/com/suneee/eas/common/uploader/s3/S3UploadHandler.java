@@ -1,0 +1,1 @@
+package com.suneee.eas.common.uploader.s3;/** * @program: eas-parent * @description: minio云存储集成S3 sdk接口 * @author: liuhai * @create: 2018-10-22 09:56 **/public interface S3UploadHandler {}

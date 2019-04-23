@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.platform.model.system.Dictionary">
+	<resultMap id="Dictionary" type="com.suneee.platform.model.system.Dictionary">
+		<id property="dicId" column="dicId" jdbcType="NUMERIC"/>
+		<result property="typeId" column="typeId" jdbcType="NUMERIC"/>
+		<result property="itemKey" column="itemKey" jdbcType="VARCHAR"/>
+		<result property="itemName" column="itemName" jdbcType="VARCHAR"/>
+		<result property="itemValue" column="itemValue" jdbcType="VARCHAR"/>
+		<result property="descp" column="descp" jdbcType="VARCHAR"/>
+		<result property="sn" column="sn" jdbcType="NUMERIC"/>
+		<result property="nodePath" column="nodePath" jdbcType="VARCHAR"/>
+		<result property="parentId" column="parentId" jdbcType="NUMERIC"/>
+		<result property="eid" column="eid" jdbcType="VARCHAR"/>
+		<result property="companyName" column="enterprises" jdbcType="VARCHAR"/>
+	</resultMap>
+
+
+	<sql id="columns">
+		dicId,typeId,itemKey,itemName,itemValue,descp,sn,nodePath,parentId,eid,companyName
+	</sql>
+
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(itemName)"> AND itemName  LIKE #{itemName}  </if>
+			<if test="@Ognl@isNotEmpty(itemKey)"> AND itemKey  LIKE  #{itemKey}  </if>
+			<if test="@Ognl@isNotEmpty(itemValue)"> AND itemValue =#{itemValue}  </if>
+			<if test="@Ognl@isNotEmpty(nodePath)"> AND nodePath  LIKE #{nodePath}  </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND eid  LIKE #{eid}  </if>
+		</where>
+	</sql>
+
+	<sql id="columnsNew">
+		a.dicId,a.typeId,a.itemKey,a.itemName,a.itemValue,a.descp,a.sn,a.nodePath,a.parentId,a.eid,a.companyName
+	</sql>
+
+
+	<sql id="dynamicWhereNew">
+		<where>
+			<if test="@Ognl@isNotEmpty(itemName)"> AND a.itemName  LIKE #{itemName}  </if>
+			<if test="@Ognl@isNotEmpty(itemKey)"> AND a.itemKey  LIKE  #{itemKey}  </if>
+			<if test="@Ognl@isNotEmpty(itemValue)"> AND a.itemValue =#{itemValue}  </if>
+			<if test="@Ognl@isNotEmpty(nodePath)"> AND a.nodePath  LIKE #{nodePath}  </if>
+			<if test="@Ognl@isNotEmpty(typeId)"> AND a.typeId  LIKE #{typeId}  </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.eid  LIKE #{eid}  </if>
+			<if test="@Ognl@isNotEmpty(companyName)"> AND a.companyName  LIKE #{companyName}  </if>
+			<if test="@Ognl@isNotEmpty(typeName)"> AND b.typeName  LIKE #{typeName}  </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND b.type  LIKE #{type}  </if>
+			<if test="@Ognl@isNotEmpty(typeIdList)">
+				AND a.typeId IN
+				<foreach collection="typeIdList" item="typeId" open="(" separator="," close=")">
+					#{typeId}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+
+	<select id="getAll" resultMap="Dictionary" >
+		SELECT a.*,b.typeName,b.type
+		FROM sys_dic  a
+		inner join sys_gl_type b on a.typeid=b.typeid
+		<!--<include refid="dynamicWhereNew" />-->
+		<where>
+			<if test="@Ognl@isNotEmpty(itemName)"> AND a.itemName  LIKE #{itemName}  </if>
+			<if test="@Ognl@isNotEmpty(itemKey)"> AND a.itemKey  LIKE  #{itemKey}  </if>
+			<if test="@Ognl@isNotEmpty(itemValue)"> AND a.itemValue =#{itemValue}  </if>
+			<if test="@Ognl@isNotEmpty(nodePath)"> AND a.nodePath  LIKE #{nodePath}  </if>
+			<if test="@Ognl@isNotEmpty(typeId)"> AND a.typeId  LIKE #{typeId}  </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.eid  LIKE #{eid}  </if>
+			<if test="@Ognl@isNotEmpty(companyName)"> AND a.companyName  LIKE #{companyName}  </if>
+			<if test="@Ognl@isNotEmpty(typeName)"> AND b.typeName  LIKE #{typeName}  </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND b.type  LIKE #{type}  </if>
+			<if test="@Ognl@isNotEmpty(typeIdList)">
+				AND a.typeId IN
+				<foreach collection="typeIdList" item="typeId" open="(" separator="," close=")">
+					#{typeId}
+				</foreach>
+			</if>
+
+			<if test="@Ognl@isNotEmpty(searchCondition)"> AND ( b.typeName  LIKE #{searchCondition}  OR a.itemName  LIKE #{searchCondition}
+				OR b.type  LIKE #{searchCondition} OR a.companyName  LIKE #{searchCondition} ) </if>
+		</where>
+
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by sn
+		</if>
+	</select>
+
+
+
+
+
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.Dictionary" useGeneratedKeys="true" keyProperty="dicId">
+		INSERT INTO sys_dic
+		(<include refid="columns"/>)
+		VALUES
+		(#{dicId,jdbcType=NUMERIC}, #{typeId,jdbcType=NUMERIC}, #{itemKey,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, #{itemValue,jdbcType=VARCHAR}, #{descp,jdbcType=VARCHAR}, #{sn,jdbcType=NUMERIC}, #{nodePath,jdbcType=VARCHAR}, #{parentId,jdbcType=NUMERIC},#{eid,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR})
+	</insert>
+
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_dic  WHERE dicId=#{dicId}
+	</delete>
+
+	<delete id="delByTypeId" parameterType="java.lang.Long">
+		DELETE FROM sys_dic  WHERE TYPEID=#{typeId}
+	</delete>
+
+	<update id="update" parameterType="com.suneee.platform.model.system.Dictionary">
+		UPDATE sys_dic SET
+		typeId=#{typeId,jdbcType=NUMERIC} ,
+		itemKey=#{itemKey,jdbcType=VARCHAR} ,
+		itemName=#{itemName,jdbcType=VARCHAR} ,
+		itemValue=#{itemValue,jdbcType=VARCHAR} ,
+		descp=#{descp,jdbcType=VARCHAR} ,
+		sn=#{sn,jdbcType=NUMERIC} ,
+		nodePath=#{nodePath,jdbcType=VARCHAR} ,
+		parentId=#{parentId,jdbcType=NUMERIC} ,
+		eid=#{eid,jdbcType=VARCHAR}
+		WHERE
+		dicId=#{dicId}
+	</update>
+
+	<select id="getById" parameterType="java.lang.Long" resultMap="Dictionary">
+		SELECT a.dicId,a.typeId,a.itemKey,a.itemName,a.itemValue,a.descp,a.sn,a.nodePath,a.parentId,a.eid,a.companyName
+		FROM sys_dic a
+		WHERE
+		a.dicId=#{dicId}
+	</select>
+
+	<select id="getByDictTypeAndKey" parameterType="Map" resultMap="Dictionary">
+		SELECT dic.dicId,dic.typeId,dic.itemKey,dic.itemName,dic.itemValue,dic.descp,dic.sn,dic.nodePath,dic.parentId,dic.eid
+		FROM sys_dic dic LEFT JOIN SYS_GL_TYPE gl on dic.typeid = gl.TYPEID where gl.typename = #{typeName} and dic.itemkey=#{itemKey}
+	</select>
+
+	<select id="getByTypeId" parameterType="java.lang.Long" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE
+		typeId=#{typeId}
+		order by sn ,dicId
+	</select>
+
+	<select id="getByTypeIdAndEid" parameterType="Map" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE
+		typeId=#{typeId}
+		<!-- and eid=#{eid} -->
+		<if test="@Ognl@isNotEmpty(eid)">
+			and eid=#{eid}
+		</if>
+		order by sn ,dicId
+	</select>
+
+	<!--<select id="getAll" resultMap="Dictionary" parameterType="java.util.Map">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by sn
+		</if>
+	</select>-->
+
+
+
+	<select id="getByNodePath" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE
+		nodePath like #{nodePath}
+		ORDER BY SN
+	</select>
+
+	<select id="isItemKeyExists" resultType="int">
+		select count(*) from sys_dic where  typeId=#{typeId,jdbcType=NUMERIC}
+		<if test="@Ognl@isNotEmpty(itemKey)"> AND  lower(itemKey)=#{itemKey,jdbcType=VARCHAR} </if>
+		<if test="@Ognl@isNotEmpty(itemValue)"> AND itemValue =#{itemValue}  </if>
+	</select>
+
+	<select id="getByParentId" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE parentId=#{id}
+		order by sn
+	</select>
+
+	<select id="isItemKeyExistsForUpdate" resultType="int">
+		select count(*) from sys_dic
+		where dicId  &lt;&gt; #{dicId,jdbcType=NUMERIC}
+		and typeId=#{typeId,jdbcType=NUMERIC}
+		and lower(itemKey)=#{itemKey,jdbcType=VARCHAR}
+	</select>
+
+	<select id="isItemValueExistsForUpdate" resultType="int">
+		select count(*) from sys_dic
+		where typeId=#{typeId,jdbcType=NUMERIC} AND dicId  &lt;&gt; #{dicId,jdbcType=NUMERIC} AND itemValue =#{itemValue}
+	</select>
+
+	<select id="updSn" parameterType="Map">
+		update sys_dic set sn=#{sn,jdbcType=NUMERIC}
+		WHERE
+		dicId=#{dicId}
+	</select>
+	<select id="getByItemValue" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE
+		itemValue =#{itemValue}
+	</select>
+
+	<select id="getByTypeAndItemName" parameterType="java.util.Map" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE typeId=#{typeId} AND itemname =#{itemName}
+	</select>
+	<select id="getByTypeIdAndItemValue" parameterType="java.util.Map" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE typeId=#{typeId} AND itemValue =#{itemValue}
+	</select>
+
+	<select id="getDictionarysByQueryFilter" resultType="map">
+		SELECT b.typename,a.itemname,b.type,a.typeId,a.parentId,a.companyname,a.dicId,a.itemKey
+		FROM SYS_GL_TYPE b  LEFT JOIN  SYS_DIC a ON a.typeid = b.typeid
+		WHERE  1=1
+		<if test="@Ognl@isNotEmpty(typename)"> AND b.typename  LIKE #{typename}  </if>
+		<if test="@Ognl@isNotEmpty(itemname)"> AND a.itemname  LIKE #{itemname}  </if>
+		<if test="@Ognl@isNotEmpty(type)"> AND b.type  LIKE #{type}  </if>
+		<if test="@Ognl@isNotEmpty(typeId)"> AND a.typeId  LIKE #{typeId}  </if>
+		<if test="@Ognl@isNotEmpty(companyname)"> AND a.companyname  LIKE #{companyname}  </if>
+
+		<if test="@Ognl@isNotEmpty(searchCondition)"> AND b.typename  LIKE #{searchCondition}  OR a.itemname  LIKE #{searchCondition} OR  b.type  LIKE #{searchCondition} OR a.companyname  LIKE #{searchCondition}</if>
+	</select>
+
+
+
+
+	<select id="getByTypeIdAndItemName" parameterType="Map" resultMap="Dictionary">
+		SELECT <include refid="columns"/>
+		FROM sys_dic
+		WHERE 1=1
+
+		<if test="@Ognl@isNotEmpty(typeId)"> AND typeId = #{typeId}    </if>
+		<if test="@Ognl@isNotEmpty(itemname)"> AND itemname  LIKE #{itemname}    </if>
+		<if test="@Ognl@isNotEmpty(searchCondition)"> AND itemname  LIKE #{searchCondition}   </if>
+		order by sn ,dicId
+	</select>
+
+	<select id="uptSn" parameterType="Map">
+		update sys_dic set sn=#{sn,jdbcType=NUMERIC}
+		WHERE
+		typeId=#{typeId}
+	</select>
+
+
+</mapper>

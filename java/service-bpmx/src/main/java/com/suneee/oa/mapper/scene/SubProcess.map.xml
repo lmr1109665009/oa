@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.oa.model.scene.SubProcess">
+	<resultMap type="com.suneee.oa.model.scene.SubProcess" id="subProcess">
+		<id property="Id" column="Id" jdbcType="NUMERIC"/>
+		<result property="sceneId" column="sceneId" jdbcType="NUMERIC"/>
+		<result property="sceneName" column="sceneName" jdbcType="VARCHAR" />
+		<result property="defId" column="defId" jdbcType="NUMERIC"/>
+		<result property="defName" column="defName" jdbcType="VARCHAR" />
+		<result property="defKey" column="defKey" jdbcType="VARCHAR" />
+		<result property="subDefId" column="subDefId" jdbcType="NUMERIC" />
+		<result property="subDefKey" column="subDefKey" jdbcType="VARCHAR" />
+		<result property="subDefName" column="subDefName" jdbcType="VARCHAR" />
+		<result property="subActDefId" column="subActDefId" jdbcType="VARCHAR" />
+		<result property="jsonmaping" column="jsonmaping" jdbcType="VARCHAR"/>
+		<result property="triggerJson" column="triggerJson" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="sn" column="sn" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		sp.Id, sp.sceneId, sp.sceneName, sp.defName, sp.defId, sp.defKey,sp.subDefId,sp.subDefKey,sp.subDefName,sp.subActDefId,sp.jsonmaping, sp.triggerJson, sp.description, sp.sn
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.oa.model.scene.SubProcess">
+		INSERT INTO ucp_sub_processs
+		(Id, defId, sceneId, sceneName, defName, defKey, jsonmaping, triggerJson, subDefId, subDefKey, subDefName, subActDefId, description, sn)
+		VALUES(
+			#{Id, jdbcType=NUMERIC}, #{defId, jdbcType=NUMERIC}, #{sceneId, jdbcType=NUMERIC}, #{sceneName, jdbcType=VARCHAR},
+			#{defName, jdbcType=VARCHAR},#{defKey, jdbcType=VARCHAR},#{jsonmaping, jdbcType=VARCHAR},#{triggerJson, jdbcType=VARCHAR},
+			#{subDefId, jdbcType=NUMERIC},#{subDefKey, jdbcType=VARCHAR},#{subDefName, jdbcType=VARCHAR},#{subActDefId, jdbcType=VARCHAR},
+			#{description, jdbcType=VARCHAR},#{sn, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ucp_sub_processs SET
+			defId = #{defId, jdbcType=NUMERIC},
+			sceneId = #{sceneId, jdbcType=NUMERIC},
+			sceneName = #{sceneName, jdbcType=VARCHAR},
+			defName = #{defName, jdbcType=VARCHAR},
+			defKey = #{defKey, jdbcType=VARCHAR},
+			subDefId = #{subDefId, jdbcType=NUMERIC},
+			subDefKey = #{subDefKey, jdbcType=VARCHAR},
+			subDefName = #{subDefName, jdbcType=VARCHAR},
+			subActDefId = #{subActDefId, jdbcType=VARCHAR},
+			jsonmaping = #{jsonmaping, jdbcType=VARCHAR},
+			triggerJson = #{triggerJson, jdbcType=VARCHAR},
+			description = #{description, jdbcType=VARCHAR},
+			sn = #{sn,jdbcType=NUMERIC}
+		WHERE Id = #{Id}
+	</update>
+	
+	<delete id="delById">
+		DELETE FROM ucp_sub_processs WHERE Id = #{Id}
+	</delete>
+
+	<select id="getAll" resultMap="subProcess">
+		SELECT <include refid="columns" />
+		FROM ucp_sub_processs sp
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sp.sn ASC
+		</if>
+	</select>
+
+	<select id="getBySceneId" resultMap="subProcess">
+		SELECT <include refid="columns" />
+		FROM ucp_sub_processs sp
+		WHERE sp.sceneId = #{sceneId}
+		ORDER BY sp.sn ASC
+	</select>
+
+	<select id="getBySceneIdAndDefId" parameterType="java.util.Map" resultMap="subProcess">
+		SELECT <include refid="columns" />
+		FROM ucp_sub_processs sp
+		WHERE sp.sceneId = #{sceneId} AND sp.subDefId=#{subDefId}
+		ORDER BY sp.sn ASC
+	</select>
+
+	<select id="getById" resultMap="subProcess">
+		SELECT <include refid="columns" />
+		FROM ucp_sub_processs sp
+		WHERE sp.Id = #{Id}
+		ORDER BY sp.sn ASC
+	</select>
+
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.AttendanceVacation">
+	<resultMap id="AttendanceVacation" type="com.suneee.kaoqin.model.kaoqin.AttendanceVacation">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="code" column="code_" jdbcType="VARCHAR"/>
+		<result property="name" column="name_" jdbcType="VARCHAR"/>
+		<result property="unit" column="unit_" jdbcType="NUMERIC"/>
+		<result property="yearLimit" column="year_limit" jdbcType="NUMERIC"/>
+		<result property="minApply" column="min_apply" jdbcType="NUMERIC"/>
+		<result property="validTime" column="valid_time" jdbcType="NUMERIC"/>
+		<result property="assignLimit" column="assign_limit" jdbcType="NUMERIC"/>
+		<result property="sysDef" column="sys_def" jdbcType="NUMERIC"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+		<result property="allowOver" column="allow_over" jdbcType="NUMERIC"/>
+		<result property="overLimit" column="over_limit" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,code_,name_,unit_,year_limit,min_apply,valid_time,assign_limit,sys_def,status_,createBy,createtime,allow_over,over_limit
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(code)"> AND code_  LIKE #{code}  </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name_  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(unit)"> AND unit_  =#{unit} </if>
+			<if test="@Ognl@isNotEmpty(yearLimit)"> AND year_limit  =#{yearLimit} </if>
+			<if test="@Ognl@isNotEmpty(minApply)"> AND min_apply  =#{minApply} </if>
+			<if test="@Ognl@isNotEmpty(validTime)"> AND valid_time  =#{validTime} </if>
+			<if test="@Ognl@isNotEmpty(assignLimit)"> AND assign_limit  =#{assignLimit} </if>
+			<if test="@Ognl@isNotEmpty(sysDef)"> AND sys_def  =#{sysDef} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND allowOver  =#{allow_over} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND overLimit  =#{over_limit} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceVacation">
+		INSERT INTO se_attendance_vacation
+		(id_,code_,name_,unit_,year_limit,min_apply,valid_time,assign_limit,sys_def,status_,createBy,createtime,allow_over,over_limit)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{unit,jdbcType=NUMERIC}, #{yearLimit,jdbcType=NUMERIC}, #{minApply,jdbcType=NUMERIC}, #{validTime,jdbcType=NUMERIC}, #{assignLimit,jdbcType=NUMERIC}, #{sysDef,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE}, #{allowOver,jdbcType=NUMERIC}, #{overLimit,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_attendance_vacation 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceVacation">
+		UPDATE se_attendance_vacation SET
+		code_=#{code,jdbcType=VARCHAR}, 
+		name_=#{name,jdbcType=VARCHAR},
+		unit_=#{unit,jdbcType=NUMERIC},
+		year_limit=#{yearLimit,jdbcType=NUMERIC},
+		min_apply=#{minApply,jdbcType=NUMERIC},
+		valid_time=#{validTime,jdbcType=NUMERIC},
+		assign_limit=#{assignLimit,jdbcType=NUMERIC},
+		allow_over=#{allowOver,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AttendanceVacation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_vacation
+		WHERE
+		id_=#{id}
+	</select>
+		    
+	<select id="getVacationByCode" parameterType="java.lang.String" resultMap="AttendanceVacation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_vacation
+		WHERE
+		code_=#{code}
+	</select>
+	
+	<select id="getAll" resultMap="AttendanceVacation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_vacation   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	<select id="checkRepeat" resultMap="AttendanceVacation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_vacation
+		WHERE
+		name_ =#{name}
+		<if test="@Ognl@isNotEmpty(id)"> AND id_  != #{id} </if>
+	</select>
+	
+	<select id="getAllByRemain"  resultType="com.suneee.kaoqin.model.kaoqin.AttendanceVacation">
+		SELECT av.name_ as name from se_attendance_vacation av 
+		ORDER BY av.id_ DESC
+	</select>
+</mapper>

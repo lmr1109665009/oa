@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.PwdStrategy">
+	<resultMap id="PwdStrategy" type="com.suneee.platform.model.system.PwdStrategy">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="initPwd" column="INIT_PWD" jdbcType="VARCHAR"/>
+		<result property="forceChangeInitPwd" column="FORCE_CHANGE_INIT_PWD" jdbcType="NUMERIC"/>
+		<result property="pwdRule" column="PWD_RULE" jdbcType="NUMERIC"/>
+		<result property="pwdLength" column="PWD_LENGTH" jdbcType="NUMERIC"/>
+		<result property="validity" column="VALIDITY" jdbcType="NUMERIC"/>
+		<result property="handleOverdue" column="HANDLE_OVERDUE" jdbcType="NUMERIC"/>
+		<result property="overdueRemind" column="OVERDUE_REMIND" jdbcType="NUMERIC"/>
+		<result property="verifyCodeAppear" column="VERIFY_CODE_APPEAR" jdbcType="NUMERIC"/>
+		<result property="errLockAccount" column="ERR_LOCK_ACCOUNT" jdbcType="NUMERIC"/>
+		<result property="enable" column="ENABLE_" jdbcType="NUMERIC"/>
+		<result property="desc" column="DESC_" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,INIT_PWD,FORCE_CHANGE_INIT_PWD,PWD_RULE,PWD_LENGTH,VALIDITY,HANDLE_OVERDUE,OVERDUE_REMIND,VERIFY_CODE_APPEAR,ERR_LOCK_ACCOUNT,ENABLE_,DESC_
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(initPwd)"> AND INIT_PWD  LIKE #{initPwd}  </if>
+			<if test="@Ognl@isNotEmpty(forceChangeInitPwd)"> AND FORCE_CHANGE_INIT_PWD  =#{forceChangeInitPwd} </if>
+			<if test="@Ognl@isNotEmpty(pwdRule)"> AND PWD_RULE  =#{pwdRule} </if>
+			<if test="@Ognl@isNotEmpty(pwdLength)"> AND PWD_LENGTH  =#{pwdLength} </if>
+			<if test="@Ognl@isNotEmpty(validity)"> AND VALIDITY  =#{validity} </if>
+			<if test="@Ognl@isNotEmpty(handleOverdue)"> AND HANDLE_OVERDUE  =#{handleOverdue} </if>
+			<if test="@Ognl@isNotEmpty(overdueRemind)"> AND OVERDUE_REMIND  =#{overdueRemind} </if>
+			<if test="@Ognl@isNotEmpty(verifyCodeAppear)"> AND VERIFY_CODE_APPEAR  =#{verifyCodeAppear} </if>
+			<if test="@Ognl@isNotEmpty(errLockAccount)"> AND ERR_LOCK_ACCOUNT  =#{errLockAccount} </if>
+			<if test="@Ognl@isNotEmpty(enable)"> AND ENABLE_  =#{enable} </if>
+			<if test="@Ognl@isNotEmpty(desc)"> AND DESC_  LIKE #{desc}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.PwdStrategy">
+		INSERT INTO sys_pwd_strategy
+		(ID,INIT_PWD,FORCE_CHANGE_INIT_PWD,PWD_RULE,PWD_LENGTH,VALIDITY,HANDLE_OVERDUE,OVERDUE_REMIND,VERIFY_CODE_APPEAR,ERR_LOCK_ACCOUNT,ENABLE_,DESC_)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{initPwd,jdbcType=VARCHAR}, #{forceChangeInitPwd,jdbcType=NUMERIC}, #{pwdRule,jdbcType=NUMERIC}, #{pwdLength,jdbcType=NUMERIC}, #{validity,jdbcType=NUMERIC}, #{handleOverdue,jdbcType=NUMERIC}, #{overdueRemind,jdbcType=NUMERIC}, #{verifyCodeAppear,jdbcType=NUMERIC}, #{errLockAccount,jdbcType=NUMERIC}, #{enable,jdbcType=NUMERIC}, #{desc,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_pwd_strategy 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.PwdStrategy">
+		UPDATE sys_pwd_strategy SET
+		INIT_PWD=#{initPwd,jdbcType=VARCHAR},
+		FORCE_CHANGE_INIT_PWD=#{forceChangeInitPwd,jdbcType=NUMERIC},
+		PWD_RULE=#{pwdRule,jdbcType=NUMERIC},
+		PWD_LENGTH=#{pwdLength,jdbcType=NUMERIC},
+		VALIDITY=#{validity,jdbcType=NUMERIC},
+		HANDLE_OVERDUE=#{handleOverdue,jdbcType=NUMERIC},
+		OVERDUE_REMIND=#{overdueRemind,jdbcType=NUMERIC},
+		VERIFY_CODE_APPEAR=#{verifyCodeAppear,jdbcType=NUMERIC},
+		ERR_LOCK_ACCOUNT=#{errLockAccount,jdbcType=NUMERIC},
+		ENABLE_=#{enable,jdbcType=NUMERIC},
+		DESC_=#{desc,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+	
+	<update id="updateEnable">
+		UPDATE sys_pwd_strategy SET
+		ENABLE_=#{enable,jdbcType=NUMERIC}
+		<if test="@Ognl@isNotEmpty(ids)"> 
+			WHERE
+			ID in <foreach collection="ids" index="index" item="id" open="(" close=")" separator=",">
+				#{id}
+			</foreach>
+		</if>
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="PwdStrategy">
+		SELECT <include refid="columns"/>
+		FROM sys_pwd_strategy
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="PwdStrategy">
+		SELECT <include refid="columns"/>
+		FROM sys_pwd_strategy   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<select id="getByEnable" resultMap="PwdStrategy">
+		SELECT <include refid="columns"/>
+		FROM sys_pwd_strategy
+		WHERE
+		ENABLE_=#{enable}
+	</select>
+	
+</mapper>

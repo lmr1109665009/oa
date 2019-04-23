@@ -1,0 +1,12 @@
+version: '3'
+services:
+  eureka-server:
+    image: suneee/eureka-server
+    container_name: eureka-server
+    hostname: eureka-server
+    ports:
+      - 8000:8000
+networks:
+  default:
+    external:
+      name: app_net

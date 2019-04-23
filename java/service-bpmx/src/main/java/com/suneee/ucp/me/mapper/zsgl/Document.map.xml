@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.ucp.me.model.Document">
+
+	<sql id="documentColumns">
+		a.ID as 'id',
+		a.NAME as 'name',
+		a.DOCTYPE_ID as 'docTypeId',
+		b.TYPE_NAME as 'docTypeName',
+		a.TYPES as 'types',
+		a.SIZE as 'size',
+		a.PATH as 'path',
+		a.UPTIME as
+		'upTime',
+		a.UPER as 'uper',
+		a.UPERNAME as
+		'uperName',
+		a.ADESCRIBE as 'describe',
+		a.RANK as 'rank',
+		a.DOWNNUMBER as
+		'downNumber',
+		a.FILE_SAVE_ID as fileSaveId		
+	</sql>
+
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(name)"> AND a.NAME LIKE CONCAT(CONCAT('%',#{name}),'%') </if>
+			<if test="@Ognl@isNotEmpty(docTypeId)"> AND a.DOCTYPE_ID =#{docTypeId} </if>
+			<if test="@Ognl@isNotEmpty(allDoctypeIds)"> AND a.DOCTYPE_ID IN (${allDoctypeIds})</if>
+			<if test="@Ognl@isNotEmpty(uper)"> AND a.UPER =#{uper} </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.eid =#{eid} </if>		
+			<if test="@Ognl@isNotEmpty(privateFlag) and privateFlag==0"> AND b.IS_PRIVATE =0 </if>
+			<if test="@Ognl@isNotEmpty(bDate) and @Ognl@isNotEmpty(eDate)"> AND a.UPTIME BETWEEN #{bDate} and #{eDate} </if>
+		</where>
+	</sql>
+
+	<sql id="sqlJoin">
+		LEFT JOIN UCP_DOCTYPE b on a.DOCTYPE_ID = b.ID
+	</sql>
+
+	<!-- 查询 -->
+
+	<select id="getAll" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+	</select>
+
+	<!-- 前台模糊查询 -->
+	<select id="getAllFront" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+	</select>
+	
+	<!-- 前台模糊查询 -->
+	<select id="getFrontSaveFileList" parameterType="long" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhere" />
+		and a.FILE_SAVE_ID is not NUll
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+	</select>
+
+	<select id="getById" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		WHERE
+		a.ID = #{id}
+	</select>
+	
+	<select id="queryFileById" parameterType="Document" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		WHERE
+		a.FILE_SAVE_ID = #{fileSaveId}
+		and a.UPER = #{uper}
+	</select>
+
+	<select id="getByDocType" resultType="Document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM UCP_DOCUMENT a
+		<include refid="sqlJoin" />
+		WHERE
+		a.DOCTYPE_ID = #{id}
+	</select>
+	<!-- 新增 -->
+	<insert id="add" parameterType="Document">
+		INSERT INTO UCP_DOCUMENT 
+		(ID ,
+		NAME ,
+		DOCTYPE_ID ,
+		TYPES,
+		SIZE,
+		PATH,
+		UPTIME,
+		UPER,
+		UPERNAME,
+		ADESCRIBE,
+		RANK,
+		DOWNNUMBER,
+		FILE_SAVE_ID,
+		EID
+		) VALUES
+		(
+		#{id},
+		#{name},
+		#{docTypeId},
+		#{types},
+		#{size},
+		#{path},
+		#{upTime},
+		#{uper},
+		#{uperName},
+		#{describe},
+		#{rank},
+		0,
+		#{fileSaveId},
+		#{eid}
+		)
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update">
+		UPDATE UCP_DOCUMENT  SET
+		NAME =#{name},
+		DOCTYPE_ID =#{docTypeId},
+		TYPES =#{types},
+		ADESCRIBE=#{describe}
+		WHERE
+		ID = #{id}
+	</update>
+	
+	<update id="updateDownNumber">
+		UPDATE UCP_DOCUMENT  SET
+		DOWNNUMBER = DOWNNUMBER+1
+		WHERE
+		ID = #{id}
+	</update>	
+
+	<!-- 删除 -->
+	<delete id="delById">
+		DELETE FROM UCP_DOCUMENT WHERE ID=#{ID}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM UCP_DOCUMENT WHERE ID IN
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<!--计算相同命名重复数量-->
+	<select id="countNameRepetition" resultType="integer">
+		SELECT count(*)
+		FROM UCP_DOCUMENT a
+		WHERE
+		a.DOCTYPE_ID = #{docTypeId} AND a.NAME=#{name}
+		<if test="id!=null">
+			<![CDATA[AND a.ID <> #{id}]]>
+		</if>
+	</select>
+
+</mapper>

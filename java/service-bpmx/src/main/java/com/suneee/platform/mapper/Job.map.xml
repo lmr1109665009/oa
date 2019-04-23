@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.Job">
+	<resultMap id="Job" type="com.suneee.platform.model.system.Job">
+		<id property="jobid" column="JOBID" jdbcType="NUMERIC"/>
+		<result property="jobname" column="JOBNAME" jdbcType="VARCHAR"/>
+		<result property="jobcode" column="JOBCODE" jdbcType="VARCHAR"/>
+		<result property="jobdesc" column="JOBDESC" jdbcType="VARCHAR"/>
+		<result property="setid" column="SETID" jdbcType="NUMERIC"/>
+		<result property="isdelete" column="ISDELETE" jdbcType="NUMERIC"/>
+		<result property="grade" column="GRADE" jdbcType="NUMERIC"/>
+		<result property="gradeName" column="gradeName" jdbcType="VARCHAR"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR" />
+		<result property="enterpriseName" column="enterprise_name" jdbcType="VARCHAR" />
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="createby" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="updateby" jdbcType="NUMERIC"/>
+		<result property="jobCategory" column="jobCategory" jdbcType="NUMERIC"/>
+		<result property="jobCategoryName" column="jobCategoryName" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		JOBID,JOBNAME,JOBCODE,JOBDESC,SETID,ISDELETE,GRADE,enterprise_code,createtime,
+		createby, updatetime, updateby, jobCategory
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(jobid)"> AND JOBID  =#{jobid} </if>
+			<if test="@Ognl@isNotEmpty(jobname)"> AND JOBNAME  LIKE #{jobname}  </if>
+			<if test="@Ognl@isNotEmpty(jobcode)"> AND JOBCODE  LIKE #{jobcode}  </if>
+			<if test="@Ognl@isNotEmpty(jobdesc)"> AND JOBDESC  LIKE #{jobdesc}  </if>
+			<if test="@Ognl@isNotEmpty(searchCondition)"> 
+				AND (JOBNAME  LIKE #{searchCondition} OR dic.ITEMNAME LIKE #{searchCondition})
+			</if>
+			<if test="@Ognl@isNotEmpty(setid)"> AND SETID  =#{setid} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCodes)">
+				AND enterprise_code IN
+				<foreach collection="enterpriseCodes" item="enterpriseCode"  open="(" separator="," close=")">
+					#{enterpriseCode}
+				</foreach>
+			</if>
+			and isdelete=0
+			<!-- 
+			<if test="@Ognl@isNotEmpty(isdelete)"> AND ISDELETE  =#{isdelete} </if>
+			 -->
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.Job">
+		INSERT INTO SYS_JOB
+		(JOBID,JOBNAME,JOBCODE,JOBDESC,SETID,ISDELETE,GRADE,enterprise_code,createtime, 
+		createby, updatetime, updateby, jobCategory)
+		VALUES
+		(#{jobid,jdbcType=NUMERIC}, #{jobname,jdbcType=VARCHAR}, #{jobcode,jdbcType=VARCHAR}, 
+		#{jobdesc,jdbcType=VARCHAR}, #{setid,jdbcType=NUMERIC}, #{isdelete,jdbcType=NUMERIC},
+		#{grade,jdbcType=NUMERIC}, #{enterpriseCode, jdbcType=VARCHAR},
+		#{createtime, jdbcType=TIMESTAMP}, #{createBy, jdbcType=NUMERIC}, #{updatetime, jdbcType=TIMESTAMP}, 
+		#{updateBy, jdbcType=NUMERIC}, #{jobCategory, jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_JOB 
+		WHERE
+		JOBID=#{jobid}
+	</delete>
+	
+	<!--不能删除组织类数据,应修改删除标志  -->
+	<update id="deleteByUpdateFlag" parameterType="com.suneee.platform.model.system.Job">
+		UPDATE SYS_JOB set 
+			isdelete = 1,
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby = #{updateBy, jdbcType=NUMERIC}
+		WHERE JOBID=#{jobid}
+	</update>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.Job">
+		UPDATE SYS_JOB SET
+			JOBNAME=#{jobname,jdbcType=VARCHAR},
+			JOBCODE=#{jobcode,jdbcType=VARCHAR},
+			JOBDESC=#{jobdesc,jdbcType=VARCHAR},
+			SETID=#{setid,jdbcType=NUMERIC},
+			ISDELETE=#{isdelete,jdbcType=NUMERIC},
+			GRADE=#{grade,jdbcType=NUMERIC},
+			enterprise_code=#{enterpriseCode, jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby = #{updateBy, jdbcType=NUMERIC},
+			jobCategory = #{jobCategory, jdbcType=NUMERIC}
+		WHERE JOBID=#{jobid}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="Job">
+		SELECT job.JOBID,job.JOBNAME,job.JOBCODE,job.JOBDESC,job.SETID,job.ISDELETE,job.GRADE,job.enterprise_code,
+			job.createtime, job.createby, job.updatetime, job.updateby,job.jobCategory, dic.ITEMNAME AS gradeName, dic1.ITEMNAME AS jobCategoryName, ei.comp_name AS enterprise_name
+		FROM SYS_JOB job
+		LEFT JOIN sys_dic dic ON job.GRADE = dic.ITEMVALUE AND job.enterprise_code = dic.eid and dic.TYPEID = (select typeid from sys_gl_type tp where tp.catKey = 'DIC' AND tp.nodeKey = 'zwjb' and enterprise_code = dic.eid)
+        LEFT JOIN sys_dic dic1 ON job.jobCategory = dic1.ITEMVALUE AND job.enterprise_code = dic1.eid and dic1.TYPEID = (select typeid from sys_gl_type tp1 where tp1.catKey = 'DIC' AND tp1.nodeKey = 'zwlb' and enterprise_code=dic1.eid)
+		LEFT JOIN ucp_enterprise_info ei ON ei.comp_code=job.enterprise_code
+		WHERE
+		JOBID=#{jobid}
+	</select>
+	
+	<select id="getByJobCode" parameterType="java.lang.String" resultMap="Job">
+		SELECT <include refid="columns"/>
+		FROM SYS_JOB
+		WHERE
+		JOBCODE=#{jobCode}  AND isdelete=0
+	</select>
+	
+	<select id="getByJobCodeForUpd" parameterType="java.util.Map" resultMap="Job">
+		SELECT <include refid="columns"/>
+		FROM SYS_JOB
+		WHERE
+		JOBCODE=#{jobCode} AND JOBID!=#{jobid} AND isdelete=0
+	</select>
+	
+	<select id="getAll" resultMap="Job">
+		SELECT job.JOBID,job.JOBNAME,job.JOBCODE,job.JOBDESC,job.SETID,job.ISDELETE,job.GRADE,job.enterprise_code,
+			job.createtime, job.createby, job.updatetime, job.updateby,job.jobCategory, dic.ITEMNAME AS gradeName, dic1.ITEMNAME AS jobCategoryName, ei.comp_name AS enterprise_name
+		FROM SYS_JOB job
+        LEFT JOIN sys_dic dic ON job.GRADE = dic.ITEMVALUE AND job.enterprise_code = dic.eid and dic.TYPEID = (select typeid from sys_gl_type tp where tp.catKey = 'DIC' AND tp.nodeKey = 'zwjb' and enterprise_code = dic.eid)
+        LEFT JOIN sys_dic dic1 ON job.jobCategory = dic1.ITEMVALUE AND job.enterprise_code = dic1.eid and dic1.TYPEID = (select typeid from sys_gl_type tp1 where tp1.catKey = 'DIC' AND tp1.nodeKey = 'zwlb' and enterprise_code=dic1.eid)
+        LEFT JOIN ucp_enterprise_info ei ON ei.comp_code=job.enterprise_code
+		<where>
+		<if test="@Ognl@isNotEmpty(jobid)"> AND JOBID  =#{jobid} </if>
+		<if test="@Ognl@isNotEmpty(jobname)"> AND JOBNAME  LIKE #{jobname}  </if>
+		<if test="@Ognl@isNotEmpty(jobcode)"> AND JOBCODE  LIKE #{jobcode}  </if>
+		<if test="@Ognl@isNotEmpty(jobdesc)"> AND JOBDESC  LIKE #{jobdesc}  </if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND job.enterprise_code = #{enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (JOBNAME  LIKE #{searchCondition} OR dic.ITEMNAME LIKE #{searchCondition})
+		</if>
+		<if test="@Ognl@isNotEmpty(setid)"> AND SETID  =#{setid} </if>
+		<if test="grade != null and grade != ''">
+			AND job.grade = #{grade}
+		</if>
+		and isdelete=0
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by GRADE ASC ,job.jobid DESC
+		</if>
+	</select>
+	
+	<!-- 根据用户获取职务列表 -->
+	<select id="getByUserId" parameterType="java.lang.Long"  resultType="com.suneee.platform.model.system.Job">
+     SELECT *
+       from Sys_job j
+      inner join sys_pos p
+         on p.jobid = j.jobid
+      inner join sys_user_pos up
+         on p.posid = up.posid
+      where up.userId = #{userId}
+      AND j.isdelete=0
+	</select>
+	
+	<!-- 判断职务名称是否存在 -->
+	<select id="isExistJobCode" resultType="int">
+	  SELECT count(*) amount FROM SYS_JOB WHERE JOBCODE=#{jobCode} AND isdelete=0
+	</select>
+	
+	<select id="isExistJobCodeForUpd" resultType="int">
+	  SELECT count(*) amount FROM SYS_JOB where JOBCODE=#{jobCode} and JOBID!=#{jobid} AND isdelete=0
+	</select>
+	
+	<!-- 获取用户企业下的最高职务分类级别（数值越小，级别越高） -->
+    <select id="getMaxCategoryByUidAndEcode" parameterType="java.util.Map" resultType="Long">
+    	SELECT min(jobCategory) FROM Sys_job j
+      	INNER JOIN sys_pos p ON p.jobid = j.jobid AND p.isdelete=0
+      	INNER JOIN sys_user_pos up ON p.posid = up.posid AND up.isdelete=0
+      	WHERE up.userId = #{userId} AND j.enterprise_code=#{enterpriseCode} AND j.isdelete=0
+    </select>
+</mapper>

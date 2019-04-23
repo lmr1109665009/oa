@@ -1,0 +1,134 @@
+package com.suneee.platform.model.ats;
+
+import com.suneee.core.model.BaseModel;
+
+/**
+ * 对象功能:假期类型 Model对象 开发公司:广州宏天软件有限公司 开发人员:zxh 创建时间:2015-05-16 20:47:17
+ */
+public class AtsHolidayType extends BaseModel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4866661685652076339L;
+	// 主键
+	protected Long id;
+	// 编码
+	protected String code;
+	// 名称
+	protected String name;
+	// 是否系统预置
+	protected Short isSys = AtsConstant.NO;
+	// 状态
+	protected Short status = AtsConstant.YES;
+	// 描述
+	protected String memo;
+	//是否异常----0:正常;-1:异常
+	protected Short abnormity;
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * 返回 主键
+	 * 
+	 * @return
+	 */
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * 返回 编码
+	 * 
+	 * @return
+	 */
+	public String getCode() {
+		return this.code;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 返回 名称
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	public void setIsSys(Short isSys) {
+		this.isSys = isSys;
+	}
+
+	/**
+	 * 返回 是否系统预置
+	 * 
+	 * @return
+	 */
+	public Short getIsSys() {
+		return this.isSys;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	/**
+	 * 返回 状态
+	 * 
+	 * @return
+	 */
+	public Short getStatus() {
+		return this.status;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	/**
+	 * 返回 描述
+	 * 
+	 * @return
+	 */
+	public String getMemo() {
+		return this.memo;
+	}
+	
+	/**
+	 * abnormity
+	 * @return  the abnormity
+	 * @since   1.0.0
+	 */
+	
+	public Short getAbnormity() {
+		return abnormity;
+	}
+
+	/**
+	 * @param abnormity the abnormity to set
+	 */
+	public void setAbnormity(Short abnormity) {
+		this.abnormity = abnormity;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	public boolean equals(Object object) {
+		if (!(object instanceof AtsHolidayType)) {
+			return false;
+		}
+		AtsHolidayType rhs = (AtsHolidayType) object;
+		return this.getId()==rhs.getId();
+	}
+
+}

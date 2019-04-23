@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[BPM] %-d{yyyy-MM-dd HH:mm:ss} %p [%t] %c{1}.%M(%L) | %m%n"/>
+        </Console>
+        <File name="MqttLogFile" fileName="/logs/eas/mqtt.log" append="false">
+            <PatternLayout pattern="[BPM] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <File name="ExternalLogFile" fileName="/logs/eas/external.log" append="false">
+            <PatternLayout pattern="[BPM] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <File name="AppErrorFile" fileName="/logs/eas/app_error.log" append="false">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="warm" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[BPM] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="AppLogFile" fileName="/logs/eas/app.log"
+                     filePattern="/logs/eas/$${date:yyyy-MM}/bpmx-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="[BPM] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+            <SizeBasedTriggeringPolicy size="5MB"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!--异步打印日志-->
+        <AsyncRoot level="info">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppLogFile" />
+            <appender-ref ref="AppErrorFile" />
+        </AsyncRoot>
+        <AsyncLogger name="java.sql" level="debug" includeLocation="true">
+            <appender-ref ref="AppLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="com.suneee" level="debug" includeLocation="true">
+            <appender-ref ref="AppLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="org.apache.ibatis" level="debug" includeLocation="true">
+            <appender-ref ref="AppLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="com.suneee.core.web.filter" level="debug" includeLocation="true">
+            <appender-ref ref="AppLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="com.suneee.core.web.servlet.SpringMvcServlet" level="debug" includeLocation="true">
+            <appender-ref ref="AppLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="httplog" level="debug" includeLocation="true">
+            <appender-ref ref="ExternalLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="mqttlog" level="debug" includeLocation="true">
+            <appender-ref ref="MqttLogFile" />
+        </AsyncLogger>
+    </Loggers>
+</Configuration>

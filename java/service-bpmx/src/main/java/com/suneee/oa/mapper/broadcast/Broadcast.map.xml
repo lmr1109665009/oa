@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.oa.model.broadcast.Broadcast">
+    <resultMap id="Broadcast" type="com.suneee.oa.model.broadcast.Broadcast">
+        <id property="id" column="id" jdbcType="NUMERIC"/>
+        <result property="topic" column="topic" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="doc" column="doc" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="NUMERIC"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+        <result property="sn" column="sn" jdbcType="NUMERIC"/>
+        <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
+        <result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+        <result property="enterpriseName" column="enterprise_name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="columns">
+        id,topic,url,doc,time,remarks,status,sn,enterprise_code,enterprise_name,attachment
+    </sql>
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(id)"> AND id=#{id}</if>
+            <if test="@Ognl@isNotEmpty(topic)"> AND topic=#{topic}</if>
+            <if test="@Ognl@isNotEmpty(status)"> AND status=#{status}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">
+                AND enterprise_code = #{enterpriseCode}
+            </if>
+            <if test="@Ognl@isNotEmpty(searchCondition)">
+                AND (typeKey LIKE #{searchCondition} OR topic LIKE #{searchCondition} OR doc LIKE #{searchCondition})
+            </if>
+        </where>
+    </sql>
+    <select id="getAll" resultMap="Broadcast">
+        SELECT  <include refid="columns"/>
+        FROM  SYS_BROADCAST
+        <include refid="dynamicWhere"/>
+        order by status DESC,create_time DESC
+    </select>
+    <insert id="add" parameterType="com.suneee.oa.model.broadcast.Broadcast">
+        INSERT INTO SYS_BROADCAST
+        (<include refid="columns"/>)
+        VALUES
+        (#{id,jdbcType=NUMERIC}, #{topic,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+        #{doc,jdbcType=VARCHAR},#{time,jdbcType=NUMERIC}, #{remarks,jdbcType=VARCHAR},
+        #{status,jdbcType=NUMERIC},#{sn,jdbcType=NUMERIC},#{enterpriseCode,jdbcType=VARCHAR},
+        #{enterpriseName,jdbcType=VARCHAR},#{attachment,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="com.suneee.oa.model.broadcast.Broadcast">
+        UPDATE SYS_BROADCAST
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topic!=null">
+                topic=#{topic,jdbcType=VARCHAR},
+            </if>
+            <if test="url!=null">
+                url=#{url,jdbcType=VARCHAR},
+            </if>
+            <if test="doc!=null">
+                doc=#{doc,jdbcType=VARCHAR},
+            </if>
+            <if test="time!=null">
+                time=#{time,jdbcType=NUMERIC},
+            </if>
+            <if test="sn!=null">
+                sn=#{sn,jdbcType=NUMERIC},
+            </if>
+            <if test="remarks!=null">
+                remarks=#{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="status!=null">
+                status=#{status,jdbcType=NUMERIC},
+            </if>
+            <if test="enterpriseCode!=null">
+                enterprise_code=#{enterpriseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseName!=null">
+                enterprise_name=#{enterpriseName,jdbcType=VARCHAR},
+            </if>
+            <if test="attachment!=null">
+                attachment=#{attachment,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+        WHERE
+        id=#{id}
+    </update>
+    <delete id="delById" parameterType="java.lang.Long">
+        DELETE FROM SYS_BROADCAST
+		WHERE
+		id=#{id}
+    </delete>
+    <select id="getById" parameterType="java.lang.Long" resultMap="Broadcast">
+        SELECT <include refid="columns"/>
+        FROM SYS_BROADCAST WHERE id=#{id}
+    </select>
+    <select id="getByStatus" parameterType="java.lang.Long" resultMap="Broadcast">
+        SELECT <include refid="columns"/>
+        FROM SYS_BROADCAST WHERE status=1 AND enterprise_code=#{enterpriseCode}
+        order by sn
+    </select>
+</mapper>

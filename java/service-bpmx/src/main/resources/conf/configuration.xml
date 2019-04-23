@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<properties resource="conf/app.properties"></properties>  
+	<settings >
+		<setting name="cacheEnabled" value="false"/>
+		<setting name="logImpl" value="LOG4J2" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.suneee.ucp.me.model.DocType" alias="DocType"/>
+		<typeAlias type="com.suneee.ucp.me.model.Document" alias="Document"/>
+		<typeAlias type="com.suneee.oa.model.docFile.DocFile" alias="DocFile"/>
+	</typeAliases>
+
+	<plugins>
+		<plugin interceptor="com.suneee.core.mybatis.OffsetLimitInterceptor">
+			<property name="jdbc.dbType" value="${jdbc.dbType}"/>
+			<property name="Dialect.oracle" value="com.suneee.core.mybatis.dialect.OracleDialect"/>
+			<property name="Dialect.mssql" value="com.suneee.core.mybatis.dialect.SQLServer2005Dialect"/>
+			<property name="Dialect.mysql" value="com.suneee.core.mybatis.dialect.MySQLDialect"/>
+			<property name="Dialect.db2" value="com.suneee.core.mybatis.dialect.DB2Dialect"/>
+			<property name="Dialect.h2" value="com.suneee.core.mybatis.dialect.H2Dialect"/>
+			<property name="Dialect.dm" value="com.suneee.core.mybatis.dialect.DmDialect"/>
+		</plugin>
+	</plugins>
+</configuration>

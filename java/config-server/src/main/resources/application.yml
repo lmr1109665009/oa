@@ -1,0 +1,69 @@
+spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+    time-zone: GMT+8
+  # 分布式session配置
+  session:
+    timeout: 43200s
+  #定时器配置
+  quartz:
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: qrtz_
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    #数据库方式
+    job-store-type: jdbc
+
+#分布式id
+id:
+  workerId: 1
+  datacenterId: 0
+
+#文件上传下载配置
+uploader:
+  type: minio
+  minio:
+    bucket: suneee
+    url: http://172.19.7.102
+    port: 9000
+    accessKey: suneee
+    secretKey: suneeeminio
+    urlExpire: 86400
+  localFs:
+    storePath: /opt/data/eas
+    url: http://dev.suneee.com/store
+  s3:
+    host: http://172.19.7.102
+    port: 9000
+    region: cn-north-1
+    accessKey: suneee
+    secretKey: suneeeminio
+    singer: AWSS3V4SignerType
+    bucket:
+      lhy: lhy
+      xy: suneee
+      yn: yn
+    urlExpire: 60
+
+#系统配置
+system:
+  #姓名模式，alias为字号模式，其他为姓名模式
+  username-mode: alias
+
+

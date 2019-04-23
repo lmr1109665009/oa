@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.mail.OutMailLinkman">
+	<resultMap id="OutMailLinkman" type="com.suneee.platform.model.mail.OutMailLinkman">
+		<id property="linkId" column="linkId" jdbcType="NUMERIC"/>
+		<result property="mailId" column="mailId" jdbcType="NUMERIC"/>
+		<result property="userId" column="userId" jdbcType="NUMERIC"/>
+		<result property="sendTime" column="sendTime" jdbcType="TIMESTAMP"/>
+		<result property="sendTimes" column="sendTimes" jdbcType="NUMERIC"/>
+		<result property="linkName" column="linkName" jdbcType="VARCHAR"/>
+		<result property="linkAddress" column="linkAddress" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		linkId,mailId,userId,sendTime,linkName,linkAddress,sendTimes
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>	
+			<if test="@Ognl@isNotEmpty(mailId)"> AND mailId  =#{mailId} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND userId  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(linkName)"> AND linkName  LIKE #{linkName}  </if>
+			<if test="@Ognl@isNotEmpty(linkAddress)"> AND linkAddress  LIKE #{linkAddress}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.mail.OutMailLinkman">
+		INSERT INTO OUT_MAIL_LINKMAN
+		(linkId,mailId,userId,sendTime,linkName,linkAddress,sendTimes)
+		VALUES
+		(#{linkId,jdbcType=NUMERIC}, #{mailId,jdbcType=NUMERIC},#{userId,jdbcType=NUMERIC}, #{sendTime,jdbcType=TIMESTAMP}, #{linkName,jdbcType=VARCHAR}, #{linkAddress,jdbcType=VARCHAR},#{sendTimes,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM OUT_MAIL_LINKMAN 
+		WHERE
+		linkId=#{linkId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.mail.OutMailLinkman">
+		UPDATE OUT_MAIL_LINKMAN SET
+		mailId=#{mailId,jdbcType=NUMERIC} , 
+		userId=#{userId,jdbcType=NUMERIC} , 
+		sendTime=#{sendTime,jdbcType=TIMESTAMP} , 
+		sendTimes=#{sendTimes,jdbcType=NUMERIC},
+		linkName=#{linkName,jdbcType=VARCHAR} , 
+		linkAddress=#{linkAddress,jdbcType=VARCHAR} 
+		WHERE
+		linkId=#{linkId}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN
+		WHERE
+		linkId=#{linkId}
+	</select>
+	
+	<select id="getAll" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)"> 
+		order by linkId  desc
+		</if>
+	</select>
+	
+	<select id="findLinkMan" resultMap="OutMailLinkman" parameterType="java.util.Map">
+		SELECT *
+		FROM OUT_MAIL_LINKMAN
+		WHERE
+		linkAddress=#{linkAddress} AND userId=#{userId}
+	</select>
+	
+	<!-- start dialect  -->
+	
+	
+	<select id="getAllByUserId_oracle" parameterType="java.util.Map" resultMap="OutMailLinkman">
+		SELECT * FROM (
+		SELECT * FROM OUT_MAIL_LINKMAN 
+		<if test="@Ognl@equals(condition,'sortingByTimes')">
+		    order by sendTimes  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'sortingByLasttime')">
+		    order by sendTime  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'initTree')">
+		    order by sendTime  DESC
+		</if>
+		) WHERE userId=#{userId} 
+	</select> 
+			
+	<select id="getAllByUserId_dm" parameterType="java.lang.Long" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN
+		WHERE userId=#{userId} and <![CDATA[rownum <= 10 ]]>
+		order by sendTimes  DESC, sendTime  DESC
+	</select>
+	
+	<select id="getAllByUserId_mysql" parameterType="java.util.Map" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN 
+		WHERE userId=#{userId} 
+		<if test="@Ognl@equals(condition,'sortingByTimes')">
+		    order by sendTimes  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'sortingByLasttime')">
+		    order by sendTime  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'initTree')">
+		    order by sendTime  DESC
+		</if>
+	</select>
+	
+	<select id="getAllByUserId_db2" parameterType="String" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN
+	 	FETCH FIRST 10 ROWS ONLY
+	 	order by sendTimes  DESC, sendTime DESC
+	</select>
+	
+	<select id="getAllByUserId_mssql" parameterType="String" resultMap="OutMailLinkman">
+		SELECT  <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN
+		WHERE userId=#{userId}  
+		order by sendTimes  DESC, sendTime DESC
+	</select>
+	
+	<select id="getAllByUserId_h2" parameterType="java.lang.Long" resultMap="OutMailLinkman">
+		SELECT <include refid="columns"/>
+		FROM OUT_MAIL_LINKMAN 
+		WHERE userId=#{userId} 
+		<if test="@Ognl@equals(condition,'sortingByTimes')">
+		    order by sendTimes  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'sortingByLasttime')">
+		    order by sendTime  DESC ,sendTime DESC
+		</if>
+		<if test="@Ognl@equals(condition,'initTree')">
+		    order by sendTime  DESC
+		</if>
+	</select>
+	
+	<!-- end dialect  -->
+</mapper>

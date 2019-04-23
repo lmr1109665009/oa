@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.ShiftTime">
+	<resultMap id="ShiftTime" type="com.suneee.kaoqin.model.kaoqin.ShiftTime">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="startTime" column="start_time" jdbcType="TIME"/>
+		<result property="endTime" column="end_time" jdbcType="TIME"/>
+		<result property="restTime" column="rest_time" jdbcType="NUMERIC"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,shift_id,start_time,end_time,rest_time,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND start_time  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND end_time  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(restTime)"> AND rest_time  =#{restTime} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftTime">
+		INSERT INTO se_shift_time
+		(id_,shift_id,start_time,end_time,rest_time,status_,createBy,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{shiftId,jdbcType=NUMERIC}, #{startTime,jdbcType=TIME}, #{endTime,jdbcType=TIME}, #{restTime,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_shift_time 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<delete id="removeTimeByShiftId" parameterType="java.lang.Long">
+		DELETE FROM se_shift_time 
+		WHERE
+		shift_id=#{shiftId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftTime">
+		UPDATE se_shift_time SET
+		shift_id=#{shiftId,jdbcType=NUMERIC},
+		start_time=#{startTime,jdbcType=TIME},
+		end_time=#{endTime,jdbcType=TIME},
+		rest_time=#{restTime,jdbcType=NUMERIC},
+		status_=#{status,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time
+		WHERE
+		id_=#{id}
+	</select>
+		    
+	<select id="getTimesByShiftId" parameterType="java.lang.Long" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time
+		WHERE
+		shift_id=#{shiftId}
+		ORDER By start_time ASC
+	</select>
+	
+	<select id="getAll" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	
+</mapper>

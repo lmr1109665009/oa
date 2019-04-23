@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysKnowMarkRel">
+	<resultMap id="SysKnowMarkRel" type="com.suneee.platform.model.system.SysKnowMarkRel">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="knowledgeid" column="KNOWLEDGEID" jdbcType="NUMERIC"/>
+		<result property="markid" column="MARKID" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,KNOWLEDGEID,MARKID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(knowledgeid)"> AND KNOWLEDGEID  =#{knowledgeid} </if>
+			<if test="@Ognl@isNotEmpty(markid)"> AND MARKID  =#{markid} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysKnowMarkRel">
+		INSERT INTO SYS_KNOW_MARK_REL
+		(ID,KNOWLEDGEID,MARKID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{knowledgeid,jdbcType=NUMERIC}, #{markid,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOW_MARK_REL 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<delete id="deleteByKnow" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOW_MARK_REL 
+		WHERE
+		KNOWLEDGEID=#{knowId}
+	</delete>
+	
+	<delete id="deleteByMarkId" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOW_MARK_REL 
+		WHERE
+		MARKID=#{markId}
+	</delete>
+	
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysKnowMarkRel">
+		UPDATE SYS_KNOW_MARK_REL SET
+		KNOWLEDGEID=#{knowledgeid,jdbcType=NUMERIC},
+		MARKID=#{markid,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysKnowMarkRel">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOW_MARK_REL
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysKnowMarkRel">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOW_MARK_REL   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

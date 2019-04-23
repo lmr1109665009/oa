@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.OvertimeApply">
+	<resultMap id="OvertimeApply" type="com.suneee.kaoqin.model.kaoqin.OvertimeApply">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="applyUser" column="F_APPLY_USER" jdbcType="VARCHAR"/>
+		<result property="applyUserid" column="F_APPLY_USERID" jdbcType="VARCHAR"/>
+		<result property="dept" column="F_DEPT" jdbcType="VARCHAR"/>
+		<result property="deptid" column="F_DEPTID" jdbcType="VARCHAR"/>
+		<result property="startTime" column="F_START_TIME" jdbcType="TIMESTAMP"/>
+		<result property="endTime" column="F_END_TIME" jdbcType="TIMESTAMP"/>
+		<result property="applyDate" column="F_APPLY_DATE" jdbcType="TIMESTAMP"/>
+		<result property="overtime" column="F_OVERTIME" jdbcType="NUMERIC"/>
+		<result property="reason" column="F_REASON" jdbcType="VARCHAR"/>
+		<result property="positionLeve" column="F_POSITION_LEVE" jdbcType="NUMERIC"/>
+		<result property="waterNum" column="F_WATER_NUM" jdbcType="VARCHAR"/>
+		<result property="account" column="F_ACCOUNT" jdbcType="VARCHAR"/>
+		<result property="instanceId" column="ACTINSTID" jdbcType="NUMERIC"/>
+		<result property="assingner" column="assingner" jdbcType="VARCHAR"/>
+		<result property="proccessName" column="PROCESSNAME" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,F_APPLY_USER,F_APPLY_USERID,F_DEPT,F_DEPTID,F_START_TIME,F_END_TIME,F_OVERTIME,F_REASON,F_POSITION_LEVE,F_WATER_NUM,F_ACCOUNT,F_APPLY_DATE
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(applyUser)"> AND F_APPLY_USER  LIKE #{applyUser}  </if>
+			<if test="@Ognl@isNotEmpty(applyUserid)"> AND F_APPLY_USERID  LIKE #{applyUserid}  </if>
+			<if test="@Ognl@isNotEmpty(dept)"> AND F_DEPT  LIKE #{dept}  </if>
+			<if test="@Ognl@isNotEmpty(deptid)"> AND F_DEPTID  LIKE #{deptid}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND F_START_TIME  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginStartTime)"> AND F_START_TIME  >=#{beginStartTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endStartTime)"> AND F_START_TIME <![CDATA[ <=#{endStartTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND F_END_TIME  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginEndTime)"> AND F_END_TIME  >=#{beginEndTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endEndTime)"> AND F_END_TIME <![CDATA[ <=#{endEndTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(beginApplyDate)"> AND F_APPLY_DATE  >=#{beginApplyDate,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endApplyDate)"> AND F_APPLY_DATE <![CDATA[ <=#{endApplyDate,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(overtime)"> AND F_OVERTIME  =#{overtime} </if>
+			<if test="@Ognl@isNotEmpty(reason)"> AND F_REASON  LIKE #{reason}  </if>
+			<if test="@Ognl@isNotEmpty(positionLeve)"> AND F_POSITION_LEVE  =#{positionLeve} </if>
+			<if test="@Ognl@isNotEmpty(waterNum)"> AND F_WATER_NUM  LIKE #{waterNum}  </if>
+			<if test="@Ognl@isNotEmpty(account)"> AND F_ACCOUNT  LIKE #{account}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.OvertimeApply">
+		INSERT INTO w_overtime
+		(ID,F_APPLY_USER,F_APPLY_USERID,F_DEPT,F_DEPTID,F_START_TIME,F_END_TIME,F_OVERTIME,F_REASON,F_POSITION_LEVE,F_WATER_NUM,F_ACCOUNT,F_APPLY_DATE)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{applyUser,jdbcType=VARCHAR}, #{applyUserid,jdbcType=VARCHAR}, #{dept,jdbcType=VARCHAR}, #{deptid,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{overtime,jdbcType=NUMERIC}, #{reason,jdbcType=VARCHAR}, #{positionLeve,jdbcType=NUMERIC}, #{waterNum,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{applyDate,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM w_overtime 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.OvertimeApply">
+		UPDATE w_overtime SET
+		F_APPLY_USER=#{applyUser,jdbcType=VARCHAR},
+		F_APPLY_USERID=#{applyUserid,jdbcType=VARCHAR},
+		F_DEPT=#{dept,jdbcType=VARCHAR},
+		F_DEPTID=#{deptid,jdbcType=VARCHAR},
+		F_START_TIME=#{startTime,jdbcType=TIMESTAMP},
+		F_END_TIME=#{endTime,jdbcType=TIMESTAMP},
+		F_OVERTIME=#{overtime,jdbcType=NUMERIC},
+		F_REASON=#{reason,jdbcType=VARCHAR},
+		F_POSITION_LEVE=#{positionLeve,jdbcType=NUMERIC},
+		F_WATER_NUM=#{waterNum,jdbcType=VARCHAR},
+		F_ACCOUNT=#{account,jdbcType=VARCHAR},
+		F_APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="OvertimeApply">
+		SELECT <include refid="columns"/>
+		FROM w_overtime
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="OvertimeApply">
+		SELECT <include refid="columns"/>
+		FROM w_overtime   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<select id="getAllApply" resultMap="OvertimeApply">
+		SELECT DISTINCT rs.* FROM (${AllSql}) rs 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by rs.ID  desc
+		</if>
+	</select>
+	
+	<select id="getPassedApplyUsersOfWorkDay" resultMap="com.suneee.platform.model.system.SysUser.SysUser">
+		SELECT su.*
+		FROM sys_user su, w_overtime ot, bpm_pro_run_his pr
+		WHERE su.userid = ot.f_apply_userid 
+		AND pr.businesskey = ot.id AND pr.status = 2
+		<if test="@Ognl@isNotEmpty(endStartTime)"> AND F_START_TIME <![CDATA[ <=#{endStartTime,jdbcType=TIMESTAMP}]]> </if>
+		<if test="@Ognl@isNotEmpty(beginEndTime)"> AND F_END_TIME  >=#{beginEndTime,jdbcType=TIMESTAMP} </if>
+	</select>
+	
+	
+</mapper>

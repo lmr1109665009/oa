@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.BusinessTravel">
+	<resultMap id="BusinessTravel" type="com.suneee.kaoqin.model.kaoqin.BusinessTravel">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="applyUser" column="F_APPLY_USER" jdbcType="VARCHAR"/>
+		<result property="applyUserid" column="F_APPLY_USERID" jdbcType="VARCHAR"/>
+		<result property="deptName" column="F_DEPT_NAME" jdbcType="VARCHAR"/>
+		<result property="deptNameid" column="F_DEPT_NAMEID" jdbcType="VARCHAR"/>
+		<result property="startTime" column="F_START_TIME" jdbcType="TIMESTAMP"/>
+		<result property="endTime" column="F_END_TIME" jdbcType="TIMESTAMP"/>
+		<result property="address" column="F_ADDRESS" jdbcType="VARCHAR"/>
+		<result property="comments" column="F_COMMENTS" jdbcType="VARCHAR"/>
+		<result property="positionLeve" column="F_POSITION_LEVE" jdbcType="NUMERIC"/>
+		<result property="account" column="F_ACCOUNT" jdbcType="VARCHAR"/>
+		<result property="waterNum" column="F_WATER_NUM" jdbcType="VARCHAR"/>
+		<result property="instanceId" column="ACTINSTID" jdbcType="NUMERIC"/>
+		<result property="assingner" column="assingner" jdbcType="VARCHAR"/>
+		<result property="proccessName" column="PROCESSNAME" jdbcType="VARCHAR"/>
+		<result property="applyDate" column="F_APPLY_DATE" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,F_APPLY_USER,F_APPLY_USERID,F_DEPT_NAME,F_DEPT_NAMEID,F_START_TIME,F_END_TIME,F_ADDRESS,F_COMMENTS,F_POSITION_LEVE,F_WATER_NUM,F_ACCOUNT,F_APPLY_DATE
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(applyUser)"> AND F_APPLY_USER  LIKE #{applyUser}  </if>
+			<if test="@Ognl@isNotEmpty(applyUserid)"> AND F_APPLY_USERID  LIKE #{applyUserid}  </if>
+			<if test="@Ognl@isNotEmpty(deptName)"> AND F_DEPT_NAME  LIKE #{deptName}  </if>
+			<if test="@Ognl@isNotEmpty(deptNameid)"> AND F_DEPT_NAMEID  LIKE #{deptNameid}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND F_START_TIME  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginStartTime)"> AND F_START_TIME  >=#{beginStartTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endStartTime)"> AND F_START_TIME <![CDATA[ <=#{endStartTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND F_END_TIME  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginEndTime)"> AND F_END_TIME  >=#{beginEndTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endEndTime)"> AND F_END_TIME <![CDATA[ <=#{endEndTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(address)"> AND F_ADDRESS  LIKE #{address}  </if>
+			<if test="@Ognl@isNotEmpty(comments)"> AND F_COMMENTS  LIKE #{comments}  </if>
+			<if test="@Ognl@isNotEmpty(positionLeve)"> AND F_POSITION_LEVE  =#{positionLeve} </if>
+			<if test="@Ognl@isNotEmpty(waterNum)"> AND F_WATER_NUM  LIKE #{waterNum}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.BusinessTravel">
+		INSERT INTO w_business_travel
+		(ID,F_APPLY_USER,F_APPLY_USERID,F_DEPT_NAME,F_DEPT_NAMEID,F_START_TIME,F_END_TIME,F_ADDRESS,F_COMMENTS,F_POSITION_LEVE,F_WATER_NUM,F_ACCOUNT,F_APPLY_DATE)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{applyUser,jdbcType=VARCHAR}, #{applyUserid,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{deptNameid,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{address,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{positionLeve,jdbcType=NUMERIC}, #{waterNum,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{applyDate,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM w_business_travel 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.BusinessTravel">
+		UPDATE w_business_travel SET
+		F_APPLY_USER=#{applyUser,jdbcType=VARCHAR},
+		F_APPLY_USERID=#{applyUserid,jdbcType=VARCHAR},
+		F_DEPT_NAME=#{deptName,jdbcType=VARCHAR},
+		F_DEPT_NAMEID=#{deptNameid,jdbcType=VARCHAR},
+		F_START_TIME=#{startTime,jdbcType=TIMESTAMP},
+		F_END_TIME=#{endTime,jdbcType=TIMESTAMP},
+		F_ADDRESS=#{address,jdbcType=VARCHAR},
+		F_COMMENTS=#{comments,jdbcType=VARCHAR},
+		F_POSITION_LEVE=#{positionLeve,jdbcType=NUMERIC},
+		F_WATER_NUM=#{waterNum,jdbcType=VARCHAR},
+		F_ACCOUNT=#{account,jdbcType=VARCHAR},
+		F_APPLY_DATE = #{applyDate,jdbcType=TIMESTAMP}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="BusinessTravel">
+		SELECT <include refid="columns"/>
+		FROM w_business_travel
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="BusinessTravel">
+		SELECT <include refid="columns"/>
+		FROM w_business_travel   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<select id="getAllApply" resultMap="BusinessTravel">
+		SELECT DISTINCT rs.* FROM (${AllSql}) rs 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by rs.ID  desc
+		</if>
+	</select>
+	
+</mapper>

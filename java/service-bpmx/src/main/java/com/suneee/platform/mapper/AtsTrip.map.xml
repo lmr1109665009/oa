@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.ats.AtsTrip">
+	<resultMap id="AtsTrip" type="com.suneee.platform.model.ats.AtsTrip">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="userId" column="USER_ID" jdbcType="NUMERIC"/>
+		<result property="tripType" column="TRIP_TYPE" jdbcType="VARCHAR"/>
+		<result property="startTime" column="START_TIME" jdbcType="DATE"/>
+		<result property="endTime" column="END_TIME" jdbcType="DATE"/>
+		<result property="tripTime" column="TRIP_TIME" jdbcType="NUMERIC"/>
+		<result property="runId" column="RUN_ID" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,USER_ID,TRIP_TYPE,START_TIME,END_TIME,TRIP_TIME,RUN_ID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND USER_ID  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(tripType)"> AND TRIP_TYPE  LIKE #{tripType}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND START_TIME  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginstartTime)"> AND START_TIME  >=#{beginstartTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstartTime)"> AND START_TIME <![CDATA[ <=#{endstartTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND END_TIME  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginendTime)"> AND END_TIME  >=#{beginendTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendTime)"> AND END_TIME <![CDATA[ <=#{endendTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(tripTime)"> AND TRIP_TIME  =#{tripTime} </if>
+			<if test="@Ognl@isNotEmpty(runId)"> AND RUN_ID  =#{runId} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.ats.AtsTrip">
+		INSERT INTO ATS_TRIP
+		(ID,USER_ID,TRIP_TYPE,START_TIME,END_TIME,TRIP_TIME,RUN_ID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{tripType,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, #{tripTime,jdbcType=NUMERIC}, #{runId,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ATS_TRIP 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.ats.AtsTrip">
+		UPDATE ATS_TRIP SET
+		USER_ID=#{userId,jdbcType=NUMERIC},
+		TRIP_TYPE=#{tripType,jdbcType=VARCHAR},
+		START_TIME=#{startTime,jdbcType=DATE},
+		END_TIME=#{endTime,jdbcType=DATE},
+		TRIP_TIME=#{tripTime,jdbcType=NUMERIC},
+		RUN_ID=#{runId,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AtsTrip">
+		SELECT <include refid="columns"/>
+		FROM ATS_TRIP
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="AtsTrip">
+		SELECT <include refid="columns"/>
+		FROM ATS_TRIP   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

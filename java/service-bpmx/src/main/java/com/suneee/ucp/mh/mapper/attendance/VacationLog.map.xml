@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.attendance.VacationLog">
+	<resultMap id="VacationLog" type="com.suneee.ucp.mh.model.attendance.VacationLog">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="vacationType" column="vacation_type" jdbcType="NUMERIC"/>
+		<result property="userId" column="user_id" jdbcType="NUMERIC"/>
+		<result property="changeType" column="change_type" jdbcType="NUMERIC"/>
+		<result property="changeValue" column="change_value" jdbcType="NUMERIC"/>
+		<result property="changeUnit" column="change_unit" jdbcType="NUMERIC"/>
+		<result property="validDate" column="valid_date" jdbcType="DATE"/>
+		<result property="beforeValue" column="before_value" jdbcType="NUMERIC"/>
+		<result property="afterValue" column="after_value" jdbcType="NUMERIC"/>
+		<result property="memo" column="memo_" jdbcType="VARCHAR"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="updateBy" column="update_by" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+		<result property="businessId" column="business_id" jdbcType="NUMERIC"/>
+		<result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+		<result property="userAccount" column="userAccount" jdbcType="VARCHAR"/>
+		<result property="userName" column="userName" jdbcType="VARCHAR"/>
+		<result property="updateByName" column="updateByName" jdbcType="VARCHAR"/>
+		<result property="vacationName" column="vacationName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,vacation_type,user_id,change_type,change_value,change_unit,valid_date,before_value,after_value,memo_,
+		status_update_by,updatetime,business_id
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(vacationType)"> AND vacation_type  =#{vacationType} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND user_id  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(changeType)"> AND change_type  =#{changeType} </if>
+			<if test="@Ognl@isNotEmpty(changeValue)"> AND change_value  =#{changeValue} </if>
+			<if test="@Ognl@isNotEmpty(validDate)"> AND valid_date  =#{validDate} </if>
+			<if test="@Ognl@isNotEmpty(beginvalidDate)"> AND valid_date  >=#{beginvalidDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endvalidDate)"> AND valid_date <![CDATA[ <=#{endvalidDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(beforeValue)"> AND before_value  =#{beforeValue} </if>
+			<if test="@Ognl@isNotEmpty(afterValue)"> AND after_value  =#{afterValue} </if>
+			<if test="@Ognl@isNotEmpty(memo)"> AND memo_  LIKE #{memo}  </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(updateBy)"> AND update_by  =#{updateBy} </if>
+			<if test="@Ognl@isNotEmpty(updatetime)"> AND updatetime  =#{updatetime} </if>
+			<if test="@Ognl@isNotEmpty(beginupdatetime)"> AND updatetime  >=#{beginupdatetime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endupdatetime)"> AND updatetime <![CDATA[ <=#{endupdatetime,jdbcType=TIMESTAMP}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.mh.model.attendance.VacationLog">
+		INSERT INTO se_vacation_log
+		(id_,vacation_type,user_id,change_type,change_value,change_unit,valid_date,before_value,after_value,memo_,
+		status_,update_by,updatetime, business_id)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{vacationType,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{changeType,jdbcType=NUMERIC}, 
+		#{changeValue,jdbcType=NUMERIC}, #{changeUnit,jdbcType=NUMERIC}, #{validDate,jdbcType=DATE}, #{beforeValue,jdbcType=NUMERIC}, 
+		#{afterValue,jdbcType=NUMERIC}, #{memo,jdbcType=VARCHAR}, #{status,jdbcType=NUMERIC}, #{updateBy,jdbcType=NUMERIC}, 
+		#{updatetime,jdbcType=TIMESTAMP},#{businessId,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_vacation_log 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.mh.model.attendance.VacationLog">
+		UPDATE se_vacation_log SET
+		vacation_type=#{vacationType,jdbcType=NUMERIC},
+		user_id=#{userId,jdbcType=NUMERIC},
+		change_type=#{changeType,jdbcType=NUMERIC},
+		change_value=#{changeValue,jdbcType=NUMERIC},
+		change_unit=#{changeUnit,jdbcType=NUMERIC},
+		valid_date=#{validDate,jdbcType=DATE},
+		before_value=#{beforeValue,jdbcType=NUMERIC},
+		after_value=#{afterValue,jdbcType=NUMERIC},
+		memo_=#{memo,jdbcType=VARCHAR},
+		status=#{status,jdbcType=NUMERIC},
+		update_by=#{updateBy,jdbcType=NUMERIC},
+		updatetime=#{updatetime,jdbcType=TIMESTAMP},
+		business_id=#{businessId,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="VacationLog">
+		SELECT <include refid="columns"/>
+		FROM se_vacation_log
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="VacationLog">
+		SELECT svl.*,sav.name_ AS vacationName,su.staff_no AS staffNo,su.FULLNAME AS userName,su1.FULLNAME AS updateByName FROM se_vacation_log AS svl 
+		LEFT JOIN se_attendance_vacation AS sav ON svl.vacation_type=sav.id_
+		LEFT JOIN sys_user AS su ON svl.user_id=su.USERID
+		LEFT JOIN sys_user AS su1 ON svl.update_by=su1.USERID  
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	
+</mapper>

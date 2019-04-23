@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.OfficeObjectApply">
+	
+	<resultMap type="com.suneee.ucp.me.model.OfficeObjectApply" id="OfficeObjectApply">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="process_id" property="processId" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="object_name" property="objectName" jdbcType="VARCHAR" />
+		<result column="specification" property="specification" jdbcType="VARCHAR" />
+		<result column="area" property="area" jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="apply_number" property="applyNumber" jdbcType="INTEGER" />
+		<result column="approver" property="approver" jdbcType="VARCHAR" />
+		<result column="approver_id" property="approverId" jdbcType="BIGINT" />
+		
+		<result column="create_time" property="createtime" jdbcType="VARCHAR" />
+		<result column="create_by" property="createBy" jdbcType="BIGINT" />
+		<result column="update_time" property="updatetime" jdbcType="VARCHAR" />
+		<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	</resultMap>
+	
+	
+	<sql id="baseColumn">
+		id, process_id, type, object_name, specification, apply_number, 
+		area, approver,approver_id, creator,
+		create_time, create_by, update_time, update_by
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(objectName)"> AND object_name LIKE CONCAT(CONCAT('%', #{objectName}), '%')</if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND creator = #{creator}</if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type = #{type}</if>
+			<if test="@Ognl@isNotEmpty(area)"> AND area  =#{area} </if>
+			<if test="@Ognl@isNotEmpty(bDate) and @Ognl@isNotEmpty(eDate)"> AND create_time BETWEEN #{bDate} and #{eDate} </if>
+		</where>
+	</sql>
+	
+	
+	<!--办公用品申请  -->
+	<insert id="add" parameterType="com.suneee.ucp.me.model.OfficeObjectApply" >
+		 insert into ucp_bgyp_apply (<include refid="baseColumn"/>)
+		 values(
+		 	#{id}, #{processId}, #{type}, #{objectName},
+		 	#{specification}, #{applyNumber}, #{area}, #{approver},
+		 	#{approverId}, #{creator}, #{createtime}, #{createBy}, #{updatetime}, #{updateBy}
+		 )
+	</insert>
+	<!-- 获取申请列表 -->
+	<select id="getAll" resultMap="OfficeObjectApply">
+		select <include refid="baseColumn"></include>
+		from ucp_bgyp_apply
+		<include refid="dynamicWhere"></include>
+		order by create_time desc
+	</select>
+	
+	<!-- 获取类型列表 -->
+	<select id="typeList" resultMap="OfficeObjectApply">
+		select DISTINCT(type)
+		from ucp_bgyp_apply
+	</select>
+	
+	<!-- 获取类型列表 -->
+	<select id="creatorList" resultMap="OfficeObjectApply">
+		select DISTINCT(creator)
+		from ucp_bgyp_apply
+	</select>
+	
+	<!-- 获取领用列表 -->
+	<!-- <select id="getApplyList" resultMap="OfficeObjectApply">
+		select <include refid="baseColumnForJoin"></include>
+		from ucp_bgyp_apply a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhereForApply"></include>
+		order by a.create_time desc
+	</select> -->
+	
+	<!-- 获取待审核列表 -->
+	<!-- <select id="getApprovalList" resultMap="OfficeObjectApply">
+		select <include refid="baseColumnForJoin"></include>
+		from ucp_bgyp_apply a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhereForApproval"></include>
+		order by a.create_time desc
+	</select> -->
+	
+	<!--更新状态  -->
+	<update id="update" parameterType="Map">
+		update ucp_bgyp_apply 
+		set state = #{state}, approver = #{approver}
+		where id = #{id}
+	</update>
+	
+
+</mapper>

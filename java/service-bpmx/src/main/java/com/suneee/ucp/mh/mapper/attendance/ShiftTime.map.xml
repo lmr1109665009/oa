@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.attendance.ShiftTime">
+	<resultMap id="ShiftTime" type="com.suneee.ucp.mh.model.attendance.ShiftTime">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="startTime" column="start_time" jdbcType="TIME"/>
+		<result property="endTime" column="end_time" jdbcType="TIME"/>
+		<result property="restTime" column="rest_time" jdbcType="NUMERIC"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+		<result property="startBeginRange" column="start_begin_range" jdbcType="TIME" />
+		<result property="startEndRange" column="start_end_range" jdbcType="TIME" />
+		<result property="endBeginRange" column="end_begin_range" jdbcType="TIME" />
+		<result property="endEndRange" column="end_end_range" jdbcType="TIME" />
+		<result property="type" column="type_" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="columns">
+		id_,shift_id,start_time,end_time,rest_time,status_,createBy,createtime, start_begin_range, start_end_range,
+		end_begin_range, end_end_range, type_
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND start_time  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND end_time  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(restTime)"> AND rest_time  =#{restTime} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type_ = #{type}</if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.mh.model.attendance.ShiftTime">
+		INSERT INTO se_shift_time
+		(id_,shift_id,start_time,end_time,rest_time,status_,createBy,createtime, start_begin_range, start_end_range,
+		end_begin_range, end_end_range, type_)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{shiftId,jdbcType=NUMERIC}, #{startTime,jdbcType=TIME}, #{endTime,jdbcType=TIME}, 
+		#{restTime,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE},
+		#{startBeginRange, jdbcType=TIME}, #{startEndRange, jdbcType=TIME}, #{endBeginRange, jdbcType=TIME}, 
+		#{endEndRange, jdbcType=TIME}, #{type, jdbcType=NUMERIC}
+		)
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_shift_time 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<delete id="removeTimeByShiftId" parameterType="java.lang.Long">
+		DELETE FROM se_shift_time 
+		WHERE
+		shift_id=#{shiftId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.mh.model.attendance.ShiftTime">
+		UPDATE se_shift_time SET
+		shift_id=#{shiftId,jdbcType=NUMERIC},
+		start_time=#{startTime,jdbcType=TIME},
+		end_time=#{endTime,jdbcType=TIME},
+		rest_time=#{restTime,jdbcType=NUMERIC},
+		status_=#{status,jdbcType=NUMERIC},
+		start_begin_range = #{startBeginRange, jdbcType=TIME},
+		start_end_range = #{startEndRange, jdbcType=TIME},
+		end_begin_range = #{endBeginRange, jdbcType=TIME},
+		end_end_range = #{endEndRange, jdbcType=TIME},
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time
+		WHERE
+		id_=#{id}
+	</select>
+		    
+	<select id="getTimesByShiftId" parameterType="java.util.Map" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time
+		WHERE shift_id=#{shiftId}
+		AND type_ = #{type}
+		ORDER By start_time ASC
+	</select>
+	
+	<select id="getAll" resultMap="ShiftTime">
+		SELECT <include refid="columns"/>
+		FROM se_shift_time   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		ORDER By start_time ASC
+		</if>
+	</select>
+</mapper>

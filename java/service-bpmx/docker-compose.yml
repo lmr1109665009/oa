@@ -1,0 +1,11 @@
+version: '3'
+services:
+  service-bpmx:
+    image: suneee/service-bpmx
+    hostname: service-bpmx
+#    ports:
+#      - 8030:8030
+networks:
+  default:
+    external:
+      name: app_net

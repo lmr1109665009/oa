@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="config.xsd">
+	
+<category id="console">
+	<view name="main" value="/platform/console/main"/>
+</category>
+<!--start_sys_user-->
+
+<category id="system">
+		<view name="sysUserAdd" value="/platform/system/sysUserAdd"/>
+		<view name="sysUserUpd" value="/platform/system/sysUserUpd"/>
+		<view name="sysUserList" value="/platform/system/sysUserList"/>
+		<view name="sysUserGet" value="/platform/system/sysUserGet"/>
+		<view name="sysUserReset" value="/platform/system/sysUserReset"/>
+		
+		
+		<view name="sysRoleAdd" value="/platform/system/sysRoleAdd"/>
+		<view name="sysRoleUpd" value="/platform/system/sysRoleUpd"/>
+		<view name="sysRoleList" value="/platform/system/sysRoleList"/>
+		<view name="sysRoleGet" value="/platform/system/sysRoleGet"/>
+		
+		
+		<view name="sysOrgAdd" value="/platform/system/sysOrgAdd"/>
+		<view name="sysOrgUpd" value="/platform/system/sysOrgUpd"/>
+		<view name="sysOrgList" value="/platform/system/sysOrgList"/>
+		<view name="sysOrgListById" value="/platform/system/sysOrgListById"/>
+		<view name="sysOrgUserList" value="/platform/system/sysOrgUserList"/>
+		<view name="sysOrgGet" value="/platform/system/sysOrgGet"/>
+		<view name="sysOrgView" value="/platform/system/sysOrgView"/>
+		<view name="sysOrgTree" value="/platform/system/sysOrgTree"/>
+</category>
+<!--end_sys_org-->
+<!--start_sys_demension-->
+
+<category id="system">
+
+		<view name="demensionAdd" value="/platform/system/demensionAdd"/>
+		<view name="demensionUpd" value="/platform/system/demensionUpd"/>
+		<view name="demensionList" value="/platform/system/demensionList"/>
+		<view name="demensionGet" value="/platform/system/demensionGet"/>
+		
+		<view name="sysDataSourceAdd" value="/platform/system/sysDataSourceAdd"/>
+		<view name="sysDataSourceUpd" value="/platform/system/sysDataSourceUpd"/>
+		<view name="sysDataSourceList" value="/platform/system/sysDataSourceList"/>
+		<view name="sysDataSourceGet" value="/platform/system/sysDataSourceGet"/>
+		
+		<view name="subSystemAdd" value="/platform/system/subSystemAdd"/>
+		<view name="subSystemUpd" value="/platform/system/subSystemUpd"/>
+		<view name="subSystemList" value="/platform/system/subSystemList"/>
+		<view name="subSystemGet" value="/platform/system/subSystemGet"/>
+		
+		<view name="sysAuditAdd" value="/platform/system/sysAuditAdd"/>
+		<view name="sysAuditUpd" value="/platform/system/sysAuditUpd"/>
+		<view name="sysAuditList" value="/platform/system/sysAuditList"/>
+		<view name="sysAuditGet" value="/platform/system/sysAuditGet"/>
+		
+		<view name="condition" value="/platform/system/customCondition"/>
+		
+
+
+</category>
+
+<!--start_BPM_DEFINITION-->
+<category id="bpm">
+		<view name="bpmDefinitionAdd" value="/platform/bpm/bpmDefinitionAdd"/>
+		<view name="bpmDefinitionUpd" value="/platform/bpm/bpmDefinitionUpd"/>
+		<view name="bpmDefinitionList" value="/platform/bpm/bpmDefinitionList"/>
+		<view name="bpmDefinitionGet" value="/platform/bpm/bpmDefinitionGet"/>
+		<view name="bpmDefinitionOnline" value="/platform/bpm/bpmeditor"/>
+		<view name="taskVarsList" value="/platform/bpm/taskVarsList"/>
+</category>
+<!--end_BPM_DEFINITION-->
+
+<category id="console">
+	<view name="main" value="/platform/console/main"/>
+	<view name="mainExtendIndex" value="/platform/console/mainExtend"/>
+	<view name="home" value="/platform/console/home"/>
+	<view name="selectCurrSys" value="/platform/console/selectCurrSys"/>
+	<view name="turnToMain" value="/platform/console/turnToMain"/>
+</category>
+
+</root>
+

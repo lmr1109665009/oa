@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.form.BpmFormDataLog">
+	<resultMap id="BpmFormDataLog" type="com.suneee.platform.model.form.BpmFormDataLog">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="businessKey" column="BUSINESSKEY" jdbcType="VARCHAR"/>
+		<result property="formData" column="FORMDATA" jdbcType="VARCHAR"/>
+		<result property="actDefId" column="ACTDEFID" jdbcType="VARCHAR"/>
+		<result property="nodeId" column="NODEID" jdbcType="VARCHAR"/>
+		<result property="createBy" column="CREATEBY" jdbcType="NUMERIC"/>
+		<result property="createtime" column="CREATETIME" jdbcType="DATE"/>
+	</resultMap>
+	
+
+	<insert id="add" parameterType="com.suneee.platform.model.form.BpmFormDataLog">
+		INSERT INTO BPM_FORM_DATA_LOG
+		(ID,BUSINESSKEY,FORMDATA,ACTDEFID,NODEID,CREATEBY,CREATETIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{businessKey,jdbcType=VARCHAR}, #{formData,jdbcType=VARCHAR}, #{actDefId,jdbcType=VARCHAR}, #{nodeId,jdbcType=VARCHAR}, #{createBy,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	
+</mapper>

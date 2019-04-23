@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.customColumn.CustomColumnVO">
+	<resultMap id="CustomColumnVo" type="com.suneee.ucp.mh.model.customColumn.CustomColumnVO">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="columnId" column="column_id" jdbcType="BIGINT"/>
+		<result property="owner" column="owner" jdbcType="BIGINT"/>
+		<result property="source" column="source" jdbcType="VARCHAR"/>
+		<result property="refreshTime" column="refresh_time" jdbcType="BIGINT"/>
+		<result property="icon" column="icon" jdbcType="VARCHAR"/>
+		<result property="color" column="color" jdbcType="VARCHAR"/>
+		<result property="columnType" column="column_type" jdbcType="VARCHAR"/>
+		<result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+		<result property="columnAlias" column="column_alias" jdbcType="VARCHAR"/>
+		<result property="columnName" column="column_name" jdbcType="VARCHAR"/>
+		<result property="view" column="view" jdbcType="VARCHAR"/>
+		<result property="templateHtml" column="template_html" jdbcType="VARCHAR"/>
+		<result property="sn" column="sn" jdbcType="BIGINT"/>
+		<result property="high" column="high" jdbcType="BIGINT"/>
+		<result property="gatewayId" column="gatewayId" jdbcType="BIGINT"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,name,b.column_id,owner,source,refresh_time,icon,color,column_type,remarks,column_alias,column_name,template_html,high,`view`,create_by,update_by,v.enterprise_code,v.gatewayId
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null ">
+				AND id=#{id}
+			</if>
+			<if test="owner != null ">
+				AND owner=#{owner}
+			</if>
+			<if test="source != null ">
+				AND source=#{source}
+			</if>
+			<if test="creatBy != null ">
+				AND create_by=#{creatBy}
+			</if>
+			<if test="updateBy != null ">
+				AND update_by=#{updateBy}
+			</if>
+			<if test="columnId != null ">
+				AND v.column_id=#{columnId}
+			</if>
+			<if test="columnType != null">
+				AND column_type=#{columnType}
+			</if>
+			<if test="columnAlias != null">
+				AND column_alias=#{columnAlias}
+			</if>
+			<if test="enterpriseCode != null">
+				AND v.enterprise_code=#{enterpriseCode}
+			</if>
+			<if test="gatewayId != null">
+				AND gatewayId=#{gatewayId}
+			</if>
+			<if test="createBy != null">
+				AND create_by=#{createBy}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getAll" resultMap="CustomColumnVo">
+		select <include refid="columns"/>
+		FROM sys_customcolumn_base b LEFT JOIN sys_customcolumn_vo v
+		ON b.column_id=v.column_id
+		<include refid="dynamicWhere" />
+	</select>
+	<select id="getById" resultMap="CustomColumnVo">
+		select <include refid="columns"/>
+		FROM sys_customcolumn_base b LEFT JOIN sys_customcolumn_vo v
+		ON b.column_id=v.column_id
+		WHERE id = #{id}
+	</select>
+	<select id="getByAlias" resultMap="CustomColumnVo">
+		SELECT <include refid="columns"/>
+		FROM sys_customcolumn_base b LEFT JOIN sys_customcolumn_vo v
+		ON b.column_id=v.column_id
+		WHERE  v.column_alias=#{columnAlias} AND v.enterprise_code = #{enterpriseCode}
+	</select>
+	<update id="update">
+		UPDATE
+			sys_customcolumn_vo
+		<trim prefix="SET" suffixOverrides=",">
+		    name=#{name},
+	  	<if test="view!=null">
+				view=#{view},
+	  	</if>
+	  	<if test="enterpriseCode!=null">
+			enterprise_code=#{enterpriseCode},
+		</if>
+		</trim>
+		WHERE
+			id = #{id}
+
+	</update>
+	<insert id="add">
+		INSERT INTO sys_customcolumn_vo
+		(id,name,column_id,column_alias,gatewayId,owner,view,source,enterprise_code)
+		VALUES
+		(#{id},#{name},#{columnId},#{columnAlias},#{gatewayId},#{owner},#{view},#{source},#{enterpriseCode})
+	</insert>
+
+	<select id="isAliasExisted" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(*) FROM sys_customcolumn_vo WHERE column_alias = #{columnAlias}
+	</select>
+
+	<select id="getDefaultByType"  resultMap="CustomColumnVo">
+		SELECT <include refid="columns"/>
+		FROM sys_customcolumn_base b LEFT JOIN sys_customcolumn_vo v
+		ON b.column_id=v.column_id
+		WHERE  b.column_type = #{columnType} AND v.column_alias = #{columnAlias} AND source = 'sys'
+	</select>
+	<delete id="delByOwner">
+		DELETE FROM sys_customcolumn_vo WHERE  owner = #{owner} AND column_alias = #{columnAlias} AND source = 'def' AND enterprise_code=#{enterpriseCode}
+	</delete>
+	<select id="getByALiasAndOwner"  resultType="java.lang.Long">
+		SELECT <include refid="columns"/>
+		FROM sys_customcolumn_base b LEFT JOIN sys_customcolumn_vo v
+		ON b.column_id=v.column_id
+		WHERE  v.owner = #{owner} AND v.column_alias = #{columnAlias} AND v.source = 'def' AND v.enterprise_code=#{enterpriseCode}
+	</select>
+</mapper>

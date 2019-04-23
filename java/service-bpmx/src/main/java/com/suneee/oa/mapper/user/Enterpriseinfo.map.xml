@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.base.model.system.Enterpriseinfo">
+	<resultMap id="Enterpriseinfo" type="com.suneee.ucp.base.model.system.Enterpriseinfo">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="comp_name" column="comp_name" jdbcType="VARCHAR"/>
+		<result property="comp_code" column="comp_code" jdbcType="VARCHAR"/>
+		<result property="comp_short_name" column="comp_short_name" jdbcType="VARCHAR"/>
+		<result property="comp_parent_code" column="comp_parent_code" jdbcType="VARCHAR"/>
+		<result property="address" column="address" jdbcType="VARCHAR"/>
+		<result property="contact" column="contact" jdbcType="VARCHAR"/>
+		<result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+		<result property="isGroup" column="isGroup" jdbcType="VARCHAR"/>
+		<result property="groupCode" column="groupCode" jdbcType="VARCHAR"/>
+		<result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+		<result property="type" column="type" jdbcType="VARCHAR"/>
+		<result property="cluster_code" column="cluster_code" jdbcType="VARCHAR"/>
+		<result property="cluster_name" column="cluster_name" jdbcType="VARCHAR"/>
+		<result property="auditFlag" column="auditFlag" jdbcType="VARCHAR"/>
+		<result property="deleteFlag" column="deleteFlag" jdbcType="VARCHAR"/>
+		<result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+		<result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+		<result property="opTime" column="optime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="columns" >
+		ei.id, ei.comp_name, ei.comp_code, ei.comp_short_name, ei.comp_parent_code, ei.address, ei.contact, ei.telephone, ei.isGroup, 
+		ei.groupCode,ei.remarks, ei.type, ei.cluster_code, ei.cluster_name, ei.auditFlag, ei.deleteFlag, ei.updateTime, 
+		ei.createTime, ei.opTime
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<if test="@Ognl@isNotEmpty(id)"> AND ei.id = #{id}</if>
+		<if test="@Ognl@isNotEmpty(comp_name)"> AND ei.comp_name like #{comp_name}</if>
+		<if test="@Ognl@isNotEmpty(comp_code)"> AND ei.comp_code like #{comp_code}</if>
+		<if test="@Ognl@isNotEmpty(comp_short_name)"> AND ei.comp_short_name like #{comp_short_name}</if>
+		<if test="@Ognl@isNotEmpty(comp_parent_code)"> AND ei.comp_parent_code like #{comp_parent_code}</if>
+		<if test="@Ognl@isNotEmpty(groupCode)"> AND groupCode like #{groupCode}</if>
+		<if test="@Ognl@isNotEmpty(remarks)"> AND remarks like #{remarks}</if>
+	</sql>
+	
+	<insert id="add" parameterType="com.suneee.ucp.base.model.system.Enterpriseinfo">
+		INSERT INTO ucp_enterprise_info (id, comp_name, comp_code, comp_short_name, comp_parent_code, address, contact, telephone, isGroup, 
+		groupCode, remarks, type, cluster_code, cluster_name, auditFlag, deleteFlag, updateTime, createTime, opTime)
+		VALUES(
+			#{id, jdbcType=NUMERIC}, #{comp_name, jdbcType=VARCHAR}, #{comp_code, jdbcType=VARCHAR},
+			#{comp_short_name, jdbcType=VARCHAR}, #{comp_parent_code, jdbcType=VARCHAR},#{address, jdbcType=VARCHAR},
+			#{contact, jdbcType=VARCHAR},#{telephone, jdbcType=VARCHAR}, #{isGroup, jdbcType=VARCHAR},
+			#{groupCode, jdbcType=VARCHAR},#{remarks, jdbcType=VARCHAR},#{type, jdbcType=VARCHAR}, 
+			#{cluster_code, jdbcType=VARCHAR},#{cluster_name, jdbcType=VARCHAR},#{auditFlag, jdbcType=VARCHAR},
+			#{deleteFlag, jdbcType=VARCHAR}, #{updatetime, jdbcType=TIMESTAMP},#{createtime, jdbcType=TIMESTAMP},
+			#{opTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<update id="update"  parameterType="com.suneee.ucp.base.model.system.Enterpriseinfo">
+		update ucp_enterprise_info set
+			comp_name = #{comp_name, jdbcType=VARCHAR}, 
+			comp_code = #{comp_code, jdbcType=VARCHAR},
+			comp_short_name = #{comp_short_name, jdbcType=VARCHAR}, 
+			comp_parent_code = #{comp_parent_code, jdbcType=VARCHAR}, 
+			address= #{address, jdbcType=VARCHAR},
+			contact = #{contact, jdbcType=VARCHAR},
+			telephone = #{telephone, jdbcType=VARCHAR}, 
+			isGroup = #{isGroup, jdbcType=VARCHAR},
+			groupCode = #{groupCode, jdbcType=VARCHAR},
+			remarks = #{remarks, jdbcType=VARCHAR},
+			type = #{type, jdbcType=VARCHAR}, 
+			cluster_code = #{cluster_code, jdbcType=VARCHAR},
+			cluster_name = #{cluster_name, jdbcType=VARCHAR},
+			auditFlag = #{auditFlag, jdbcType=VARCHAR},
+			deleteFlag = #{deleteFlag, jdbcType=VARCHAR}, 
+			updateTime = #{updatetime, jdbcType=TIMESTAMP},
+			createTime = #{createtime, jdbcType=TIMESTAMP},
+			opTime = #{opTime, jdbcType=TIMESTAMP}
+		where id = #{id}
+	</update>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ucp_enterprise_info WHERE id = #{id}
+	</delete>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="Enterpriseinfo">
+		SELECT <include refid="columns"/> FROM ucp_enterprise_info ei WHERE ei.id = #{id}
+	</select>
+	
+	<select id="getByCompCode" parameterType="java.lang.String" resultMap="Enterpriseinfo">
+		SELECT <include refid="columns"/> FROM ucp_enterprise_info ei WHERE ei.comp_code = #{comp_code}
+	</select>
+	
+	<select id="getAll" parameterType="java.util.Map" resultMap="Enterpriseinfo">
+		SELECT <include refid="columns"/> FROM ucp_enterprise_info ei
+		<where>
+			<include refid="dynamicWhere"/>
+		</where>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY id DESC
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY CONVERT( ei.${orderField} USING gbk ) COLLATE gbk_chinese_ci ${orderSeq}
+		</if>
+	</select>
+	
+	<select id="getByUserId" parameterType="long" resultMap="Enterpriseinfo">
+		SELECT <include refid="columns"/> FROM ucp_enterprise_info ei
+		INNER JOIN ucp_user_enterprise ue ON ue.enterprisecode=ei.comp_code 
+		WHERE userid = #{userId} AND ue.isdelete=0
+	</select>
+</mapper>

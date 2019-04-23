@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.OfficeObjectStorageRecord">
+	
+	<resultMap type="com.suneee.ucp.me.model.OfficeObjectStorageRecord" id="OfficeObjectStorageRecord">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<id column="storage_id" property="storageId" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="object_name" property="objectName" jdbcType="VARCHAR" />
+		<result column="number" property="number" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="store" property="store" jdbcType="INTEGER" />
+		
+		
+		<result column="create_time" property="createtime" jdbcType="VARCHAR" />
+		<result column="create_by" property="createBy" jdbcType="BIGINT" />
+		<result column="update_time" property="updatetime" jdbcType="VARCHAR" />
+		<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="recordColumn">
+		a.id, a.storage_id, a.type, a.object_name, a.number,
+		a.action, a.creator, b.store as store, a.create_time, a.create_by, a.update_time, 
+		a.update_by
+	</sql>
+	
+	<sql id="baseColumn">
+		id, storage_id, type, object_name, number,
+		action, creator, create_time, create_by, update_time, 
+		update_by
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(objectName)"> AND a.object_name LIKE CONCAT(CONCAT('%', #{objectName}), '%')</if>
+			<if test="@Ognl@isNotEmpty(type)"> AND a.type = #{type}</if>
+		</where>
+	</sql>
+	
+	<sql id="sqlJoin">
+		LEFT JOIN ucp_bgyp_object b on a.storage_id = b.id
+	</sql>
+	
+	<!-- 获取办公用品领用列表 -->
+	<select id="getAll" resultMap="OfficeObjectStorageRecord">
+		select <include refid="recordColumn"></include>
+		from ucp_bgyp_storage_record  a
+		<include refid="sqlJoin"></include>
+		order by a.create_time
+	</select>
+	
+	<!-- 获取办公用品领用列表 -->
+	<select id="getWithStorageId" parameterType="com.suneee.ucp.me.model.OfficeObjectStorageRecord" resultMap="OfficeObjectStorageRecord">
+		select <include refid="recordColumn"></include>
+		from ucp_bgyp_storage_record  a
+		<include refid="sqlJoin"></include>
+		where a.storage_id = #{storageId}
+		order by a.create_time
+	</select>
+	
+	<select id="getById" resultMap="OfficeObjectStorageRecord">
+		SELECT
+		<include refid="recordColumn" />
+		FROM ucp_bgyp_storage_record a
+		<include refid="sqlJoin"></include>
+		WHERE a.id = #{id}
+	</select>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.OfficeObjectStorageRecord">
+		insert into ucp_bgyp_storage_record (<include refid="baseColumn"/>)
+		value(
+			#{id},
+			#{storageId}, 
+			#{type}, 
+			#{objectName}, 
+			#{number}, 
+			#{action}, 
+			#{creator}, 
+			#{createtime}, 
+			#{createBy}, 
+			#{updatetime}, 
+			#{updateBy});
+	</insert>
+
+</mapper>
