@@ -1,0 +1,41 @@
+* { margin: 0; padding: 0;}
+.username{
+	background:url(images/icno1.png) no-repeat 4px 8px;
+	}
+.password{
+	background:url(images/icno2.png) no-repeat 4px 8px;
+	}
+
+img { border: 0;}
+body {
+	background: url(images/bg.jpg) repeat-x #FFF;height:726px; font-family: 'Microsoft Yahei',verdana; font-size: 12px;font:12px/180% Arial, Helvetica, sans-serif, "新宋体";overflow: hidden;}
+.form_background{background:url(images/p.png) no-repeat center; height:726px; position:relative;background-attachment: fixed;overflow: hidden;}
+/*.htlogo_login { background: url(images/htlogo_login.jpg) no-repeat; width: 100px; height: 26px; display: inline-block; margin: 9px;}*/
+.l { float: left;}
+.r { float: right;}
+/*.top_login { background: #515151; height: 45px; color: #fff; line-height: 45px;}*/
+.logo{background: url(images/logo.png) no-repeat center;width: 314px; height: 30px; display: inline-block; margin-left: -10px; margin-bottom: 30px;}
+.bpmlogo_login { width: 272px; height: 49px; display: inline-block; margin-left: 38px; margin-bottom: 30px;}
+.main_login, .main_login2 { text-align: left; margin: 3% auto auto;}
+.content_login {background: url(images/k_bg.png) no-repeat -4px -4px;
+border: solid 1px #c0e4f9;
+border-radius: 8px 8px 8px 8px;
+padding: 20px 35px;}
+.content_login input[type="text"] ,.content_login input[type="password"] { width: 200px; height: 30px; line-height:36px; margin: 10px 0; border: solid 1px #c0e4f9; border-radius: 5px; padding: 0 5px; background-color:#fff!important;padding-left:20px;}
+.content_login .vcode input[type="text"] { width: 130px;}
+.vcode div {width: 100px; display: inline-block;}
+.vcode { width: 300px; display: inline-block;}
+.column { margin: 5px 0;}
+.vcode_img { vertical-align: top; margin-left: 65px;}
+.vcode_img img { width: 82px; padding: 13px 0px 5px;}
+.vcode_img a { line-height: 25px; color: #4b93ff; cursor: pointer;}
+.confirm {background-color:#FFF; border-top: solid 1px #d4d4d4; border-bottom: solid 1px #d4d4d4; border-bottom-left-radius: 5px;  border-bottom-right-radius: 5px; margin: 15px -36px -23px; padding: 35px 35px 45px;}
+.btn { width: 76px; height: 34px; border-radius: 3px; display: inline-block; text-align: center; line-height: 36px; color: #fff; margin-left: 10px; cursor: pointer;}
+.reset_btn { background: url(images/button.png) repeat-x; }
+.login_btn { background: url(images/button.png) repeat-x; }
+.confirm input[type="checkbox"] {margin-top: 10px; margin-right: 5px;}
+.copy { color: #515151; position: absolute; left: 50%; margin-left: -160px; bottom: 15px;}
+.main_login2 { width: 410px}
+.main_login { width: 364px;}
+.btn2 { margin-top: -34px; line-height: 20px; font-family: 'Microsoft Yahei',verdana; font-size:12px;}
+.logo2 { margin-left: 60px; margin-bottom: 50px;}

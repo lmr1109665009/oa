@@ -1,0 +1,4 @@
+input:disabled,input[readonly],textarea:disabled,textarea[readonly],select:disabled,radio:disabled,checkbox:disabled{
+    color: #545454 !important;
+}
+
