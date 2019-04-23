@@ -1,0 +1,208 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1495781438844'); /* IE9*/
+  src: url('iconfont.eot?t=1495781438844#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1495781438844') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1495781438844') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1495781438844#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.link {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+#docType .ico_close:before,
+#orgTree .ico_close:before,
+#glTypeTree .ico_close:before,
+#dictTree .ico_close:before{content: "\e6b1";font-size:14px;opacity: 0.8;}
+
+
+
+#docType .ico_docu:before,
+#orgTree .ico_docu:before,
+#glTypeTree .ico_docu:before,
+#dictTree .ico_docu:before{content: "\e64c";opacity: 0.8;}
+
+#docType .ico_open .button.ico_close:before,
+#orgTree .ico_open .button.ico_close:before,
+#glTypeTree .ico_open .button.ico_close:before,
+#glTypeTree .ico_open:before,
+#dictTree .ico_open .button.ico_close:before,
+#dictTree .ico_open:before{content: "\e799";font-size:14px;opacity: 0.8;}
+
+#glTypeTree .ico_open .button.ico_close:before,
+#glTypeTree .ico_open:before{content: ""}
+
+#docType>li>a .button.ico_close:before,
+#orgTree>li>a .button.ico_close:before,
+#glTypeTree>li>a .button.ico_close:before,
+#dictTree>li>a .button.ico_close:before,
+#dictTree>li>a .button.ico_open:before,
+#dictTree>li>a .button.ico_docu:before,
+.panel-debox #orgTree .ico_docu:before,
+.panel-debox #orgTree .ico_close:before,
+.panel-debox #orgTree .ico_open .button.ico_close:before,
+.panel-debox #glTypeTree .ico_docu:before,
+.panel-debox #glTypeTree .ico_close:before,
+.panel-debox #glTypeTree .ico_open .button.ico_close:before,
+.panel-debox #glTypeTree .ico_open:before{content: " ";}
+
+.link.get:before { content: "\e74a"; }
+.link.clean:before { content: "\e66f"; }
+.link.urge:before { content: "\e67c"; }
+.link.redo:before { content: "\e620"; }
+
+ 
+.link.sxin:before { content: "\e623"; }
+.link.fiter:before { content: "\e64b"; }
+.link.primary:before { content: "\e621"; }
+.link.authorize:before { content: "\e655"; }
+.link.selectFile:before { content: "\e648"; }
+.ico0n-back:before { content: "\e697"; }
+.icon-more:before { content: "\e6a7"; }
+/* .link:before{display:none;} */
+.toolBar .link:before {position: relative;top:2px;display:inline;font-size:16px;margin-right:4px;/* font-weight: bold; */}
+/* .link span{width:0;display: none;} */
+
+
+.link.done:before {content: "\e66b";}
+.link.agree:before {content: "\e6b8";}
+.link.goForward:before {content: "\e696";}
+
+.link.position:before,.link.positions:before {content: "\e753";}
+.link.org:before,.link.orgs:before {content: "\e663";}
+.link.actInsts:before {content: "\e60f";}
+.link.dic:before {content: "\e67a";}
+.link.attachement:before {content: "\e648";}
+
+
+.link.reject:before {content: "\e6bb";}
+.link.rejectToStart:before {content: "\e6ce";}
+.link.sendMessage:before {content: "\e62f";}
+.link.print:before {content: "\e68b";}
+
+
+.link.add:before{top:0}
+.link.users:before,.link.user:before{content: "\e611";}
+.link.roles:before,.link.role:before {content: "\e616";}
+.Tdetail_cont input.users{ margin-right: 5px;}
+.link.roles{ padding-left: 5px;}
+.link.lock:before  { content: "\e662"; }
+.link.flowDesign:before  { content: "\e658"; }
+.link.add:before,.link.addZd:before,.link.comp:before{ content: "\e611"; }
+.link.parameter:before { content: "\e6af"; }
+.link.resetPwd:before { content: "\e694"; }
+.link.setting:before { content: "\e624"; }
+.link.switchuser:before { content: "\e65c"; }
+.link.download:before { content: "\e653"; }
+.link.export:before { content: "\e653"; }
+.link.test:before { content: "\e648"; }
+.link.run:before { content: "\e6f3"; }
+.link.abandon:before { content: "\e6f3"; }
+.link.upload:before { content: "\e653"; }
+.link.moveup:before { content: "\e64a"; }
+.link.movedown:before { content: "\e686"; }
+
+
+
+.link.update:before { content: "\e69e"; }
+
+.link.help:before { content: "\e6a3"; }
+
+.link.gengxin:before { content: "\e635"; }
+
+.link.save:before { content: "\e610"; }
+
+.link.search:before { content: "\e650"; }
+
+.link.back:before { content: "\e601"; }
+
+.link.import:before { content: "\e652"; }
+
+
+
+.link.zhengli:before { content: "\e766"; }
+
+
+
+.link.auth:before { content: "\e690"; }
+
+.link.jushoucang:before { content: "\e643"; }
+
+.link.grant:before { content: "\e645"; }
+
+.link.lianjie:before { content: "\e646"; }
+
+.link.saoyisao:before { content: "\e649"; }
+
+.link.shangfan:before { content: "\e64a"; }
+
+.link.shijian:before { content: "\e64d"; }
+
+.link.shouye:before { content: "\e64f"; }
+
+.link.reset:before { content: "\e66f"; }
+
+.link.suo:before { content: "\e653"; }
+
+.link.wodedingdan:before { content: "\e655"; }
+
+.link.wodefankui:before { content: "\e656"; }
+
+.link.xiafan:before { content: "\e65b"; }
+
+.link.xiangshangjiantou:before { content: "\e65d"; }
+
+.link.xiangxiajiantou:before { content: "\e65e"; }
+
+.link.xiangyoujiantou:before { content: "\e65f"; }
+
+.link.back1:before { content: "\e660"; }
+
+.link.yanjing:before { content: "\e661"; }
+
+.link.yijianfankui:before { content: "\e662"; }
+
+.link.zhengque:before { content: "\e664"; }
+
+.link.lingcunwei:before { content: "\e666"; }
+
+.link.copy:before { content: "\e744"; }
+
+.link.collapse:before { content: "\e6b1"; }
+
+.link.edit:before { content: "\e74e"; }
+
+.link.detail:before { content: "\e6b2"; }
+
+.link.expand:before { content: "\e799"; }
+
+.link.category:before { content: "\e68d"; }
+
+.link.cart:before { content: "\e68e"; }
+
+.link.good:before { content: "\e699"; }
+
+.link.map:before { content: "\e6a2"; }
+
+.link.skip:before { content: "\e6be"; }
+
+.link.text:before { content: "\e6c4"; }
+
+.link.init:before { content: "\e639"; }
+
+.link.reload:before { content: "\e618"; }
+
+.link.fenxiang:before { content: "\e600"; }
+
+.link.date:before { content: "\e74f"; }
+
+.link.gengxin2:before { content: "\e623"; }
+
+.link.del:before ,.link.close:before{ content: "\e767"; }
+
+.link.cancel:before{content: "\e641";}
+.link.history:before{content: "\e6f3";}
+.link.copyTo:before{content: "\e63a";}

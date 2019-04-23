@@ -1,0 +1,154 @@
+/*-------------------------------------
+zTree Style--main.jsp
+version:    3.4
+author:     caohua
+email:      346189973@qq.com
+website:    xiangyi
+-------------------------------------*/
+ #accordion1 .ztree * { margin:0;padding:0;  font-size:14px; 
+ }
+ #accordion1 .ztree {
+    margin:0; 
+    padding:0 0; 
+    clear:left;
+    border: 0;
+    color: #fff;
+    }
+#accordion1,#accordion1  #accordion1 .ztree{background-color: #2e313a;}  
+ #accordion1 .ztree,.panel-debox{
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+ #accordion1 .ztree::-webkit-scrollbar,.panel-debox::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+    background: transparent;
+    border-radius: 6px;
+}
+ #accordion1 .ztree::-webkit-scrollbar-thumb,.panel-debox::-webkit-scrollbar-thumb{
+    -webkit-border-radius: 6px;
+    background-color: rgba(100,100,100,0.4);
+}
+ #accordion1 .ztree::-webkit-scrollbar-corner,.panel-debox::-webkit-scrollbar-corner{
+    background-color: transparent;
+}
+ #accordion1 .ztree li{position:relative; padding-top: 0; margin:0; list-style:none; line-height:14px; text-align:left; white-space:nowrap; outline:0;}
+ #accordion1 .ztree li ul{ margin:0; padding:0 0 0 0}
+ #accordion1 .ztree li ul li a{ padding-left: 40px;}
+  #accordion1 .ztree li ul li ul li a{ padding-left: 60px;}
+ #accordion1 .ztree li ul.line{ /*background:url(./img/line_conn.gif) 0 0 repeat-y;*/}
+
+ #accordion1 .ztree li a {padding:11px 0 11px 20px; margin:0; border-top:0;border-bottom:0;cursor:pointer; height:22px;line-height:22px; color:#cfdbdf; background-color: transparent;
+    text-decoration:none; vertical-align:middle; display: block;border-left-width: 3px; border-left-style: solid;
+    border-left-color: #2e313a; }
+ #accordion1 .ztree li a span, #accordion1 .ztree li a i{float:left;}  
+ #accordion1 .ztree li a:hover {text-decoration:none; background: #292c35;color:#fff;border-top:0;border-bottom:0;border-left-color: #292c35;}
+ #accordion1 .ztree li a.curSelectedNode {background-color:#383b44 ; color:#009bdb;border-top:0;border-bottom:0;border-left-color: #009bdb;}
+ #accordion1 .ztree li a.curSelectedNode_Edit {background-color:#383b44 ; color:#009bdb;border-top:0;border-bottom:0;border-left-color: #009bdb;}
+ #accordion1 .ztree li a.tmpTargetNode_inner {background-color:#383b44 ; color:#009bdb;border-top:0;border-bottom:0;border-left-color: #009bdb;}
+ #accordion1 .ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
+    font-size:12px; border:1px #7EC4CC solid; *border:0px}
+ #accordion1 .ztree li span{font-size:14px;}    
+ #accordion1 .ztree li i{font-size:16px;padding-right:2px;}    
+ 
+  #accordion1 .ztree li .button.switch {
+  line-height:44px;height:44px;
+}
+
+/*-------------------------------------
+zTree Style
+------------------------------------*/
+
+.ztree * { margin:0;padding:0;  font-size:14px; 
+ }
+.ztree {
+    margin:0; 
+    padding:0 0; 
+    clear:left;
+    background-color: #fff;
+    border: 0;
+	font-family:"Microsoft YaHei", Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+    color:#000;
+    }
+#accordion1,#accordion1 .ztree{background-color: #2e313a;}  
+.ztree{padding:0px 0 0 5px;}
+.ztree li .button.switch{right:5px;}
+.ztree{
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+.ztree::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+    background: transparent;
+    border-radius: 6px;
+}
+.ztree::-webkit-scrollbar-thumb{
+    -webkit-border-radius: 6px;
+    background-color: rgba(100,100,100,0.4);
+}
+.ztree::-webkit-scrollbar-corner{
+    background-color: transparent;
+}
+.ztree li{position:relative; padding-top: 0; margin:0; list-style:none; line-height:14px; text-align:left; white-space:nowrap; outline:0;}
+.ztree li ul{ margin:0; padding:0 0 0 0}
+.ztree li ul.line{ /*background:url(./img/line_conn.gif) 0 0 repeat-y;*/}
+.ztree li a {padding:5px 0 5px 10px; margin:0; cursor:pointer; height:22px;line-height:22px;  color:#444f55; background-color: #fff;
+    text-decoration:none; vertical-align:middle; display: block;}
+.ztree>li>a{padding-left: 0px;}
+.ztree ul li ul li a{ padding-left: 20px;}
+.ztree ul li ul li ul li a{ padding-left: 25px;}
+.ztree ul li ul li ul li ul li a{ padding-left: 30px;}
+.ztree li a span,.ztree li a i{/* float: left; */}  
+.ztree li a:hover {text-decoration:none;color:#009bdb; background: #f1f5f8}
+.ztree li a.curSelectedNode {color:#009bdb;background: #f1f5f8}
+.ztree li a.curSelectedNode_Edit {color:#009bdb; background: #f1f5f8}
+.ztree li a.tmpTargetNode_inner { color:#009bdb; background: #f1f5f8}
+.ztree li a.tmpTargetNode_prev {}
+.ztree li a.tmpTargetNode_next {}
+.ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
+    font-size:12px; border:1px #7EC4CC solid; *border:0px}
+   
+.ztree li span {line-height:20px; height:20px;display: inline;overflow: hidden;word-wrap: break-word;  
+word-break: normal; font-size:12px; }
+.ztree li .button {line-height:20px; margin:0; width:20px; height:20px; display: inline-block; vertical-align:middle;
+    border:0 none; cursor: pointer;outline:none;float: left;}
+.ztree li i.button{line-height:21px;height:21px;width:20px;position: relative;display: inline-block;}
+.ztree li i{font-size: 16px;padding-right:2px;}
+.ztree li .button{
+  font-family:"iconfont" !important;
+  font-size:12px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;}
+.ztree li .button.switch {
+  font-family:"iconfont" !important;
+  font-size:10px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background:none;
+  line-height:34px; margin:0; width:25px; height:34px;top:0;right:0;right:10px\0;  right:0; position:absolute; z-index: 100;
+}
+.ztree li .button.root_open:before,
+.ztree li .button.roots_open:before,
+.ztree li .button.center_open:before,
+.ztree li .button.bottom_open:before,
+.ztree li .button.noline_open:before {
+    content: "\e687";
+}
+.ztree li .button.roots_close:before,
+.ztree li .button.root_close:before,
+.ztree li .button.center_close:before,
+.ztree li .button.noline_close:before,
+.ztree li .button.bottom_close:before
+ {
+    content: "\e689";
+}
+
+.ztree li .button.ico_loading{background:none;}
+ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
+span.tmpzTreeMove_arrow {width:16px; height:16px; display: inline-block; padding:0; margin:2px 0 0 1px; border:0 none; position:absolute;
+    background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
+    background-position:-110px -80px; background-image:url("./img/zTreeStandard.png"); *background-image:url("./img/zTreeStandard.gif")}
+.ztree .ztreeDragUL {margin:0; padding:0; position:absolute; width:auto; height:auto;overflow:hidden; background-color:#cfcfcf; border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
+.ztree .Mask {z-index:10000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
+

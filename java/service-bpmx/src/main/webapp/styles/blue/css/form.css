@@ -1,0 +1,865 @@
+/**
+闂傚倸瀚�氼亜鈻庨姀銈呭唨鐎瑰嫭澹嗙涵锟介柣鐐寸◤閸斿﹪鏁撻弬銈嗗
+*/
+div.attachement{
+	float:left;
+	overflow:hidden;
+	padding:3px 0 0 3px;
+	white-space:nowrap;
+}
+
+span.attachement-span{
+	float:left;
+	/*background:#f5f6f4;
+	border:1px solid #e1e1e1;*/
+	/*margin:5px 3px;
+	padding:2px;*/
+	cursor: pointer;
+	/*width:85%;*/word-break:normal;display:block;white-space:pre-wrap;overflow:hidden;
+}
+
+a.attachment{
+	text-decoration: none;
+	font-size:14px;
+	color:#606060;
+}
+a.cancel:before,a.download:before ,a.attachment:before{
+	font-family:"iconfont" !important;
+	font-size:14px;
+	font-style:normal;
+	-webkit-font-smoothing: antialiased;
+}
+a.cancel:before { content: "\e767"; }
+a.download:before { content: "\e652"; }
+a.attachment:before { content: "\e6c2"; }
+a.cancel {
+	/*background: url(../images/cancel.png) 0 1px no-repeat;*/
+	background: #ccc;
+	padding: 2px 4px;;
+	border-radius: 2px;
+	color: #333;
+	height: 14px;
+	margin-left: 8px;
+	overflow: hidden;
+	/*padding-left:  18px;*/
+	text-decoration:none;
+}
+a.download{
+	/*background: url(../images/arrow.png) 0 1px no-repeat;*/
+	background: #ccc;
+	padding: 2px 4px;;
+	border-radius: 2px;
+	color: #333;
+	height: 14px;
+	margin-left: 8px;
+	overflow: hidden;
+	/*padding-left: 18px;*/
+	text-decoration:none;
+}
+
+a.attachment:hover{
+	text-decoration: underline;
+}
+
+body .panel-detail{margin:0;}
+.taskStartB div[type="custform"],div[type="custform"],.printForm .panel-detail{
+	margin:0 20px 5px 20px;
+	font-size: 18px;
+}
+body .formTable,.printForm .formTable table
+,.printForm .formTable thead
+,.printForm .formTable tbody
+,.printForm .formTable tr
+,.printForm .formTable td
+,.printForm .formTable th
+,.printForm .formTable p
+,.printForm .formTable div {
+	box-sizing: border-box;
+}
+body .formTable,.printForm .formTable{
+	border:1px solid #ddd ;border-collapse :collapse;width:1000px;text-align:center;
+	font-size: 12px; color:#555;
+	margin: 0 auto;
+}
+body .formTable  .l-text-wrapper .validError,
+.printForm .formTable  .l-text-wrapper .validError{ margin: 1px; border-radius: 0;
+	border: 1px solid red !important;
+}
+.taskStartB .validError ,
+.printForm .validError {
+	border-top:1px solid #fff!important;
+	border-top:1px solid rgba(255,255,255,0)!important;
+	border-left:1px solid #fff!important;
+	border-left:1px solid rgba(255,255,255,0)!important;
+	border-right:1px solid #fff!important;
+	border-right:1px solid rgba(255,255,255,0)!important;
+	border-bottom: 1px solid red !important;
+}
+body .formTable  .l-text-wrapper .validError.validYz,
+.printForm .formTable  .l-text-wrapper .validError.validYz{border: 0 !important}
+
+.taskStartB .validError.validYz,
+.printForm .validError.validYz{
+	border-top:1px solid #fff!important;
+	border-top:1px solid rgba(255,255,255,0)!important;
+	border-left:1px solid #fff!important;
+	border-left:1px solid rgba(255,255,255,0)!important;
+	border-right:1px solid #fff!important;
+	border-right:1px solid rgba(255,255,255,0)!important;
+	border-bottom: 1px solid #666 !important;
+}
+
+body .formTable th,body .formTable td
+,.printForm .formTable th,.printForm .formTable td {
+	border: 1px solid #ddd;
+}
+body .formTableWN th,body .formTableWN td
+,.printForm .formTableWN th,.printForm .formTableWN td {
+	text-align: center;
+}
+body .formTableWN th,body .formTableWN td
+,.printForm .formTableWN th,.printForm .formTableWN td {
+	text-align: left;
+}
+
+body .formTable input[type="text"] + span.red,
+body .formTable input[parser="dicttable"] + span.red,
+body .formTable textarea + span.red,
+.printForm .formTable input[type="text"] + span.red,
+.printForm .formTable textarea + span.red {
+	display: none;
+}
+body .formTable input[type="text"].validError  + span.red,
+body .formTable input[parser="dicttable"].validError  + span.red,
+body .formTable textarea.validError  + span.red,
+.printForm .formTable input[type="text"].validError  + span.red,
+.printForm .formTable textarea.validError  + span.red
+	/*body .formTable input[type="text"].validYz  + span.red,*/
+	/*body .formTable input[parser="dicttable"].validYz  + span.red,*/
+	/*body .formTable textarea.validYz  + span.red,*/
+	/*.printForm .formTable input[type="text"].validYz  + span.red,*/
+	/*.printForm .formTable textarea.validYz  + span.red */
+{
+	display: inline;
+}
+body .formTableWN  .l-text-wrapper{margin:0 auto;}
+body .formTable input[type="text"],
+body .formTable input[parser="dicttable"],
+body .formTable textarea,
+.printForm .formTable input[type="text"],
+.printForm .formTable textarea
+{
+	border:1px solid #fff;
+	border:1px solid rgba(255,255,255,0);
+	outline:0;
+	border-bottom:1px solid #666;
+	outline:none;
+	font-size: 18px;
+	border-radius:0;
+	float: inherit;
+}
+body .formTable select,.printForm .formTable select{
+	border:1px solid #666;
+	outline:none;
+	font-size: 18px;
+	border-radius:0;
+	float: inherit;
+}
+body .formTable input[type="text"]:focus,
+body .formTable textarea:focus,
+body .formTable select:focus,
+.printForm .formTable input[type="text"]:focus,
+.printForm .formTable textarea:focus,
+.printForm .formTable select:focus{
+	/*box-shadow: 0 0 2px #a3c0e8;*/
+	/*border-bottom: 1px solid #000;*/
+	border-top:1px solid #fff!important;
+	border-top:1px solid rgba(255,255,255,0)!important;
+	border-left:1px solid #fff!important;
+	border-left:1px solid rgba(255,255,255,0)!important;
+	border-right:1px solid #fff!important;
+	border-right:1px solid rgba(255,255,255,0)!important;
+}
+
+body .formTable  div[type="subtable"] div[formtype="edit"],
+.printForm .formTable  div[type="subtable"] div[formtype="edit"]{margin: 5px 0}
+
+/* body .formTable input[type="text"][disabled="disabled"],
+body .formTable textarea[disabled="disabled"],
+body .formTable select[disabled="disabled"],
+.printForm .formTable input[type="text"][disabled="disabled"],
+.printForm .formTable textarea[disabled="disabled"],
+.printForm .formTable select[disabled="disabled"]{
+	background:#f9f9f9;
+	background:#fff;
+    border: 1px solid #f2f2f2;
+    }
+*/
+
+body .formTable input[type="text"][disabled="disabled"],
+body .formTable textarea[disabled="disabled"],
+body .formTable select[disabled="disabled"],
+.printForm .formTable input[type="text"][disabled="disabled"],
+.printForm .formTable textarea[disabled="disabled"],
+.printForm .formTable select[disabled="disabled"]{
+	/* background:#f9f9f9;
+    border: 1px solid #f2f2f2; */
+	background:#fff;
+	border: none !important;
+	resize: none;
+}
+.l-text-disabled,
+div[type="custform"] .formTable .l-text.l-text-disabled,
+.printForm .formTable .l-text.l-text-disabled,
+.l-text-disabled .l-text-field,.l-text-disabled .l-trigger-icon,
+body .formTable .l-text-disabled .l-trigger, .printForm .formTable .l-text-disabled .l-trigger{
+	background:none;
+	border: none;
+}
+body .formTable .subTableToolBar a.link,
+.printForm .formTable .subTableToolBar a.link
+{  margin-top: 6px;background: none; border: 0;}
+
+body .formTable .subTableToolBar,
+.printForm .formTable .subTableToolBar {
+	border:0 ;
+	text-align: center;
+	font-weight: normal;
+	background:none;
+}
+
+body .link:before,
+.printForm .link:before{font-style: 14px;position: relative;display:inline;margin-right:4px;}
+
+body .subTableToolBar .link:before,
+.printForm .subTableToolBar .link:before{	top:0;}
+
+body .subTableToolBar  a.link ,
+.printForm .subTableToolBar  a.link { float: inherit;line-height: 40px;}
+
+body .inputText,
+.printForm .inputText,body .formTable input[type="text"],body .formTable input[parser="dicttable"]{padding: 0 5px;}
+
+body  select,
+body .formTable  .select,
+body  input[type="text"],
+.printForm  select,
+.printForm .formTable  .select,
+.printForm  input[type="text"],body .formTable input[type="text"],body .formTable input[parser="dicttable"]{
+	line-height: 24px ;
+	height: 24px ;
+	max-width: 90%;
+	width: 90%;
+	text-align: center;
+}
+
+body  .l-text-wrapper,
+.printForm  .l-text-wrapper{margin: 2px;}
+
+body .formTable  input[ctltype="selector"],
+body .formTable  input[ctltype="flowSelector"],
+body .listTable  input[ctltype="selector"],
+body .listTable  input[ctltype="flowSelector"],
+.printForm .formTable  input[ctltype="selector"],
+.printForm .formTable  input[ctltype="flowSelector"],
+.printForm .listTable  input[ctltype="selector"],
+.printForm .listTable  input[ctltype="flowSelector"]
+{float:inherit}
+
+body .formTable  a.link,
+body .listTable .link,
+.printForm .formTable  a.link,
+.printForm .listTable .link{
+	padding: 5px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	width:auto;
+	line-height: 26px;
+	height: 24px;
+	margin: 2px;
+	color: #fff;
+	border: 1px solid #9fabb3;
+	background:#9fabb3;
+	display: initial; float:inherit;
+	overflow: hidden;}
+
+body .formTable .subTableToolBar a.add {background: #9fabb3 !important;border: 1px solid #9fabb3 !important;}
+body .formTable a.add {padding: 5px 10px;}
+
+body .formTable .subTableToolBar a.add:hover {border: 1px solid #21abf6;background:#21abf6;}
+body .formTable  a.link:hover,
+.printForm .formTable  a.link:hover{ border: 1px solid #21abf6;background:#21abf6;}
+
+#frmWorkFlow {width: 100%; margin: 0 auto;}
+.taskStartB #frmWorkFlow #topNav{margin-left: 20px;}
+.taskStartB #frmWorkFlow #topNav div.panel-top .panel-toolbar>.toolBar{border-bottom: 0;}
+.noprint .panel-toolbar a.link,.noprint  .panel-toolbar button.link{ padding: 0 15px;}
+.taskStartB body .formTable {margin:0px;}
+
+
+body .formTable .l-text,.printForm .formTable .l-text{border:1px solid #ddd;border-radius:0;}
+body .formTable .l-trigger,.printForm .formTable .l-trigger{    border:1px solid #ccc; background:#f2f2f2;border-radius:0;}
+body .formTable  .l-trigger-hover,.printForm .formTable  .l-trigger-hover{border:1px solid #AECAF0; background:#DBEBFF url('../images/controls/bg-trigger.gif') repeat-x left;}
+body .formTable .l-box-select-grid,.printForm .formTable .l-box-select-grid{border-bottom:1px solid #ddd;border-right:1px solid #ddd;}
+body .formTable .l-box-select-grid td,.printForm .formTable .l-box-select-grid td{padding:0;margin:0;height:22px; line-height:22px; border-left:1px solid #ddd;border-top:1px solid #ddd; }
+.l-box-select{border:1px solid #666;border-radius:0;}
+
+body .formTable .l-trigger,
+body .formTable .l-trigger-hover,
+body .formTable .l-trigger-pressed,
+.printForm .formTable .l-trigger,
+.printForm .formTable .l-trigger-hover,
+.printForm .formTable .l-trigger-pressed{border-radius:0;}
+
+body .formTable select,.printForm .formTable select{	width: 250px;margin: 2px;height: 26px;line-height: 26px;}
+body .formTable input,body .formTable textarea,
+.printForm .formTable input,.printForm .formTable textarea {
+	/*width:238px;*/
+	margin:2px;
+}
+.taskStartB .formTable  input[type="text"]{/*width:238px;*/}
+
+body .formTable .listRow select,
+body .formTable .listRow input,body .formTable .listRow  textarea,
+.printForm .formTable .listRow select,
+.printForm .formTable .listRow input,.printForm .formTable .listRow  textarea{
+	width:90%;min-width:100px;max-width:238px;
+}
+body .listTable input[type="text"],.printForm .listTable input[type="text"]{width:90%;min-width:100px;max-width:238px;}
+body .formTable .listRow select,.printForm .formTable .listRow select{max-width:250px;}
+body .formTable textarea,.printForm .formTable textarea{max-width: 90%;width: 90%;/*min-width:238px;*/line-height:20px;text-align: center;}
+body .formTable input[type="radio"],body .formTable input[type="checkbox"],
+.printForm .formTable input[type="radio"],.printForm .formTable input[type="checkbox"] {
+	width: 20px;
+}
+
+body .formTable textarea.l-textarea{
+	border-top:1px solid #fff!important;
+	border-top:1px solid rgba(255,255,255,0)!important;
+	border-left:1px solid #fff!important;
+	border-left:1px solid rgba(255,255,255,0)!important;
+	border-right:1px solid #fff!important;
+	border-right:1px solid rgba(255,255,255,0)!important;
+	border-bottom:1px solid #666;
+	outline:none;resize:none !important;}
+
+
+body .formTableWN select, .printForm .formTableWN select{width:auto;}
+body .formTableWN input[type="text"], body .formTableWN input[parser="dicttable"],
+body .formTableWN textarea, body .formTable select,
+.printForm .formTableWN input[type="text"],
+.printForm .formTableWN textarea, .printForm .formTable select{ text-align: inherit;}
+body .formTableWN input{ text-align: inherit;}
+.taskStartB .am-btn-success ,
+.taskStartB .am-btn-primary,
+.taskStartB .am-btn-danger,
+.taskStartB .am-btn-secondary,
+.taskStartB .am-btn-warning{
+	border-color: #9fabb3;background: #9fabb3;padding: 0 10px;min-width:60px;line-height: 30px;
+}
+.taskStartB .toolBar>.group,.taskStartB .toolBar>.l-bar-separator{margin: 0}
+.taskStartB .panel-toolbar .group a{margin: 0 10px 0 0;}
+.taskStartB #topNavWrapper .group a.save.am-btn.am-btn-secondary{display: none;}
+.taskStartB .am-btn-success.am-active,
+.taskStartB .am-btn-success:hover,
+.taskStartB .am-btn-success:focus,
+.taskStartB .am-btn-success:active,
+
+.taskStartB .am-btn-primary.am-active,
+.taskStartB .am-btn-primary:hover,
+.taskStartB .am-btn-primary:focus,
+.taskStartB .am-btn-primary:active,
+
+.taskStartB .am-btn-danger.am-active,
+.taskStartB .am-btn-danger:hover,
+.taskStartB .am-btn-danger:focus,
+.taskStartB .am-btn-danger:active,
+
+.taskStartB .am-btn-secondary.am-active,
+.taskStartB .am-btn-secondary:hover,
+.taskStartB .am-btn-secondary:focus,
+.taskStartB .am-btn-secondary:active,
+
+.taskStartB .am-btn-warning.am-active,
+.taskStartB .am-btn-warning:hover,
+.taskStartB .am-btn-warning:focus,
+.taskStartB .am-btn-warning:active
+{
+	border-color: #21abf6;background: #21abf6;padding: 0 10px;min-width:60px;line-height: 30px;
+}
+td.formHead,td.tdHead{
+	border-top:1px solid #fff !important ;
+	border-left:1px solid #fff !important ;
+	border-right:1px solid #fff !important ;
+	text-align: center;
+	font-size: 16px;
+	font-weight: normal;
+	background: #fff;
+	height: 45px;
+	line-height: 45px;
+	color: #333;
+	font-weight: bold;
+}
+
+td.tdHead{ text-align: left;}
+td.teamHead{
+	border:1px solid #ddd;
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+	background-color:#f3f3f3;
+	height: 32px;
+	color: #555;
+	padding: 0 15px;
+}
+body .listTable td.formHead,body .listTable  td.tdHead{
+	border:1px solid #fff;
+	border-bottom:1px solid #ddd ;
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+	background-color:#fff;
+	height: 32px;
+	color: #333;
+}
+
+body .listTable .firstRow .link{float: inherit;overflow: inherit; margin: 0 10px;}
+body .listTable .firstRow .link span{color: #fff !important;}
+body .listTable .firstRow .link:before{top:0}
+
+body div[type="subtable"]{ padding-bottom: 15px;}
+
+.window-table{
+	width:50%;
+	padding: 0;
+	margin: 0;
+	margin-top:15px;
+	border-collapse:collapse;
+}
+
+.window-table th{
+	width:40%;
+	font-size: 13px;
+	border: 1px solid #A8CFEB;
+	background: #EDF6FC;
+	font-size:13px;
+	padding: 6px 6px 6px 12px;
+}
+
+.window-table td{
+	width:60%;
+	border: 1px solid #A8CFEB;
+	background: #fff;
+	font-size:12px;
+	padding: 6px 6px 6px 12px;
+}
+
+.blocktable {
+	width:100%;
+	padding: 0;
+	margin: 0;
+	margin-top:15px;
+	/* border-collapse:collapse; */
+}
+
+.blocktable th {
+	font-size: 13px;
+	border: 1px solid #B8B8B8;
+	background: #ebeff1;
+	font-size:13px;
+	/* padding: 6px 6px 6px 12px; */
+}
+
+.blocktable td{
+	border: 1px solid #B8B8B8;
+	background: #fff;
+	font-size:12px;
+	/* padding: 6px 6px 6px 12px; */
+}
+
+.datepicker input{
+	width:130px;
+	background: url(../images/datePicker.png) no-repeat scroll right center #FFFFFF;
+	border: 1px solid #ddd ;
+	height: 20px;
+}
+
+.dictionary input{
+	width:130px;
+	background: url(../images/control-270.png) no-repeat scroll right center #FFFFFF;
+	border: 1px solid #ddd ;
+	height: 20px;
+}
+
+td.formTitle{
+	padding:2px 15px;
+	border:1px solid #ddd ;
+	/* background-color:#ebeff1; */
+	text-align: right;
+	height: 28px;
+	/* vertical-align:top; */
+}
+.formTableWN td.formTitle{
+	text-align: center;
+}
+td.formTitle .red{font-size: 14px;}
+td.formInput{
+	padding:2px 4px;border:1px solid #ddd ;
+	background-color:white;
+	text-align: left;
+}
+
+table.listTable{
+	border-collapse :collapse;width:100%;text-align:center;
+	font-size: 12px;
+}/*border:1px solid #ddd ;*/
+
+table.listTable tr.headRow{
+	height: 32px;
+}
+
+.headRow th{
+	height:32px;
+	text-align: left;
+	background-color: #F0F1F1;
+	padding:4px 4px 4px 4px;
+	border:solid 1px #ddd ;
+}
+
+.listRow td{
+	text-align: left;
+	border:solid 1px #ddd ;
+	padding:4px 4px 4px 4px;
+}
+
+table.listTable tr.toolBar{
+	height: 32px;
+}/*background-color: #ddd ;*/
+
+table.listTable tr.toolBar td{
+
+	text-align: left;
+	padding-left: 4px;
+}/*border:1px solid #ddd ;*/
+
+table.listTable th{
+	border:1px solid #ddd ;
+	text-align: center;
+	height: 25px;
+	font-size:12px;
+	background-color:#f3f3f3;
+	font-weight:bold;
+
+}
+
+/*婵°倗濮撮惌渚�鎯佹径灞惧仒闁靛鍎辩粈瀣倵濞戞瑯娈曟い鏂跨焸瀵棄鐣￠幍顔绢攨*/
+label.error {
+	background: url(../images/valid/unchecked.gif) no-repeat 0px 0px;
+	margin-left: 16px;
+	padding-left: 16px;
+	padding-bottom: 2px;
+	font-weight: bold;
+	color: #EA5200;
+}
+
+table.listTable tr.listRow td{
+	border:1px solid #ddd ;
+	text-align: center;
+	height: 23px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.taskopinion{
+	display:inline-block;
+	padding:3px;
+	width:600px;
+	height:50px;
+	border:1px dashed #000;
+	background:url(../images/taskopinion_logo.png) 5px 0px no-repeat;
+}
+
+.taskopinion input{
+	border:none;
+	width:1px;
+	height:1px;
+}
+
+.flowchart{
+	display:inline-block;
+	padding:3px;
+	width:600px;
+	height:300px;
+	border:1px dashed #000;
+	background:url(../images/flowchart_logo.png) 5px 0px no-repeat;
+}
+
+.flowchart input{
+	border:none;
+	width:1px;
+	height:1px;
+}
+
+.office-div{
+	width:90%;
+	height:300px;
+	background:url(../images/office_logo.png) 5px 0px no-repeat;
+}
+
+/**
+婵°倗濮撮惌渚�鎯佹径鎰闁规鍠氳ぐ鍧楁煛瀹ュ懎妲荤紒鎲嬫嫹    xcx闂侀潧妫撮幏锟�
+*/
+.webSign-div{
+	width:90%;
+	height:100px;
+	border:1px solid #ddd ;
+	background:url(../images/webSign_logo.png) 5px 0px no-repeat;
+}
+
+.pictureShow-div{
+	width:90%;
+	height:300px;
+	border:1px solid #ddd ;
+	background:url(../images/pictureShow_logo.png) 5px 0px no-repeat;
+}
+/* 
+a.link{
+	padding-left:20px;
+	cursor: pointer;  
+	color: #555555;
+	font-size:12px;
+	
+	text-decoration: none;
+	display:inline-block;
+	<!--[if !IE]-->
+	display:inline;
+	<!--[endif]--> 
+}
+
+a.link.add{
+	background:url(../images/icons/icons_add.png) 0px -1px no-repeat;
+}
+
+a.link.date{
+	background:url(../images/icons/log_btn.png) 0px -1px no-repeat;
+}
+
+a.link.del{
+	background:url(../images/icons/icons_del.png) 0px -1px no-repeat;
+}
+
+a.link.dic{
+	background:url(../images/icons/dictionary.png) 0px -1px no-repeat;
+}
+
+a.link.role{
+	background:url(../images/icon/role.gif) 0px -1px no-repeat;
+}
+a.link.roles{
+	background:url(../images/icon/roles.gif) 0px -1px no-repeat;
+}
+
+a.link.position{
+	background:url(../images/icon/post.gif) 0px -2px no-repeat;
+}
+a.link.positions{
+	background:url(../images/icon/posts.gif) 0px -2px no-repeat;
+}
+a.link.attachement{
+	background:url(../images/icon/attachement.png) 0px -1px no-repeat;
+}
+
+a.link.user{
+	background:url(../images/icon/user.gif) 0px -1px no-repeat;
+}
+
+a.link.users{
+	background:url(../images/icon/users.gif) 0px -1px no-repeat;
+}
+
+a.link.org{
+	background:url(../images/icon/org.gif) 0px -1px no-repeat;
+}
+a.link.orgs{
+	background:url(../images/icon/org.gif) 0px -1px no-repeat;
+}
+
+a.link.actInsts{
+	background:url(../images/icon/actInsts.gif) 0px -1px no-repeat;
+} */
+
+input.hidden{
+	border:none;
+	width:0px;
+	height:0px;
+}
+
+a.extend{
+	padding-left:20px;
+	cursor: pointer;
+	color: blue;
+	font-size:12px;
+	text-decoration: none;
+	display:inline-block;
+<!--[if !IE]-->
+	display:inline;
+<!--[endif]-->
+}
+
+.hidedomain input{
+	border:1px dashed #000;
+	background:url(../images/icon/hidedomain.png) 0 0 no-repeat;
+	width:42px;
+}
+
+.officecontrol input{
+	border:1px dashed #000;
+	width:800px;
+	height:80px;
+	background:url(../images/office_logo.png) 0 0 no-repeat;
+}
+
+/**
+婵°倗濮撮惌渚�鎯佹径鎰闁规鍠氳ぐ鍧楁煛瀹ュ懎妲荤紒鎲嬫嫹    xcx闂侀潧妫撮幏锟�
+*/
+.websigncontrol input{
+	border:1px dashed #000;
+	width:800px;
+	height:80px;
+	background:url(../images/webSign_logo.png) 0 0 no-repeat;
+}
+
+/**
+闂佹悶鍎辨晶鑺ユ櫠閺嶎厼绠崇憸灞解枎閵忋倕纭�闁规鍠氳ぐ鍧楁煛瀹ュ懎妲荤紒鎲嬫嫹    xcx闂侀潧妫撮幏锟�
+*/
+.pictureshowcontrol{
+	border:1px dashed #000;
+	width:400px;
+	height:200px;
+	background:url(../images/pictureShow_logo.png) 0 0 no-repeat;
+}
+
+.subtable{
+	width:100%;
+	/* padding:5px; */
+	border:1px solid #ddd ;
+}
+
+.ckeditor textarea{
+	border:1px dashed #000;
+	width:800px;
+	height:80px;
+	background:url(../images/ckeditor_logo.png) 0 0 no-repeat;
+}
+
+.ckeditor input{
+	border:1px dashed #000;
+	width:800px;
+	height:80px;
+	background:url(../images/ckeditor_logo.png) 0 0 no-repeat;
+}
+
+.myeditor textarea{
+	border:1px dashed #000;
+	width:80px;
+	height:80px;
+	background:url(../images/editor_logo.png) 0 0 no-repeat;
+}
+.myeditor input{
+	border:1px dashed #000;
+	width:800px;
+	height:80px;
+	background:url(../images/editor_logo.png) 0 0 no-repeat;
+}
+/*--闂佺厧顨庢禍婊堟偩閻愵剛鈻曞璺侯儐濞堝爼鏌熺拠鈥虫灍婵☆垰顦辩划鍫ユ晸閿燂拷--*/
+.custom-display{
+	border:1px dashed #000;
+	background-color: silver;
+}
+/*--闂佺厧顨庢禍婊堟偩閻愵剛鈻曞璺虹昂閿熻棄鍟扮划濠氭晬閸曨剙锟斤拷--*/
+.custom-tablemanage{
+	border:1px dashed #000;
+	background-color: silver;
+}
+
+/**闂佸湱鍎ょ敮鎺旇姳閿燂拷*/
+table .tablesort-header{
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+	padding: 4px 20px 4px 4px;
+}
+
+table .tablesort-headerUnSorted{
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+}
+
+table .tablesort-headerAsc{
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	border-bottom: #000 2px solid;
+}
+table .tablesort-headerDesc{
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+	border-bottom: #000 2px solid;
+}
+
+/*--extend start--*/
+a.extend.message{
+	background:url(../images/extendIcon/message.gif) 0px -1px no-repeat;
+}
+
+a.extend.navigation{
+	background:url(../images/extendIcon/navigation.png) 0px -1px no-repeat;
+}
+
+a.extend.remoteupload{
+	background:url(../images/extendIcon/remoteupload.gif) 0px -1px no-repeat;
+}
+
+a.extend.script{
+	background:url(../images/extendIcon/script.gif) 0px -1px no-repeat;
+}
+
+a.extend.stat{
+	background:url(../images/extendIcon/stat.gif) 0px -1px no-repeat;
+}
+
+a.extend.subsys{
+	background:url(../images/extendIcon/subsys.png) 0px -1px no-repeat;
+}
+
+a.extend.task{
+	background:url(../images/extendIcon/task.png) 0px -1px no-repeat;
+}
+
+a.extend.user{
+	background:url(../images/extendIcon/user.png) 0px -1px no-repeat;
+}
+/*--extend end--*/
+
+/*--ueditor闂佹眹鍔岀�氼參鎮ч崡鐑嗗殨闊洦顕径鎰闁跨噦鎷�--*/
+table:not([class],[formtype])>tbody:not([class])>tr:not([class])>td:not([class]){border-style:solid;}
+
+.qrcode{
+	background:url(../images/qrcode128.png) no-repeat;
+	width:128px;
+	height:128px;
+}
+
+/*打印*/
+@media print{
+	.printForm select.approvalitem,.printForm span.commonSelect{display:none !important;}
+}
+
+/**
+富文本框html
+ */
+.html-parser{
+	display: inline-block;
+	width: 300px;
+	min-height: 50px;
+}
+.websign-img{
+	display: block;
+}

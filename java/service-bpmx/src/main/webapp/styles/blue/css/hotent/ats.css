@@ -1,0 +1,166 @@
+/*-----------------------------------------------------------------------------------*/
+/*	toolbar-box 顶部按钮
+/*-----------------------------------------------------------------------------------*/
+.toolbar-box {
+	clear: both;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px solid #ddd;
+	padding: 0px;
+}
+
+.toolbar-box .toolbar-head {
+	/**margin-bottom: 10px;*/
+	border-bottom: 1px solid #ddd;
+	min-height: 45px;
+	background-color: #f4f4f4;
+}
+
+.toolbar-box .toolbar-head .buttons {
+	display: inline-block;
+	padding: 0;
+	margin-left: 10px;
+	margin-bottom: 7px;
+	float: left;
+}
+
+.toolbar-box .buttons>a,.toolbar-box .buttons .btn-group>a {
+	margin-top: 7px !important;
+}
+
+.toolbar-box .toolbar-head .tools {
+	display: inline-block;
+	padding: 0;
+	float: right;
+	min-height: 45px;
+}
+
+.toolbar-box .toolbar-head .tools>a {
+	display: inline-block;
+	font-size: 14px;
+	line-height: 24px;
+	text-decoration: none;
+	color: #c4c4c4;
+	margin-right: 5px;
+	margin-top: 5px;
+}
+
+.toolbar-box .toolbar-head .tools>a :hover {
+	color: #ababab;
+}
+
+.toolbar-box .toolbar-head .tools .label {
+	margin-right: 5px;
+}
+
+.toolbar-box .toolbar-body{
+	margin-top: 10px;
+}
+.toolbar-box .toolbar-body.bg {
+	border-radius: 0 0 4px 4px;
+	padding: 10px;
+	background-color: #FFFFFF;
+	border-left: 1px solid #c4c4c4;
+	border-right: 1px solid #c4c4c4;
+	border-bottom: 1px solid #c4c4c4;
+	margin-top: -15px;
+}
+.toolbar-border-bottom{
+	border-bottom: 0  !important;
+}
+
+.toolbar-box:after,.toolbar-box:before {
+	display: table;
+	color: "";
+}
+
+.panel-title{
+	margin: 5px 15px 0px 15px;
+	border-bottom: 1px solid #e5e5e5;
+	background-color: #f5f5f5;
+	min-height: 41px;
+	line-height: 40px;
+	padding: 0px;
+	padding-left: 5px;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	panel-toolbar
+/*-----------------------------------------------------------------------------------*/
+
+.panel-toolbar {
+	clear: both;
+	padding: 0px;
+	margin:5px 15px 0px 15px;
+	border: 1px solid #ddd;
+	min-height: 45px;
+	background-color: #f4f4f4;
+}
+
+.panel-toolbar .buttons {
+	display: inline-block;
+	padding: 0;
+	margin: 5px 0 5px 10px;
+}
+
+.panel-toolbar.buttons>a {
+	margin-top: 5px !important;
+}
+
+.panel-toolbar:after,.panel-toolbar:before {
+	display: table;
+	color: "";
+}
+
+.panel-toolbar.stuckMenu{
+	z-index: 1000;
+	width: 97.8%;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	panel-form
+/*-----------------------------------------------------------------------------------*/
+.panel-form{
+	border: 1px solid #ddd;
+	padding: 5px;
+}
+.panel-form:first-child{
+	padding-top: 10px;
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	search-form
+/*-----------------------------------------------------------------------------------*/
+.search-form {
+	margin-left: 5px;
+}
+
+.search-form>ul {
+	padding-left: 0;
+	list-style: none;
+}
+
+.search-form ul>li {
+	display: inline-block;
+	padding: 3px 5px 0 5px ;
+}
+
+.search-form ul>li:first-child {
+	padding-left: 5px;
+}
+
+.search-form li>span:not(.button-div) {
+	display: inline-block;
+	margin-bottom: -5px;
+	margin-right: 5px;
+	font-weight: bold;
+	width: 80px;
+	text-align: right;
+	line-height: 20px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.date, .datetime, .datePicker, .wdateTime {
+	background: url(../../images/datePicker.gif) no-repeat scroll right center #FFFFFF;
+	border: 1px solid #999999;
+}
