@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.conference.ConferenceRoom">
+	<resultMap id="ConferenceRoom" type="com.suneee.ucp.me.model.conference.ConferenceRoom">
+		<id property="roomId" column="room_id" jdbcType="NUMERIC"/>
+		<result property="roomName" column="room_name" jdbcType="VARCHAR"/>
+		<result property="region" column="region" jdbcType="NUMERIC"/>
+		<result property="regionName" column="region_name" jdbcType="VARCHAR"/>
+		<result property="location" column="location" jdbcType="VARCHAR"/>
+		<result property="deviceCondition" column="device_condition" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="CLOB"/>
+		<result property="createtime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="create_by" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="update_time" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="update_by" jdbcType="NUMERIC"/>
+		<result property="isDelete" column="ISDELETE" jdbcType="NUMERIC"/>
+        <result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		room_id, room_name, region, location, device_condition, description, create_time, create_by, 
+		update_time, update_by ,ISDELETE,enterprise_code
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+            ISDELETE=0
+			<if test="@Ognl@isNotEmpty(roomId)"> AND room_id  =#{roomId} </if>
+			<if test="@Ognl@isNotEmpty(roomName)"> AND room_name  LIKE #{roomName}  </if>
+			<if test="@Ognl@isNotEmpty(region)"> AND region = #{region} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.conference.ConferenceRoom">
+		INSERT INTO ucp_conference_room
+			(room_id,room_name,region,location,device_condition,description,create_time,create_by,
+			update_time,update_by,ISDELETE,enterprise_code)
+		VALUES
+			(#{roomId,jdbcType=NUMERIC}, #{roomName,jdbcType=VARCHAR}, #{region,jdbcType=NUMERIC}, 
+			#{location,jdbcType=VARCHAR}, #{deviceCondition,jdbcType=VARCHAR}, #{description,jdbcType=CLOB}, 
+			#{createtime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=NUMERIC}, #{updatetime,jdbcType=TIMESTAMP}, 
+			#{updateBy,jdbcType=NUMERIC},#{isDelete,jdbcType=NUMERIC},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		UPDATE ucp_conference_room
+		SET ISDELETE=1
+		WHERE room_id = #{roomId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.me.model.conference.ConferenceRoom">
+		UPDATE ucp_conference_room SET
+			room_name = #{roomName,jdbcType=VARCHAR},
+			region = #{region,jdbcType=NUMERIC},
+			location = #{location,jdbcType=VARCHAR},
+			device_condition = #{deviceCondition,jdbcType=VARCHAR},
+			description = #{description,jdbcType=CLOB},
+			update_time = #{updatetime,jdbcType=TIMESTAMP},
+			update_by = #{updateBy,jdbcType=NUMERIC},
+			ISDELETE = #{isDelete,jdbcType=NUMERIC},
+			enterprise_code = #{enterpriseCode,jdbcType=VARCHAR}
+		WHERE room_id = #{roomId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ConferenceRoom">
+		SELECT <include refid="columns"/>, d.itemname as region_name
+		FROM ucp_conference_room cr
+		LEFT JOIN sys_dic d ON d.dicid=cr.region
+		WHERE room_id = #{roomId}
+	</select>
+	
+	<select id="getAll" resultMap="ConferenceRoom">
+		SELECT <include refid="columns"/>, d.itemname as region_name
+		FROM ucp_conference_room cr
+		LEFT JOIN sys_dic d ON d.dicid=cr.region  
+		<include refid="dynamicWhere" />
+        <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND cr.enterprise_code=#{enterpriseCode} </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY room_id  desc
+		</if>
+	</select>
+	
+	<select id="getByRegion" parameterType="java.util.Map" resultMap="ConferenceRoom">
+		SELECT <include refid="columns"/>
+		FROM ucp_conference_room
+		<!--WHERE region = #{region}-->
+		WHERE ISDELETE = 0
+		<if test="@Ognl@isNotEmpty(region)">
+			AND region = #{region}
+		</if>
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            AND enterprise_code=#{enterpriseCode}
+        </if>
+	</select>
+</mapper>

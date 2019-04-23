@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.eas.oa.dao.scene.RelateProcessDao">
+	<sql id="dbColumns">
+		relId, sceneId, defId, defName, defKey, actDefId, relImgPath, sn
+	</sql>
+	
+	<insert id="save" parameterType="com.suneee.eas.oa.model.scene.RelateProcess">
+		INSERT INTO oa_scene_relateprocess(<include refid="dbColumns"/>)
+		VALUES(
+			#{relId, jdbcType=NUMERIC}, #{sceneId, jdbcType=NUMERIC}, #{defId, jdbcType=NUMERIC}, 
+			#{defName, jdbcType=VARCHAR}, #{defKey, jdbcType=VARCHAR}, #{actDefId, jdbcType=VARCHAR}, 
+			#{relImgPath, jdbcType=VARCHAR}, #{sn, jdbcType=NUMERIC}
+		)
+	</insert>
+	
+	<insert id="batchSave" parameterType="java.util.List">
+		INSERT INTO oa_scene_relateprocess(<include refid="dbColumns"/>)
+		VALUES
+		<foreach collection="list" item="relProcess" separator=",">
+			(#{relProcess.relId, jdbcType=NUMERIC}, #{relProcess.sceneId, jdbcType=NUMERIC}, #{relProcess.defId, jdbcType=NUMERIC}, 
+			 #{relProcess.defName, jdbcType=VARCHAR}, #{relProcess.defKey, jdbcType=VARCHAR}, #{relProcess.actDefId, jdbcType=VARCHAR}, 
+			 #{relProcess.relImgPath, jdbcType=VARCHAR}, #{relProcess.sn, jdbcType=NUMERIC}
+			)
+		</foreach>
+	</insert>
+	
+	<delete id="delBySceneId" parameterType="java.lang.Long">
+		DELETE FROM oa_scene_relateprocess 
+		WHERE sceneId = #{sceneId}
+	</delete>
+	
+	<select id="getBySceneId" parameterType="java.lang.Long" resultType="relateProcess">
+		SELECT <include refid="dbColumns"/>
+		FROM oa_scene_relateprocess 
+		where sceneId = #{sceneId}
+		ORDER BY sn ASC
+	</select>
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.bpm.BpmDefAuthorize">
+	<resultMap id="BpmDefAuthorize" type="com.suneee.platform.model.bpm.BpmDefAuthorize">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="authorizeDesc" column="AUTHORIZE_DESC" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		ID,AUTHORIZE_DESC
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			
+			<if test="@Ognl@isNotEmpty(id)"> 
+				AND ID =#{id} 
+			</if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)">
+				AND ENTERPRISE_CODE =#{enterpriseCode}
+			</if>
+			<if test="@Ognl@isNotEmpty(authorizeType)">
+				AND ID in (SELECT AUTHORIZE_ID FROM BPM_DEF_AUTH_TYPE WHERE AUTHORIZE_TYPE = #{authorizeType} )
+			</if>
+			<if test="@Ognl@isNotEmpty(authorizeDesc)"> 
+			    AND AUTHORIZE_DESC LIKE #{authorizeDesc}  
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerName)">
+			    <if test="@Ognl@isEmpty(defName)">
+			   		AND ID in (SELECT AUTHORIZE_ID FROM BPM_DEF_USER WHERE OWNER_NAME LIKE #{ownerName} )
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(defName)">
+			    <if test="@Ognl@isEmpty(ownerName)">
+				    AND ID in (SELECT AUTHORIZE_ID FROM BPM_DEF_ACT WHERE DEF_NAME LIKE #{defName} )
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerName)">
+			    <if test="@Ognl@isNotEmpty(defName)">
+				    AND ID in (
+				                  SELECT U.AUTHORIZE_ID FROM BPM_DEF_USER U,BPM_DEF_ACT A 
+				                  		WHERE U.AUTHORIZE_ID=A.AUTHORIZE_ID AND U.OWNER_NAME LIKE #{ownerName} AND A.DEF_NAME LIKE #{defName}
+									         )
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(keyword)">
+				<choose>
+					<when test="@Ognl@isNotEmpty(ownerName)">OR</when>
+					<otherwise>AND</otherwise>
+				</choose>
+				(AUTHORIZE_DESC LIKE #{keyword} OR ID in (SELECT AUTHORIZE_ID FROM BPM_DEF_USER WHERE OWNER_NAME LIKE #{keyword}) OR AUTHORIZE_DESC LIKE #{keyword})
+			</if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.bpm.BpmDefAuthorize">
+		INSERT INTO BPM_DEF_AUTHORIZE
+		(ID,AUTHORIZE_DESC,ENTERPRISE_CODE)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{authorizeDesc,jdbcType=VARCHAR},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM BPM_DEF_AUTHORIZE 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.bpm.BpmDefAuthorize">
+		UPDATE BPM_DEF_AUTHORIZE SET 
+		 AUTHORIZE_DESC=#{authorizeDesc,jdbcType=VARCHAR}  
+		WHERE
+		ID=#{id}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="BpmDefAuthorize">
+		SELECT <include refid="columns"/>
+		FROM BPM_DEF_AUTHORIZE
+		WHERE
+		ID=#{id}
+	</select>
+
+	<select id="getByName" resultMap="BpmDefAuthorize">
+		SELECT <include refid="columns"/>
+		FROM BPM_DEF_AUTHORIZE
+		WHERE
+		AUTHORIZE_DESC=#{name}
+		<if test="@Ognl@isNotEmpty(id)">
+			<![CDATA[AND ID<>#{id}]]>
+		</if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND enterprise_code=#{enterpriseCode}
+		</if>
+	</select>
+	
+	<select id="getAll" resultMap="BpmDefAuthorize">
+		SELECT <include refid="columns"/>
+		FROM BPM_DEF_AUTHORIZE
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	
+	
+
+</mapper>

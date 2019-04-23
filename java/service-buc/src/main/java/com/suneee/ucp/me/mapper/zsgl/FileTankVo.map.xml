@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.ucp.me.model.FileTankVo">
+	<sql id="fileTankVoColumns">
+		a.TYPE_NAME as 'documentName',
+		a.RELEASE_TIME as 'uploadTime',
+		a.PROMUlGATOR as 'creator',
+		a.PROMUlGATORNAME as 'creatorName',
+		a.PARENT_ID as 'parentId',
+		a.ID as 'id',
+		a.department_id as 'departmentId',	
+		( IF (( SELECT COUNT(*) FROM UCP_DOCTYPE b WHERE PARENT_ID = a.id ), ( SELECT COUNT(*) FROM UCP_DOCTYPE b WHERE PARENT_ID = a.id ), ( SELECT COUNT(*) FROM UCP_DOCUMENT b WHERE b.DOCTYPE_ID = a.id ))) as 'docuemntSize'
+	</sql>
+	
+		<sql id='fileTankVoColumnsFromDocument'>
+		a.NAME as 'documentName',
+		a.SIZE as 'docuemntSize',
+		a.UPTIME as 'uploadTime',
+		a.UPER as 'creator',
+		a.UPERNAME as 'creatorName',
+		a.PATH as 'documentIPath',
+		a.DOCTYPE_id as 'parentId',
+		a.ID as 'id'
+</sql>
+	
+	<select id="getVoByParentIdAndDepartmentIdAndEid" resultType="com.suneee.ucp.me.model.FileTankVo">
+	SELECT 
+	<include refid="fileTankVoColumns" />
+	FROM (select * from UCP_DOCTYPE where PARENT_ID=2) a WHERE a.PARENT_ID =#{parentId} and a.EID=#{eid}  
+	<if test="@Ognl@isNotEmpty(userId)"> and a.IS_PRIVATE = 1 and a.OWNER=#{userId}</if>
+	<if test="@Ognl@isNotEmpty(departmentId)">and a.department_id = #{departmentId}</if>
+	<if test="@Ognl@isEmpty(departmentId)">and a.department_id is null or a.department_id = ''</if>
+	<if test="@Ognl@isNotEmpty(orderField)">
+		order by a.${orderField} ${orderSeq}
+	</if>
+
+	</select>
+
+	
+	<select id="getVoByParentId" resultType="com.suneee.ucp.me.model.FileTankVo">
+	SELECT 
+	<include refid="fileTankVoColumns" />
+	FROM UCP_DOCTYPE a WHERE a.PARENT_ID =#{parentId} and a.EID =#{eid}
+	<if test="@Ognl@isNotEmpty(userId)"> and a.IS_PRIVATE = 1 and a.OWNER=#{userId}</if>
+	<if test="@Ognl@isNotEmpty(orderField)">
+		order by a.${orderField} ${orderSeq}
+	</if>
+	 </select>
+	
+	<select id="getDocument" parameterType="java.util.Map" resultType="com.suneee.ucp.me.model.FileTankVo">
+	SELECT
+	<include refid="fileTankVoColumnsFromDocument" />	 
+	FROM UCP_DOCUMENT a 
+	 WHERE  a.DOCTYPE_ID=#{parentId} and a.EID=#{eid} <if test="@Ognl@isNotEmpty(userId)"> and a.UPER=#{userId}</if>
+	<if test="@Ognl@isNotEmpty(orderField)">
+		order by a.${orderField} ${orderSeq}
+	</if>
+	</select>
+</mapper>

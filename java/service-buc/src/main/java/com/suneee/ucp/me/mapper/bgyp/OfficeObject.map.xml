@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.OfficeObject">
+	
+	<resultMap type="com.suneee.ucp.me.model.OfficeObject" id="OfficeObject">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="object_name" property="objectName" jdbcType="VARCHAR" />
+		<result column="specification" property="specification" jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="store" property="store" jdbcType="INTEGER" />
+		<result column="area" property="area" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		
+		<result column="create_time" property="createtime" jdbcType="VARCHAR" />
+		<result column="create_by" property="createBy" jdbcType="BIGINT" />
+		<result column="update_time" property="updatetime" jdbcType="VARCHAR" />
+		<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="baseColumn">
+		id, type, object_name, specification,
+		creator, store, area, remark, create_time, create_by, update_time, 
+		update_by
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(objectName)"> AND object_name LIKE CONCAT(CONCAT('%', #{objectName}), '%')</if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type = #{type}</if>
+			<if test="@Ognl@isNotEmpty(area)"> AND area = #{area}</if>
+		</where>
+	</sql>
+	
+	<!-- 获取类型列表 -->
+	<select id="query" resultMap="OfficeObject">
+		select <include refid="baseColumn"></include>
+		from ucp_bgyp_object
+		where type = #{type} 
+		and object_name = #{objectName}
+		and specification = #{specification}
+	</select>
+	
+	<!-- <sql id="sqlJoin">
+		LEFT JOIN ucp_bgyp_type b on a.type = b.id
+	</sql> -->
+	
+	<!-- 获取办公用品领用列表 -->
+	<select id="getAll" resultMap="OfficeObject">
+		select <include refid="baseColumn"></include>
+		from ucp_bgyp_object 
+		<include refid="dynamicWhere"></include>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by create_time
+		</if>
+		
+	</select>
+	
+	<select id="getById" resultMap="OfficeObject">
+		SELECT
+		<include refid="baseColumn" />
+		FROM ucp_bgyp_object
+		WHERE id = #{id}
+	</select>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.OfficeObject">
+		insert into ucp_bgyp_object (<include refid="baseColumn"/>)
+		value(
+			#{id}, 
+			#{type}, 
+			#{objectName}, 
+			#{specification}, 
+			#{creator}, 
+			#{store}, 
+			#{area}, 
+			#{remark}, 
+			#{createtime}, 
+			#{createBy}, 
+			#{updatetime}, 
+			#{updateBy});
+	</insert>
+
+	<update id="update" parameterType="com.suneee.ucp.me.model.OfficeObject">
+		update ucp_bgyp_object 
+		set 
+			store = #{store},
+			update_time = #{updatetime},
+			update_by = #{updateBy}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delById">
+		DELETE FROM ucp_bgyp_object WHERE ID=#{ID}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM ucp_bgyp_object WHERE ID IN
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 获取类型列表 -->
+	<select id="typeList" resultMap="OfficeObject">
+		select DISTINCT(type)
+		from ucp_bgyp_object
+	</select>
+	
+	<!-- 获取类型列表 -->
+	<select id="queryType" resultMap="OfficeObject">
+		select type
+		from ucp_bgyp_object
+		where type = #{type}
+	</select>
+	
+	<!-- 获取物品列表 -->
+	<select id="nameList" parameterType="string" resultMap="OfficeObject">
+		select DISTINCT(object_name)
+		from ucp_bgyp_object 
+		where type = #{type}
+	</select>
+	
+	<!-- 获取规格列表 -->
+	<select id="specificationList" parameterType="com.suneee.ucp.me.model.OfficeObject" resultMap="OfficeObject">
+		select specification
+		from ucp_bgyp_object
+		where type = #{type}
+		and object_name = #{objectName}
+	</select>
+	
+	<!-- 获取规格列表 -->
+	<select id="areaList" resultMap="OfficeObject">
+		select DISTINCT(area)
+		from ucp_bgyp_object
+	</select>
+	
+	
+</mapper>

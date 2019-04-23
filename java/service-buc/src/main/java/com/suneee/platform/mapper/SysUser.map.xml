@@ -1,0 +1,1130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.platform.model.system.SysUser">
+    <resultMap id="SysUser" type="com.suneee.platform.model.system.SysUser">
+        <id property="userId" column="userId" jdbcType="NUMERIC"/>
+        <result property="fullname" column="fullname" jdbcType="VARCHAR"/>
+        <result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="isExpired" column="isExpired" jdbcType="NUMERIC"/>
+        <result property="isLock" column="isLock" jdbcType="NUMERIC"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="NUMERIC"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="weixinid" column="weixinid" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="picture" column="picture" jdbcType="VARCHAR"/>
+        <result property="fromType" column="fromType" jdbcType="NUMERIC"/>
+        <result property="hasSyncToWx" column="hasSyncToWx" jdbcType="NUMERIC"/>
+        <result property="entryDate" column="entrydate" jdbcType="TIMESTAMP"/>
+        <result property="userStatus" column="userStatus" jdbcType="VARCHAR"/>
+        <result property="syncToUc" column="sync_to_uc" jdbcType="NUMERIC"/>
+        <result property="ucUserid" column="uc_userid" jdbcType="NUMERIC"/>
+        <result property="pwdUpdTime" column="pwdUpdTime" jdbcType="TIMESTAMP"/>
+        <result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+        <result property="identification" column="identification" jdbcType="VARCHAR"/>
+        <result property="attendNo" column="attend_no" jdbcType="NUMERIC"/>
+        <result property="workDate" column="work_date" jdbcType="DATE"/>
+        <result property="orgName" column="orgname" jdbcType="VARCHAR"/>
+        <result property="region" column="region" jdbcType="VARCHAR"/>
+        <result property="regionName" column="regionName" jdbcType="VARCHAR"/>
+        <result property="sn" column="sn" jdbcType="NUMERIC"/>
+        <result property="webSignUrl" column="webSignUrl" jdbcType="VARCHAR"/>
+        <result property="loginAccount" column="login_account" jdbcType="VARCHAR"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="createby" jdbcType="NUMERIC"/>
+        <result property="updateBy" column="updateby" jdbcType="NUMERIC"/>
+        <result property="userPosId" column="USERPOSID" jdbcType="NUMERIC"/>
+        <result property="orgId" column="ORGID" jdbcType="NUMERIC"/>
+        <result property="posId" column="POSID" jdbcType="NUMERIC"/>
+        <result property="jobId" column="JOBID" jdbcType="NUMERIC"/>
+        <result property="userId" column="USERID" jdbcType="NUMERIC"/>
+        <result property="isPrimary" column="ISPRIMARY" jdbcType="NUMERIC"/>
+        <result property="isCharge" column="ISCHARGE" jdbcType="NUMERIC"/>
+        <result property="isDelete" column="ISDELETE" jdbcType="NUMERIC"/>
+        <result property="jobName" column="jobName" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+        <result property="headImgPath" column="headImgPath" jdbcType="VARCHAR"/>
+        <result property="signature" column="signature" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="columns">
+		userId, fullname, alias_name, account, password, isExpired, isLock, createtime, status, email, mobile, phone, sex, picture,
+		fromType, entryDate, userStatus, sync_to_uc, pwdUpdTime, hasSyncToWx, weixinid, staff_no, identification, attend_no, work_date,
+		uc_userid, region,sn,webSignUrl,login_account,updatetime, updateby, createby,headImgPath,birthday,signature
+	</sql>
+    <sql id="concatFullNameHa">
+		a.userId,a.fullname,a.alias_name as aliasName,a.account,a.password,a.isExpired,a.isLock,a.createtime,a.status,a.email,a.mobile,a.phone,
+		a.sex,a.picture,a.fromType,a.entryDate,a.userStatus,a.sync_to_uc,a.pwdUpdTime,a.hasSyncToWx,a.weixinid,a.staff_no,
+		a.identification,a.attend_no,a.work_date,a.uc_userid,a.region,a.sn,a.webSignUrl,a.login_account,a.updatetime,
+		a.updateby, a.createby
+	</sql>
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(userId)">AND a.userId =#{userId}</if>
+            <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+            <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+            <if test="@Ognl@isNotEmpty(isExpired)">AND a.isExpired =#{isExpired}</if>
+            <if test="@Ognl@isNotEmpty(isLock)">AND a.isLock =#{isLock}</if>
+            <if test="@Ognl@isNotEmpty(createtime)">AND a.createtime=#{createtime}</if>
+            <if test="@Ognl@isNotEmpty(status)">AND a.status =#{status}</if>
+            <if test="@Ognl@isNotEmpty(email)">AND a.email LIKE #{email}</if>
+            <if test="@Ognl@isNotEmpty(mobile)">AND a.mobile LIKE #{mobile}</if>
+            <if test="@Ognl@isNotEmpty(phone)">AND a.phone LIKE #{phone}</if>
+            <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE {sex}</if>
+            <if test="@Ognl@isNotEmpty(fromType)">AND a.fromType = #{fromType}</if>
+            <if test="@Ognl@isNotEmpty(entryDate)">AND a.entrydate LIKE #{entryDate}</if>
+            <if test="@Ognl@isNotEmpty(userStatus)">AND a.userStatus LIKE #{userStatus}</if>
+            <if test="@Ognl@isNotEmpty(hasSyncToWx)">AND a.hasSyncToWx = #{hasSyncToWx}</if>
+            <if test="@Ognl@isNotEmpty(syncToUc)">AND a.sync_to_uc = #{syncToUc}</if>
+            <include refid="webSignWhere"/>
+            <if test="@Ognl@isEmpty(status)">AND a.status != -1</if>
+        </where>
+    </sql>
+    <sql id="webSignWhere">
+        <if test="@Ognl@isNotEmpty(hasWebSign)">
+            <![CDATA[AND (a.webSignUrl IS NOT NULL AND a.webSignUrl <>'')]]>
+        </if>
+        <if test="@Ognl@isNotEmpty(noWebSign)">
+            <![CDATA[AND (a.webSignUrl IS NULL OR a.webSignUrl ='')]]>
+        </if>
+    </sql>
+    <insert id="add" parameterType="com.suneee.platform.model.system.SysUser">
+        INSERT INTO sys_user
+        (<include refid="columns"/>)
+        VALUES
+        (#{userId,jdbcType=NUMERIC}, #{fullname,jdbcType=VARCHAR}, #{aliasName,jdbcType=VARCHAR},
+        #{account,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR}, #{isExpired,jdbcType=NUMERIC}, #{isLock,jdbcType=NUMERIC},
+        #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=NUMERIC}, #{email,jdbcType=VARCHAR},
+        #{mobile,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+        #{picture,jdbcType=VARCHAR}, #{fromType,jdbcType=NUMERIC},#{entryDate,jdbcType=TIMESTAMP},
+        #{userStatus,jdbcType=VARCHAR}, #{syncToUc,jdbcType=NUMERIC},#{pwdUpdTime,jdbcType=TIMESTAMP},
+        #{hasSyncToWx,jdbcType=NUMERIC},#{weixinid,jdbcType=VARCHAR}, #{staffNo, jdbcType=VARCHAR},
+        #{identification, jdbcType=VARCHAR}, #{attendNo, jdbcType=NUMERIC}, #{workDate, jdbcType=DATE},
+        #{ucUserid, jdbcType=NUMERIC}, #{region, jdbcType=VARCHAR},#{sn,jdbcType=NUMERIC},
+        #{webSignUrl, jdbcType=VARCHAR}, #{loginAccount, jdbcType=VARCHAR},#{updatetime, jdbcType=TIMESTAMP},
+        #{createBy, jdbcType=NUMERIC}, #{updateBy, jdbcType=NUMERIC},#{headImgPath,jdbcType=VARCHAR},#{birthday,jdbcType=VARCHAR},#{signature,jdbcType=VARCHAR})
+    </insert>
+    <delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_user
+		WHERE
+		userId=#{userId}
+	</delete>
+    <update id="update" parameterType="com.suneee.platform.model.system.SysUser">
+		UPDATE sys_user
+		SET
+			fullname=#{fullname,jdbcType=VARCHAR} ,
+			alias_name=#{aliasName,jdbcType=VARCHAR} ,
+			account=#{account,jdbcType=VARCHAR} ,
+			password=#{password,jdbcType=VARCHAR} ,
+			isExpired=#{isExpired,jdbcType=NUMERIC} ,
+			isLock=#{isLock,jdbcType=NUMERIC} ,
+			status=#{status,jdbcType=NUMERIC} ,
+			email=#{email,jdbcType=VARCHAR} ,
+			mobile=#{mobile,jdbcType=VARCHAR} ,
+			phone=#{phone,jdbcType=VARCHAR} ,
+			sex=#{sex,jdbcType=VARCHAR} ,
+			picture=#{picture,jdbcType=VARCHAR},
+			fromType=#{fromType,jdbcType=NUMERIC},
+			entrydate=#{entryDate,jdbcType=TIMESTAMP},
+			userStatus=#{userStatus,jdbcType=VARCHAR},
+			pwdUpdTime=#{pwdUpdTime,jdbcType=TIMESTAMP},
+			hasSyncToWx =#{hasSyncToWx,jdbcType=NUMERIC},
+			weixinid =#{weixinid,jdbcType=VARCHAR},
+			staff_no = #{staffNo, jdbcType=VARCHAR},
+			identification = #{identification, jdbcType=VARCHAR},
+			attend_no = #{attendNo, jdbcType=NUMERIC},
+			work_date = #{workDate, jdbcType=DATE},
+			uc_userid= #{ucUserid, jdbcType=NUMERIC},
+			region = #{region, jdbcType=VARCHAR},
+			sn = #{sn,jdbcType=NUMERIC},
+			login_account = #{loginAccount, jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby = #{updateBy, jdbcType=NUMERIC},
+			headImgPath=#{headImgPath,jdbcType=VARCHAR},
+			birthday=#{birthday,jdbcType=VARCHAR},
+			signature=#{signature,jdbcType=VARCHAR}
+		WHERE userId=#{userId,jdbcType=VARCHAR}
+	</update>
+    <update id="updateCommon" parameterType="com.suneee.platform.model.system.SysUser">
+		UPDATE sys_user
+		SET
+			fullname=#{fullname,jdbcType=VARCHAR} ,
+			sex=#{sex,jdbcType=VARCHAR} ,
+			email=#{email,jdbcType=VARCHAR} ,
+			weixinid =#{weixinid,jdbcType=VARCHAR},
+			mobile=#{mobile,jdbcType=VARCHAR} ,
+			phone=#{phone,jdbcType=VARCHAR} ,
+			picture=#{picture,jdbcType=VARCHAR},
+			webSignUrl=#{webSignUrl,jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby =  #{updateBy, jdbcType=NUMERIC}
+		WHERE userId=#{userId}
+	</update>
+    <update id="updPwd" parameterType="java.util.Map">
+		UPDATE sys_user
+		SET
+			password=#{password,jdbcType=VARCHAR},
+			pwdUpdTime=#{pwdUpdTime,jdbcType=TIMESTAMP},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby =  #{updateBy, jdbcType=NUMERIC}
+		WHERE userId=#{userId}
+	</update>
+    <update id="updStatus" parameterType="java.util.Map">
+        UPDATE sys_user SET
+        <if test="isLock != null">
+            isLock=#{isLock,jdbcType=NUMERIC} ,
+        </if>
+        status=#{status,jdbcType=NUMERIC} ,
+        updatetime = #{updatetime, jdbcType=TIMESTAMP},
+        updateby = #{updateBy, jdbcType=NUMERIC}
+        WHERE userId=#{userId}
+    </update>
+    <update id="updateRegion" parameterType="java.util.Map">
+        UPDATE sys_user SET
+        region=#{region, jdbcType=VARCHAR},
+        updatetime = #{updatetime, jdbcType=TIMESTAMP},
+        updateby = #{updateBy, jdbcType=NUMERIC}
+        WHERE userId IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+    <!--更新签章图片-->
+    <update id="updateWebSign" parameterType="java.util.Map">
+        UPDATE sys_user SET
+        webSignUrl=#{webSignUrl, jdbcType=VARCHAR},
+        updatetime = #{updatetime, jdbcType=TIMESTAMP},
+        updateby = #{updateBy, jdbcType=NUMERIC}
+        WHERE userId IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+    <select id="getById" parameterType="java.lang.Long" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE
+        userId=#{userId}
+    </select>
+    <select id="getByUcUserId" parameterType="java.lang.Long" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE
+        uc_userid=#{ucUserid}
+    </select>
+    <select id="getByAccount" parameterType="java.lang.String" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        from sys_user
+        where account=#{account}
+    </select>
+    <select id="getAttendanceRationUser" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        from sys_user
+        where 1=2
+        <if test="@Ognl@isNotEmpty(staffNo)">OR staff_no = #{staffNo}</if>
+        <if test="@Ognl@isNotEmpty(ssn)">OR identification = #{ssn}</if>
+        <if test="@Ognl@isNotEmpty(attendNo)">OR attend_no = #{attendNo}</if>
+    </select>
+    <!--<select id="getAll" resultMap="SysUser">
+        SELECT a.*, typeName AS regionName
+        FROM sys_user a
+        LEFT JOIN sys_gl_type b on b.nodeKey = a.region
+        LEFT JOIN sys_user_pos p on p.USERID=a.USERID and p.ISDELETE=0
+        LEFT JOIN sys_org o on p.ORGID = o.ORGID and o.isdelete=0
+        <include refid="dynamicWhere" />
+        <if test="@Ognl@isNotEmpty(orderField)">
+        order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+        order by o.sn,a.sn  asc
+        </if>
+    </select>
+    -->
+    <!-- 手机查询-->
+    <select id="getAllMobile" resultMap="SysUser">
+        SELECT distinct a.userId,a.fullname,a.account,a.entrydate,a.userStatus
+        FROM sys_user a
+        left join sys_user_pos b on a.userid = b.userid and b.isdelete = 0
+        left join sys_org c on b.orgid = c.orgid and c.isdelete = 0
+        left join sys_user_pos d on b.userid = d.userid and d.isdelete = 0
+        left join sys_pos e on d.posid = e.posid and e.isdelete = 0
+        <where>
+            <if test="@Ognl@isNotEmpty(userId)">AND userId =#{userId}</if>
+            <if test="@Ognl@isNotEmpty(fullname)">AND fullname LIKE #{fullname}</if>
+            <if test="@Ognl@isNotEmpty(orgid)">AND b.orgid = #{orgid}</if>
+        </where>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by c.sn,a.sn asc
+        </if>
+    </select>
+    <select id="getUserByOrgId" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT a.userId,a.fullname,a.account,a.entrydate,a.userStatus,b.userOrgId,c.orgName ,a.sn
+        FROM sys_user a
+        join sys_user_pos b on a.userId=b.userId
+        join sys_org c on b.orgId=c.orgId
+        where 1=1
+        <if test="@Ognl@isNotEmpty(path)">AND c.path LIKE '${path}%'</if>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND a.createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND a.createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by c.sn,a.sn asc
+        </if>
+    </select>
+    <select id="getSupUserByUserId" resultMap="SysUser">
+	SELECT * FROM sys_user u
+	LEFT JOIN sys_user_under un ON un.userid=u.userid
+	WHERE UNDERUSERID=#{underUserId}
+	</select>
+    <select id="getByOrgId" parameterType="Long" resultType="com.suneee.platform.model.system.SysUser">
+		SELECT distinct a.* from SYS_USER a inner join  SYS_USER_POS userOrg on a.userId=userOrg.userId where userOrg.orgId=#{orgId}
+	</select>
+    <select id="getByPosId" parameterType="Long" resultType="com.suneee.platform.model.system.SysUser">
+		SELECT distinct a.* from SYS_USER a inner join SYS_USER_POS userPos on a.userId=userPos.userId where userPos.posId=#{posId}
+	</select>
+    <select id="getByJobId" parameterType="Long" resultType="com.suneee.platform.model.system.SysUser">
+		SELECT distinct a.* from SYS_USER a inner join SYS_USER_POS userPos on a.userId=userPos.userId
+    inner join sys_pos p on p.posid= userPos.Posid        where p.jobid=#{jobId}
+	</select>
+    <select id="getByRoleId" parameterType="Long" resultType="com.suneee.platform.model.system.SysUser">
+		SELECT distinct a.* from SYS_USER a inner join SYS_USER_ROLE userRole on a.userId=userRole.userId where userRole.roleId=#{roleId}
+	</select>
+    <select id="getUserByQuery" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        <include refid="concatFullNameHa"/>
+        FROM sys_user a
+        LEFT JOIN sys_user_pos p on p.USERID=a.USERID and p.ISDELETE=0
+        LEFT JOIN sys_org o on p.ORGID = o.ORGID and o.isdelete=0
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            LEFT JOIN ucp_user_enterprise ue ON ue.userid=a.userid
+        </if>
+        where a.isLock=0 and a.status=1 and a.isExpired=0
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(userId)">AND a.userId = #{userId}</if>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND a.createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND a.createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(fromType)">AND a.fromType =#{fromType}</if>
+        <if test="@Ognl@isNotEmpty(aliasname)">AND a.alias_name like #{aliasname}</if>
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            AND ue.enterprisecode=#{enterpriseCode}
+            AND ue.isdelete=0
+        </if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by o.sn,a.sn asc, CONVERT( a.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+        </if>
+    </select>
+    <select id="getUsersByQuery" resultMap="SysUser">
+        SELECT DISTINCT a.*, c.itemName as regionName
+        FROM sys_user a
+        LEFT JOIN sys_user_pos b on b.USERID=a.USERID and b.ISDELETE=0 LEFT JOIN sys_org o on b.ORGID = o.ORGID and
+        o.isdelete=0
+        left join sys_dic c on c.itemValue=a.region and c.typeid=#{typeId}
+        where 1 = 1
+        <!-- AND o.orgid is not null  -->
+        <if test="@Ognl@isNotEmpty(fullname)">AND fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(isLock)">AND isLock =#{isLock}</if>
+        <if test="@Ognl@isNotEmpty(isExpired)">AND isExpired =#{isExpired}</if>
+        <if test="@Ognl@isNotEmpty(status)">AND status =#{status}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(fromType)">AND fromType =#{fromType}</if>
+        <if test="@Ognl@isNotEmpty(orgId)">AND b.orgid =#{orgId}</if>
+        <if test="@Ognl@isNotEmpty(orgPath)">AND b.orgid in (select orgid from sys_org where path like #{orgPath})</if>
+        <if test="@Ognl@isNotEmpty(commonFilter)">AND (fullname LIKE '%${commonFilter}%' or account LIKE
+            '%${commonFilter}%')
+        </if>
+        <if test="@Ognl@isNotEmpty(aliasname)">AND a.alias_name like #{aliasname}</if>
+        <if test="@Ognl@isNotEmpty(mobile)">AND mobile like #{mobile}</if>
+        <if test="@Ognl@isNotEmpty(email)">AND email like #{email}</if>
+        <if test="@Ognl@isNotEmpty(syncToUc)">AND a.sync_to_uc = #{syncToUc}</if>
+        <if test="@Ognl@isNotEmpty(hasWebSign)">
+            <![CDATA[AND (a.webSignUrl IS NOT NULL AND a.webSignUrl <>'')]]>
+        </if>
+        <if test="@Ognl@isEmpty(status)">AND a.status != -1</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            ORDER BY ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            ORDER BY o.sn IS NOT NULL DESC, o.sn ASC, a.sn IS NOT NULL, a.sn ASC
+        </if>
+    </select>
+    <select id="getUsersByQueryFilterForCodeManage" resultMap="SysUser">
+        SELECT DISTINCT a.*, c.itemName as regionName
+        FROM sys_user a
+        LEFT JOIN sys_user_pos b on b.USERID=a.USERID and b.ISDELETE=0 LEFT JOIN sys_org o on b.ORGID = o.ORGID and
+        o.isdelete=0
+        left join sys_dic c on c.itemValue=a.region and c.typeid=#{typeId}
+        where 1 = 1
+        <!-- AND o.orgid is not null  -->
+        <if test="@Ognl@isNotEmpty(fullname)">AND fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(aliasname)">OR a.alias_name like #{aliasname}</if>
+    </select>
+    <select id="getUsersByQueryFilter" resultType="map">
+        SELECT
+        a.fullname,e.posname,a.userId,f.jobname,a.entrydate,a.staff_no,b.ischarge,b.isprimary,a.userstatus,b.orgid,b.userPosId
+        FROM sys_user a
+        left join sys_user_pos b on a.userid = b.userid and b.isdelete = 0
+        left join sys_org c on b.orgid = c.orgid and c.isdelete = 0
+        left join sys_pos e on b.posid = e.posid and e.isdelete = 0
+        left join sys_job f on b.jobid = f.jobid and e.isdelete = 0
+        where 1 = 1
+        <if test="@Ognl@isNotEmpty(userId)">AND a.userId = #{userId}</if>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(orgpathname)">AND c.orgpathname LIKE #{orgpathname}</if>
+        <if test="@Ognl@isNotEmpty(posname)">AND e.posname LIKE #{posname}</if>
+        <if test="@Ognl@isNotEmpty(userPosId)">AND b.userPosId LIKE #{userPosId}</if>
+        <if test="@Ognl@isNotEmpty(jobname)">AND f.jobname LIKE #{jobname}</if>
+        <if test="@Ognl@isNotEmpty(entrydate)">AND a.entrydate = #{entrydate}</if>
+        <!--<if test="@Ognl@isNotEmpty(staff_no)"> AND a.staff_no  = #{staff_no}   </if>-->
+        <if test="@Ognl@isNotEmpty(staff_no)">AND a.staff_no LIKE #{staff_no}</if>
+        <if test="@Ognl@isNotEmpty(ischarge)">AND b.ischarge =#{ischarge}</if>
+        <if test="@Ognl@isNotEmpty(isprimary)">AND b.isprimary = #{isprimary}</if>
+        <!--<if test="@Ognl@isNotEmpty(userstatus)"> AND a.userstatus  =#{userstatus}  </if>-->
+        <if test="@Ognl@isNotEmpty(userstatus)">AND a.userstatus LIKE #{userstatus}</if>
+        <if test="@Ognl@isNotEmpty(orgId)">AND b.orgid =#{orgId}</if>
+        <if test="@Ognl@isNotEmpty(searchCondition)">AND a.fullname LIKE #{searchCondition} OR a.staff_no LIKE
+            #{searchCondition} OR a.userstatus LIKE #{searchCondition} OR a.f.jobname LIKE #{searchCondition}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            ORDER BY c.sn IS NOT NULL DESC, c.sn ASC, a.sn IS NOT NULL, a.sn ASC
+        </if>
+    </select>
+    <select id="getUserIdsByRoleId" resultType="java.lang.Long">
+    SELECT distinct userId from SYS_USER_ROLE where roleId=#{roleId}
+</select>
+    <select id="getUserByRoleId" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT a.userId,a.account,a.password,a.isExpired,a.isLock,a.createtime
+        ,a.status,a.email,a.mobile,a.phone,a.sex,a.picture,a.entrydate,a.userStatus,a.sn,a.fullname
+        FROM SYS_USER a ,SYS_USER_ROLE b
+        WHERE a.isLock=0 and a.status=1 and a.userId=b.userId
+        and b.roleId=#{roleId}
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(aliasname)">AND a.alias_name like #{aliasname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND a.createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND a.createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by a.sn asc
+        </if>
+    </select>
+    <select id="getDistinctUserByPosPath" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT a.userId,,a.account,a.password,a.isExpired,a.isLock
+        ,a.createtime,a.status,a.email,a.mobile,a.phone,a.sex,a.picture,a.entrydate,a.userStatus,a.sn,a.fullname
+        FROM SYS_USER a
+        inner join SYS_USER_POS b on a.userId=b.userId
+        inner join SYS_POS c on b.posId=c.posId
+        where a.isLock=0 and a.status=1 and c.nodePath LIKE '${nodePath}%'
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND a.createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND a.createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(aliasname)">AND a.alias_name like #{aliasname}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by a.sn asc
+        </if>
+    </select>
+    <select id="getDistinctUserByPosId" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT a.userId,a.account,a.password,a.isExpired,a.isLock
+        ,a.createtime,a.status,a.email,a.mobile,a.phone,a.sex,a.picture,a.entrydate,a.userStatus,a.sn,a.fullname
+        FROM SYS_USER a
+        inner join SYS_USER_POS b on a.userId=b.userId
+        inner join SYS_POS c on b.posId=c.posId
+        where a.isLock=0 and a.status=1 and c.posId= #{posId} and b.isdelete =0
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(aliasname)">AND a.alias_name like #{aliasname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account LIKE #{account}</if>
+        <if test="@Ognl@isNotEmpty(sex)">AND a.sex LIKE #{sex}</if>
+        <if test="@Ognl@isNotEmpty(begincreatetime)">AND a.createtime>=#{begincreatetime}</if>
+        <if test="@Ognl@isNotEmpty(endcreatetime)">AND a.createtime &lt;=#{endcreatetime}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by a.sn asc
+        </if>
+    </select>
+    <select id="getUserNoOrg" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user a where a.isLock = 0 and a.status = 1 and a.userid not in(
+        select b.userid from sys_user_pos b where b.isPrimary=1
+        )
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by a.sn asc
+        </if>
+    </select>
+    <select id="getDistinctUserByOrgPath" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT a.userId,a.account, a.fullname,a.email,a.mobile,a.phone,a.entrydate,a.userStatus,
+        a.alias_name AS aliasName, a.staff_no AS staffNo, a.identification, a.attend_no AS attendNo, a.sn,c.ORGID
+        FROM sys_user a
+        INNER JOIN sys_user_pos b ON a.userId=b.userId
+        <if test="@Ognl@isNotEmpty(isPrimary)">AND b.isPrimary = 1</if>
+        INNER JOIN sys_org c ON b.orgId=c.orgId
+        INNER JOIN sys_pos p ON b.posId=p.posId
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            LEFT JOIN ucp_user_enterprise ue ON ue.userid=a.userid
+        </if>
+        WHERE a.isLock=0 AND a.status=1 AND c.path LIKE '${path}%' AND b.isdelete=0
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            AND ue.enterprisecode=#{enterpriseCode}
+            AND ue.isdelete=0
+        </if>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            ORDER BY ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            ORDER BY c.sn ASC, a.sn ASC, CONVERT( a.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+        </if>
+    </select>
+    <select id="getByOrgPath" resultMap="SysUser">
+    SELECT userId, account, fullname, email, mobile, phone, entrydate, userStatus, alias_name as aliasName, staff_no as staffNo, identification, attend_no as attendNo
+    FROM sys_user
+    WHERE islock=0 and status=1 and userid in (
+        SELECT DISTINCT userid FROM sys_user_pos up
+        INNER JOIN sys_org org ON org.ORGID=up.ORGID
+        WHERE up.ISDELETE=0 AND org.path LIKE '${path}%')
+</select>
+    <select id="getUserByOrgPath" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT userId, account, fullname, email, mobile, phone, entrydate, userStatus, alias_name as aliasName, staff_no
+        as staffNo,
+        identification, attend_no as attendNo, uc_userid as ucUserid, sex,headImgPath
+        FROM sys_user
+        WHERE islock=0 and status=1
+        and userid in (
+        SELECT DISTINCT userid FROM sys_user_pos up
+        INNER JOIN sys_org org ON org.ORGID=up.ORGID
+        WHERE up.ISDELETE=0
+        <if test="@Ognl@isNotEmpty(orgPath)">
+            AND org.path LIKE '${orgPath}%'
+        </if>
+        <if test="@Ognl@isNotEmpty(orgCodes)">
+            AND org.orgcode in
+            <foreach collection="orgCodes" item="orgCode" open="(" separator="," close=")">
+                #{orgCode}
+            </foreach>
+        </if>
+        )
+    </select>
+    <select id="getDistinctUserByOrgId" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT a.userId,a.account,a.alias_name AS aliasName, a.fullname,a.email,a.mobile,
+        a.phone,a.entrydate,a.userStatus, a.sn
+        FROM sys_user a
+        INNER JOIN sys_user_pos b ON a.userId=b.userId
+        INNER JOIN sys_org c ON b.orgId=c.orgId
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            LEFT JOIN ucp_user_enterprise ue ON ue.userid=a.userid
+        </if>
+        WHERE a.isLock=0 AND a.status=1 AND c.orgId =#{orgId} AND b.isdelete =0
+        <include refid="webSignWhere"/>
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            AND ue.enterprisecode=#{enterpriseCode}
+            AND ue.isdelete=0
+        </if>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname LIKE #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            ORDER BY ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            ORDER BY c.sn ASC, a.sn ASC, CONVERT( a.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+        </if>
+    </select>
+    <select id="isAccountExist" parameterType="Map" resultType="Integer">
+        select count(*) from sys_user where account=#{account}
+        <if test="@Ognl@isNotEmpty(userId)">
+            AND userId != #{userId}
+        </if>
+    </select>
+    <select id="isEmailExist" parameterType="Map" resultType="Integer">
+        select count(*) from sys_user where email=#{email}
+        <if test="@Ognl@isNotEmpty(userId)">
+            AND userId != #{userId}
+        </if>
+    </select>
+    <select id="isMobileExist" parameterType="Map" resultType="Integer">
+        select count(*) from sys_user where mobile=#{phone}
+        <if test="@Ognl@isNotEmpty(userId)">
+            AND userId != #{userId}
+        </if>
+    </select>
+    <select id="isAccountExistForUpd" parameterType="Map" resultType="Integer">
+    select count(*) from sys_user  where account=#{account} and userId &lt;>#{userId}
+</select>
+    <select id="getByUserOrParam_mysql" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,SYS_PARAM p,SYS_USER_PARAM v
+        WHERE 1=1
+        AND u.USERID=v.USERID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            date_format('${paramValue}','%Y-%m-%d')
+        </if>
+    </select>
+    <select id="getByUserOrParam_oracle" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,SYS_PARAM p,SYS_USER_PARAM v
+        WHERE 1=1
+        AND u.USERID=v.USERID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            To_date('${paramValue}','yyyy-mm-dd')
+        </if>
+    </select>
+    <select id="getByUserOrParam_db2" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,SYS_PARAM p,SYS_USER_PARAM v
+        WHERE 1=1
+        AND u.USERID=v.USERID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            VARCHAR_FORMAT(${paramValue},'yyyy-mm-dd')
+        </if>
+    </select>
+    <select id="getByUserOrParam_h2" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,SYS_PARAM p,SYS_USER_PARAM v
+        WHERE 1=1
+        AND u.USERID=v.USERID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            FORMATDATETIME('${paramValue}','yyyy-MM-dd')
+        </if>
+    </select>
+    <select id="getUpLowPost" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,
+        SYS_USER_POS up,
+        SYS_POS p
+        WHERE u.USERID=up.USERID
+        AND up.ISDELETE=0
+        AND up.POSID=p.POSID
+        AND p.NODEPATH ${pathCondition} '${path}'
+        <if test="depthCondition!=0">AND length(replace(p.NODEPATH, '.', '..'))-length(p.NODEPATH) = ${depthCondition}
+        </if>
+    </select>
+    <select id="getUpLowOrg" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM SYS_USER u,
+        SYS_USER_POS uo,
+        SYS_ORG o
+        WHERE u.USERID=uo.USERID
+        AND uo.ISDELETE=0
+        AND uo.ORGID=o.ORGID
+        AND o.PATH ${pathCondition} '${path}'
+        <if test="depthCondition!=0">AND length(replace(o.PATH, '.', '..'))-length(o.PATH) = ${depthCondition}</if>
+        <if test="isCharge==1">AND uo.ISCHARGE = ${isCharge}</if>
+    </select>
+    <select id="getByIdSet" resultMap="SysUser">
+    SELECT * FROM SYS_USER WHERE USERID IN (${ids})
+</select>
+    <select id="getByOrgOrParam_mysql" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM
+        SYS_USER u,
+        SYS_USER_POS uo,
+        SYS_ORG o,
+        SYS_PARAM p,
+        SYS_ORG_PARAM v
+        WHERE 1=1
+        AND u.USERID=uo.USERID
+        AND uo.ORGID=o.ORGID
+        AND o.ORGID=v.ORGID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            date_format('${paramValue}','%Y-%m-%d')
+        </if>
+    </select>
+    <select id="getByOrgOrParam_oracle" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM
+        SYS_USER u,
+        SYS_USER_POS uo,
+        SYS_ORG o,
+        SYS_PARAM p,
+        SYS_ORG_PARAM v
+        WHERE 1=1
+        AND u.USERID=uo.USERID
+        AND uo.ORGID=o.ORGID
+        AND o.ORGID=v.ORGID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            To_date('${paramValue}','yyyy-mm-dd')
+        </if>
+    </select>
+    <select id="getByOrgOrParam_db2" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM
+        SYS_USER u,
+        SYS_USER_POS uo,
+        SYS_ORG o,
+        SYS_PARAM p,
+        SYS_ORG_PARAM v
+        WHERE 1=1
+        AND u.USERID=uo.USERID
+        AND uo.ORGID=o.ORGID
+        AND o.ORGID=v.ORGID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            VARCHAR_FORMAT(${paramValue},'yyyy-mm-dd')
+        </if>
+    </select>
+    <select id="getByOrgOrParam_h2" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        u.userId,u.fullname,u.account,u.password,u.isExpired,u.isLock,u.createtime,u.status,u.email,u.mobile,u.phone,u.sex,u.picture
+        FROM
+        SYS_USER u,
+        SYS_USER_POS uo,
+        SYS_ORG o,
+        SYS_PARAM p,
+        SYS_ORG_PARAM v
+        WHERE 1=1
+        AND u.USERID=uo.USERID
+        AND uo.ORGID=o.ORGID
+        AND o.ORGID=v.ORGID
+        AND v.PARAMID=p.PARAMID
+        <if test="paramValueColumn=='paramValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            '${paramValue}'
+        </if>
+        <if test="paramValueColumn=='paramIntValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            ${paramValue}
+        </if>
+        <if test="paramValueColumn=='paramDateValue'">AND paramKey='${paramKey}' AND ${paramValueColumn} ${condition}
+            FORMATDATETIME('${paramValue}','yyyy-MM-dd')
+        </if>
+    </select>
+    <select id="getByMail" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user WHERE email=#{address}
+    </select>
+    <select id="getDirectLeaderByOrgId" resultMap="SysUser">
+    select b.* from sys_user b
+    where b.userid in
+    (select a.userid from  sys_user_pos a where a.orgid=#{orgId} and a.ischarge=1 and a.isdelete =0)
+</select>
+    <select id="getUserByUnderUserId" resultMap="SysUser" parameterType="java.lang.Long">
+    SELECT b.*  FROM SYS_USER b,SYS_USER_UNDER a
+    where b.userId=a.userid and a.UNDERUSERID=#{underuserid}
+</select>
+    <select id="getUnderUserByUserId" resultMap="SysUser" parameterType="java.lang.Long">
+    SELECT b.*  FROM SYS_USER b,SYS_USER_UNDER a
+    where  a.userid=#{userId} and b.userId=a.underuserid;
+</select>
+    <select id="getByFromType" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user WHERE fromType=#{fromType}
+    </select>
+    <select id="getAllIncludeOrg" resultType="com.suneee.platform.model.system.SysUser">
+    SELECT a.userId,a.fullname,a.account,a.password,a.isExpired,a.isLock,a.createtime,
+        a.status,a.email,a.mobile,a.phone,a.sex,a.picture,a.fromType,a.entrydate,a.userStatus,b.userOrgId,c.orgName
+    FROM  sys_user a
+        left join  sys_user_pos b  on  a.userId=b.userId
+          left join sys_org c on b.orgId=c.orgId
+</select>
+    <select id="getExeUserByInstnceId" resultMap="SysUser">
+    select * from sys_user where userid in (
+        select distinct t.exeuserid from BPM_TASK_OPINION T WHERE T.ACTINSTID=#{instId} and taskId is not null)
+  </select>
+    <select id="getByOrgIds" resultMap="SysUser">
+        SELECT distinct a.* from Sys_User a, sys_user_pos b where a.userId=b.userId and b.isdelete=0 and b.orgId in
+        <foreach collection="list" index="index" item="orgId" open="(" close=")" separator=",">
+            ${orgId}
+        </foreach>
+    </select>
+    <select id="getMgrByOrgIds" resultMap="SysUser">
+        SELECT distinct a.* from Sys_User a, sys_user_pos b where a.userId=b.userId and b.ISCHARGE=1 and b.orgId in
+        <foreach collection="list" index="index" item="orgId" open="(" close=")" separator=",">
+            ${orgId}
+        </foreach>
+    </select>
+    <select id="getByRoleIds" resultMap="SysUser">
+        SELECT * from Sys_User a,sys_user_role b where a.userId=b.userId and b.roleId in
+        <foreach collection="list" index="index" item="roleId" open="(" close=")" separator=",">
+            ${roleId}
+        </foreach>
+    </select>
+    <select id="getByJobIds" resultMap="SysUser">
+        SELECT distinct u.* from Sys_User u
+        inner join sys_user_pos up on u.userid=up.userid
+        inner join sys_pos p on p.posid=up.posid where p.jobId in
+        <foreach collection="list" index="index" item="jobId" open="(" close=")" separator=",">
+            ${jobId}
+        </foreach>
+    </select>
+    <!--
+    <select id="getSuperiorByUserId" resultMap="SysUser">
+        select a.* from sys_user a,_superior b where a.account=b.empnum and b.orgid=#{orgId} and b.userid=#{userId}
+    </select>
+      -->
+    <select id="getByPos" resultType="com.suneee.platform.model.system.SysUser">
+        select t.userId,t.fullname,t.account from sys_user t ,sys_user_pos a
+        where t.userid=a.userid and a.isdelete = 0 and a.posid in
+        <foreach collection="list" index="index" item="posId" open="(" close=")" separator=",">
+            ${posId}
+        </foreach>
+    </select>
+    <!--
+    <select id="getSuperiorByUserIdAndOrgId" resultType="com.suneee.platform.model.system.SysUser">
+          select g.superuserid,
+         (select t.fullname from sys_user t where t.userid = g.superuserid) as supername
+         from  b,_superior g where g.userid = b.userid
+         and g.orgid = b.orgid and b.orgid =#{orgid} and g.userid = #{userid}
+    </select>
+      -->
+    <select id="getOrgMainUser" resultType="com.suneee.platform.model.system.SysUser">
+	   select u.fullname from  s ,(select a.orgid from SYS_ORG a,sys_user_pos b
+	   where a.orgId=b.orgId and b.isPrimary=1 and b.userId=#{userId}) c,sys_user u
+       where s.orgid=c.orgid and s.userid=u.userid and s.ischarge=1
+	</select>
+    <select id="getUserByRoleIdOrgId" resultType="com.suneee.platform.model.system.SysUser">
+		select u.* from SYS_USER u left join SYS_USER_POS uo on u.USERID=uo.USERID
+		left join SYS_USER_ROLE ur on u.userid=ur.userid
+		where uo.orgid=#{orgId} and ur.roleid=#{roleId}
+	</select>
+    <select id="getByOrgIdPosId" resultType="com.suneee.platform.model.system.SysUser">
+		select u.* from SYS_USER u left join SYS_USER_POS uo on u.USERID=uo.USERID
+    	left join sys_user_pos up on u.userid=up.userid
+    	where uo.orgid=#{orgId} and up.posid=#{posId}
+	</select>
+    <!-- 与发起人相同岗位的用户 -->
+    <select id="getSamePositionUsersByUserId" parameterType="Long"
+            resultType="com.suneee.platform.model.system.SysUser">
+	        select distinct u.*
+       from sys_user_pos a
+      inner join sys_user u
+         on a.userid = u.userid
+      where a.posid in (select posid
+                          from sys_user_pos
+                         where userid = #{userId}
+                           and isdelete = 0)
+	</select>
+    <!-- 与发起人相同职务的用户 -->
+    <select id="getSameJobUsersByUserId" parameterType="Long" resultType="com.suneee.platform.model.system.SysUser">
+   select distinct u.*
+       from sys_user_pos a
+      inner join sys_user u
+         on a.userid = u.userid
+      inner join sys_pos b
+         on a.posid = b.posid
+      where b.jobid in (select p.jobid
+                          from sys_user_pos up
+                         inner join sys_pos p
+                            on up.posid = p.posid
+                         where userid =  #{userId}
+                           and up.isdelete = 0)
+	</select>
+    <select id="getByOrgRole" resultType="com.suneee.platform.model.system.SysUser">
+   		select distinct u.*
+       from sys_user u,sys_user_pos up,
+       sys_user_role ur where
+       u.userId=up.USERID AND up.ISDELETE=0
+       and u.USERID=ur.USERID
+       and up.ORGID=#{orgId} and ur.ROLEID=#{roleId}
+
+	</select>
+    <select id="getByCompanyRole" resultType="com.suneee.platform.model.system.SysUser">
+        SELECT DISTINCT
+        U.USERID,U.FULLNAME,U.ACCOUNT,U.PASSWORD,U.ISEXPIRED,U.ISLOCK,U.CREATETIME,U.STATUS,U.EMAIL,U.MOBILE,U.PHONE,U.SEX,
+        U.PICTURE,U.FROMTYPE,U.ENTRYDATE,U.USERSTATUS
+        FROM SYS_USER U
+        INNER JOIN SYS_USER_ROLE UR ON U.USERID = UR.USERID
+        INNER JOIN SYS_USER_POS UP ON U.USERID = UP.USERID AND UP.ISDELETE = 0
+        INNER JOIN SYS_ORG O ON UP.ORGID = O.ORGID
+        WHERE O.COMPANYID = #{companyId} AND UR.ROLEID = #{roleId}
+        <if test="@Ognl@isNotEmpty(isCharge)">AND UP.ISCHARGE = 1</if>
+    </select>
+    <select id="getDisUserList" resultMap="SysUser">
+        SELECT DISTINCT u.USERID userId, u.account account, u.fullname fullname,o.orgName
+        FROM SYS_USER u
+        LEFT JOIN SYS_USER_POS up on u.userId=up.userId and up.ISPRIMARY=1 and ISDELETE =0
+        LEFT JOIN SYS_ORG o on up.orgId=o.orgId
+        LEFT JOIN (select ID,USER_ID from ats_attendance_file af
+        ) aaf on aaf.USER_ID=u.USERID where aaf.ID is null and status != -1
+        <if test="@Ognl@isNotEmpty(orgId)">AND o.orgId =#{orgId}</if>
+        <if test="@Ognl@isNotEmpty(userId)">AND u.USERID =#{userId}</if>
+    </select>
+    <select id="findLinkMan" resultMap="SysUser" parameterType="java.lang.String">
+		SELECT *
+		FROM SYS_USER
+		WHERE
+		email=#{email}
+	</select>
+    <select id="getWxUserByPath" resultMap="SysUser" parameterType="java.lang.String">
+		SELECT a.userId,a.fullname,a.account,a.entrydate,a.userStatus,c.orgName , a.weixinid
+	    FROM  sys_user a ,sys_user_pos b ,sys_org c
+	    where   a.userId=b.userId and  b.orgId=c.orgId and c.path like #{path}  and (a.weixinid !='' or a.weixinid is not null)
+	     and a.status=1
+	</select>
+    <update id="setDelStatusByFromType" parameterType="Short">
+		UPDATE sys_user SET
+			status = -1,
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby =  #{updateBy, jdbcType=NUMERIC}
+		WHERE fromtype=#{fromType}
+	</update>
+    <update id="updateSyncInfo" parameterType="com.suneee.platform.model.system.SysUser">
+		UPDATE sys_user
+		SET
+			sync_to_uc = #{syncToUc, jdbcType=NUMERIC},
+			uc_userid = #{ucUserid, jdbcType=NUMERIC},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateby =  #{updateBy, jdbcType=NUMERIC}
+		WHERE userId = #{userId}
+	</update>
+    <select id="getSysUserByIds" parameterType="java.util.List" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE userId IN
+        <foreach collection="list" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="getByUserIdsWithOrgName" resultMap="SysUser">
+        SELECT a.*, o.orgname from Sys_User a
+        left join sys_user_pos b on a.userId=b.userId and b.isdelete=0 and b.isprimary =1
+        left join sys_org o on o.orgid = b.orgid
+        where a.userid in
+        <foreach collection="list" index="index" item="userId" open="(" close=")" separator=",">
+            ${userId}
+        </foreach>
+    </select>
+    <select id="getByFullName" parameterType="java.lang.String" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE fullname = #{fullname}
+    </select>
+    <update id="importUserUpdate" parameterType="com.suneee.platform.model.system.SysUser">
+        UPDATE sys_user SET
+        <if test="@Ognl@isNotEmpty(mobile)">mobile=#{mobile, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(aliasName)">alias_name=#{aliasName, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(attendNo)">attend_no=#{attendNo, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(entryDate)">entrydate=#{entryDate, jdbcType=DATE},</if>
+        <if test="@Ognl@isNotEmpty(workDate)">work_date=#{workDate, jdbcType=DATE},</if>
+        <if test="@Ognl@isNotEmpty(region)">region=#{region, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(phone)">phone=#{phone, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(loginAccount)">login_account = #{loginAccount, jdbcType=VARCHAR},</if>
+        <if test="@Ognl@isNotEmpty(sn)">sn = #{sn, jdbcType=NUMERIC},</if>
+        <if test="@Ognl@isNotEmpty(sex)">sex = #{sex, jdbcType=NUMERIC},</if>
+        fullname = #{fullname, jdbcType=VARCHAR},
+        staff_no = #{staffNo, jdbcType=VARCHAR},
+        email = #{email, jdbcType=VARCHAR},
+        sync_to_uc = #{syncToUc, jdbcType=NUMERIC},
+        account = #{account, jdbcType=VARCHAR},
+        updatetime = #{updatetime, jdbcType=TIMESTAMP},
+        updateby = #{updateBy, jdbcType=NUMERIC}
+        WHERE userid=#{userId}
+    </update>
+    <update id="updateByUcUserid" parameterType="com.suneee.platform.model.system.SysUser">
+		UPDATE sys_user SET
+			account = #{account, jdbcType=VARCHAR},
+			alias_name = #{aliasName, jdbcType=VARCHAR},
+			fullname = #{fullname, jdbcType=VARCHAR},
+			mobile = #{mobile, jdbcType=VARCHAR},
+			email = #{email, jdbcType=VARCHAR},
+			sex = #{sex, jdbcType=VARCHAR},
+			password = #{password, jdbcType=VARCHAR},
+			phone = #{phone, jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP}
+		WHERE uc_userid = #{ucUserid} and status!=-1
+	</update>
+    <select id="getByMobile" resultMap="SysUser">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user WHERE mobile=#{mobile}
+    </select>
+    <sql id="dynamicWhereUserPosition">
+        <where>
+            <if test="@Ognl@isNotEmpty(userPosId)">AND s.USERPOSID =#{userPosId}</if>
+            <if test="@Ognl@isNotEmpty(recursion)">
+                <if test="@Ognl@isNotEmpty(orgId)">AND s.ORGID in (
+                    select orgid from sys_org where path like #{orgIdLike })
+                </if>
+            </if>
+            <if test="@Ognl@isEmpty(recursion)">
+                <if test="@Ognl@isNotEmpty(orgId)">AND s.ORGID =#{orgId}</if>
+            </if>
+            <if test="@Ognl@isNotEmpty(isPrimary)">AND s.ISPRIMARY =#{isPrimary}</if>
+            <if test="@Ognl@isNotEmpty(isCharge)">AND s.ISCHARGE =#{isCharge}</if>
+            AND s.ISDELETE =0
+        </where>
+    </sql>
+    <select id="getAll" resultMap="SysUser">
+        SELECT a.userId,s.USERPOSID,s.ORGID,s.ISPRIMARY,s.ISCHARGE,s.ISDELETE, o.orgName,a.fullname as
+        username,a.account,a.status,j.jobName,
+        a.userstatus,a.staff_no staffNo,a.alias_name aliasName,o.path
+        FROM sys_user a
+        inner join SYS_USER_POS s on a.userid=s.userid
+        inner join sys_org o on s.orgid=o.orgid
+        inner join sys_pos p on p.posid=s.posid
+        inner join sys_job j on j.jobid=p.jobid
+        <include refid="dynamicWhereUserPosition"/>
+        <if test="@Ognl@isNotEmpty(fullname)">AND a.fullname like #{fullname}</if>
+        <if test="@Ognl@isNotEmpty(account)">AND a.account like #{account}</if>
+        <if test="@Ognl@isNotEmpty(jobName)">AND j.jobName like #{jobName}</if>
+        <if test="@Ognl@isNotEmpty(staffNo)">AND a.staff_no like #{staffNo}</if>
+        <if test="@Ognl@isNotEmpty(aliasName)">AND a.alias_name like #{aliasName}</if>
+        <if test="@Ognl@isNotEmpty(orgName)">AND o.orgName like #{orgName}</if>
+        <if test="@Ognl@isNotEmpty(searchCondition)">AND (a.fullname LIKE #{searchCondition} OR a.staff_no LIKE
+            #{searchCondition}
+            OR a.userstatus LIKE #{searchCondition} OR j.jobName LIKE #{searchCondition} OR a.alias_name LIKE
+            #{searchCondition}
+            OR o.orgName LIKE #{searchCondition})
+        </if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by o.sn,a.sn ASC
+        </if>
+    </select>
+    <update id="addheadImg" parameterType="java.util.Map">
+		update
+			sys_user
+		SET
+			headImgPath = #{headImgPath}
+		WHERE
+			USERID = #{userId}
+	</update>
+    <update id="updateBySysUser" parameterType="com.suneee.platform.model.system.SysUser">
+        update
+        sys_user
+        <set>
+            <if test="@Ognl@isNotEmpty(fullname)">FULLNAME=#{fullname},</if>
+            <if test="@Ognl@isNotEmpty(aliasName)">alias_name=#{aliasName},</if>
+            <if test="@Ognl@isNotEmpty(account)">ACCOUNT=#{account},</if>
+            <if test="@Ognl@isNotEmpty(password)">PASSWORD=#{password},</if>
+            <if test="@Ognl@isNotEmpty(isExpired)">ISEXPIRED=#{isExpired},</if>
+            <if test="@Ognl@isNotEmpty(isLock)">ISLOCK=#{isLock},</if>
+            <if test="@Ognl@isNotEmpty(status)">STATUS=#{status},</if>
+            <if test="@Ognl@isNotEmpty(email)">EMAIL=#{email},</if>
+            <if test="@Ognl@isNotEmpty(mobile)">MOBILE=#{mobile},</if>
+            <if test="@Ognl@isNotEmpty(phone)">PHONE=#{phone},</if>
+            <if test="@Ognl@isNotEmpty(sex)">SEX=#{sex},</if>
+            <if test="@Ognl@isNotEmpty(picture)">PICTURE=#{picture},</if>
+            <if test="@Ognl@isNotEmpty(entryDate)">ENTRYDATE=#{entryDate},</if>
+            <if test="@Ognl@isNotEmpty(userStatus)">USERSTATUS=#{userStatus},</if>
+            <if test="@Ognl@isNotEmpty(pwdUpdTime)">pwdUpdTime=#{pwdUpdTime},</if>
+            <if test="@Ognl@isNotEmpty(weixinid)">WEIXINID=#{weixinid},</if>
+            <if test="@Ognl@isNotEmpty(ucUserid)">uc_userid=#{ucUserid},</if>
+            <if test="@Ognl@isNotEmpty(staffNo)">staff_no=#{staffNo},</if>
+            <if test="@Ognl@isNotEmpty(identification)">identification=#{identification},</if>
+            <if test="@Ognl@isNotEmpty(attendNo)">attend_no=#{attendNo},</if>
+            <if test="@Ognl@isNotEmpty(workDate)">work_date=#{workDate},</if>
+            <if test="@Ognl@isNotEmpty(region)">region=#{region},</if>
+            <if test="@Ognl@isNotEmpty(webSignUrl)">webSignUrl=#{webSignUrl},</if>
+            <if test="@Ognl@isNotEmpty(loginAccount)">login_account=#{loginAccount},</if>
+            <if test="@Ognl@isNotEmpty(updatetime)">updatetime=#{updatetime},</if>
+            <if test="@Ognl@isNotEmpty(updateBy)">updateby=#{updateBy},</if>
+            <if test="@Ognl@isNotEmpty(createBy)">createby=#{createBy},</if>
+            <if test="@Ognl@isNotEmpty(headImgPath)">headImgPath=#{headImgPath},</if>
+            <if test="@Ognl@isNotEmpty(birthday)">birthday=#{birthday},</if>
+            <if test="signature !=null">signature=#{signature},</if>
+
+        </set>
+        WHERE
+        USERID = #{userId}
+    </update>
+
+    <insert id="setUserPosOrg" parameterType="java.util.Map">
+        INSERT INTO sys_user_pos
+        (USERPOID,ORGID,POSID,USERID,JOBID)
+        VALUES
+        (#{userPosId},#{orgId},#{posId},#{userId},#{jobId})
+    </insert>
+
+</mapper>

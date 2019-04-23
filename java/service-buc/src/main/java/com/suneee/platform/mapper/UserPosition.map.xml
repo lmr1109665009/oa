@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.UserPosition">
+	<resultMap id="UserPosition" type="com.suneee.platform.model.system.UserPosition">
+		<id property="userPosId" column="USERPOSID" jdbcType="NUMERIC"/>
+		<result property="orgId" column="ORGID" jdbcType="NUMERIC"/>
+		<result property="posId" column="POSID" jdbcType="NUMERIC"/>
+		<result property="jobId" column="JOBID" jdbcType="NUMERIC"/>
+		<result property="userId" column="USERID" jdbcType="NUMERIC"/>
+		<result property="isPrimary" column="ISPRIMARY" jdbcType="NUMERIC"/>
+		<result property="isCharge" column="ISCHARGE" jdbcType="NUMERIC"/>
+		<result property="isDelete" column="ISDELETE" jdbcType="NUMERIC"/>
+		<result property="delFrom" column="delfrom" jdbcType="VARCHAR"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="createby" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="updateby" jdbcType="NUMERIC"/>
+		<result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+		<result property="jobName" column="jobName" jdbcType="VARCHAR"/>
+		<result property="aliasName" column="alias_name" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		a.USERPOSID,a.ORGID,a.POSID,a.USERID,a.ISPRIMARY,a.ISCHARGE,a.ISDELETE,a.JOBID, a.delfrom,a.createtime, a.createby, 
+		a.updatetime, a.updateby
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(userPosId)"> AND a.USERPOSID  =#{userPosId} </if>
+			<if test="@Ognl@isNotEmpty(recursion)">
+				<if test="@Ognl@isNotEmpty(orgId)"> AND a.ORGID in (
+				select orgid from sys_org where path like #{orgIdLike }) 
+				</if>
+			</if>
+			<if test="@Ognl@isEmpty(recursion)">
+				<if test="@Ognl@isNotEmpty(orgId)"> AND a.ORGID  =#{orgId} </if>
+			</if>
+			<if test="@Ognl@isNotEmpty(posId)"> AND a.POSID  =#{posId} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND a.USERID  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(isPrimary)"> AND a.ISPRIMARY  =#{isPrimary} </if>
+			<if test="@Ognl@isNotEmpty(isCharge)"> AND a.ISCHARGE  =#{isCharge} </if>
+			<if test="@Ognl@isNotEmpty(isCharge)"> AND a.JOBID  =#{jobId} </if>
+			<!--  
+			<if test="@Ognl@isNotEmpty(isDelete)"> AND a.ISDELETE  =#{isDelete} </if>
+			-->
+			 AND a.ISDELETE  =0 
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.UserPosition">
+		INSERT INTO SYS_USER_POS
+		(USERPOSID,ORGID,POSID,JOBID,USERID,ISPRIMARY,ISCHARGE,ISDELETE, createtime, createby, updatetime, updateby)
+		VALUES
+		(#{userPosId,jdbcType=NUMERIC}, #{orgId,jdbcType=NUMERIC}, #{posId,jdbcType=NUMERIC},
+		 #{jobId,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{isPrimary,jdbcType=NUMERIC},
+		 #{isCharge,jdbcType=NUMERIC}, #{isDelete,jdbcType=NUMERIC}, #{createtime, jdbcType=TIMESTAMP}, 
+		 #{createBy, jdbcType=NUMERIC}, #{updatetime, jdbcType=TIMESTAMP}, #{updateBy, jdbcType=NUMERIC})
+	</insert>
+    <!--不能删除组织类数据,应修改删除标志  
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_USER_POS 
+		WHERE
+		USERPOSID=#{userPosId}
+	</delete>
+	-->	
+	
+	
+	<!-- 根据组织id判断该组织下是否有人员 -->
+	<select id="isUserExistFromOrg" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	   SELECT COUNT(*) FROM SYS_USER_POS WHERE ORGID=#{orgId} AND ISDELETE=0
+	</select>
+	
+	
+
+	<update id="delById" parameterType="java.util.Map">
+		update  SYS_USER_POS SET 
+			isDelete=1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC}
+		WHERE
+		USERPOSID=#{userPosId}
+	</update>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.UserPosition">
+		UPDATE SYS_USER_POS SET
+			ORGID=#{orgId,jdbcType=NUMERIC},
+			POSID=#{posId,jdbcType=NUMERIC},
+			JOBID=#{jobId,jdbcType=NUMERIC},
+			USERID=#{userId,jdbcType=NUMERIC},
+			ISPRIMARY=#{isPrimary,jdbcType=NUMERIC},
+			ISCHARGE=#{isCharge,jdbcType=NUMERIC},
+			ISDELETE=#{isDelete,jdbcType=NUMERIC},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC}
+		WHERE
+		USERPOSID=#{userPosId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="UserPosition">
+		SELECT <include refid="columns"/>
+		FROM SYS_USER_POS a
+		WHERE
+		a.USERPOSID=#{userPosId}
+	</select>
+	
+	<select id="getAll" resultMap="UserPosition">
+		SELECT <include refid="columns"/>, o.orgName,p.posName,u.fullname AS username,u.account,u.status,j.jobName,
+			u.userstatus, u.staff_no ,u.alias_name
+		FROM SYS_USER_POS a
+		INNER JOIN sys_user u ON a.userid=u.userid
+	    INNER JOIN sys_org o ON a.orgid=o.orgid 
+	    INNER JOIN sys_pos p ON p.posid=a.posid
+	    INNER JOIN sys_job j ON j.jobid=p.jobid
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(fullname)"> AND u.fullname LIKE #{fullname} </if>
+		<if test="@Ognl@isNotEmpty(account)"> AND u.account LIKE #{account} </if>
+		<if test="@Ognl@isNotEmpty(jobName)"> AND j.jobName LIKE #{jobName} </if>
+		<if test="@Ognl@isNotEmpty(staffNo)"> AND u.staff_no LIKE #{staffNo} </if>
+		<if test="@Ognl@isNotEmpty(aliasName)"> AND u.alias_name LIKE #{aliasName} </if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND o.orgCode = #{enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(path)"> AND o.path LIKE #{path}</if>
+		<if test="@Ognl@isNotEmpty(orgName)"> AND o.orgName LIKE #{orgName}</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)"> 
+			AND (u.fullname LIKE #{searchCondition} OR u.staff_no LIKE #{searchCondition} 
+			OR u.userstatus LIKE #{searchCondition} OR j.jobName LIKE #{searchCondition} 
+			OR u.alias_name LIKE #{searchCondition})
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by o.sn, u.sn ASC, CONVERT( u.fullname USING gbk ) COLLATE gbk_chinese_ci ASC
+		</if>
+	</select>
+	
+	<select id="getUserIdsByPosId" resultType="java.lang.Long">
+		select distinct userId from SYS_USER_POS where posId=#{posId}
+	</select>
+	<!-- 删除某用户的岗位关系 -->
+	<update id="delByUserId" parameterType="java.util.Map">
+		update  SYS_USER_POS SET 
+			isdelete =1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE userId=#{userId} AND isdelete=0
+	</update>
+	
+	<select id="getByUserId" parameterType="java.util.Map" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT DISTINCT a.*,o.orgName,o.orgCode,o.orgPathName, p.posName,o.company,o.companyId,j.jobName
+		FROM sys_user_pos a  
+		INNER JOIN sys_org o ON o.orgid=a.orgid 
+		INNER JOIN sys_pos p ON p.posid=a.posid
+		INNER JOIN sys_job j ON j.jobid=a.jobid
+		WHERE a.userId=#{userId} AND a.isdelete=0
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND o.orgCode = #{enterpriseCode}
+		</if>
+		ORDER BY a.isprimary DESC
+	</select>
+	
+	<select id="getByUserIdAndOrgPath" parameterType="java.util.Map" resultType="com.suneee.platform.model.beanVo.UserPositionVo">
+		SELECT DISTINCT a.*,o.orgName,o.orgCode,o.orgPathName, p.posName,o.company,o.companyId,j.jobName,o.path
+		FROM sys_user_pos a  
+		INNER JOIN sys_org o ON o.orgid=a.orgid
+		INNER JOIN sys_pos p ON p.posid=a.posid
+		INNER JOIN sys_job j ON j.jobid=a.jobid
+		WHERE a.userId=#{userId} AND a.isdelete=0 
+		<if test="@Ognl@isNotEmpty(path)">
+			AND o.path LIKE '${path}%'
+		</if>  
+		<if test="@Ognl@isNotEmpty(orgCodes)">
+			AND  o.orgCode IN
+			<foreach collection="orgCodes" item="orgCode" open="(" separator="," close=")">
+				#{orgCode}
+			</foreach>
+		</if>
+		
+		ORDER BY a.isprimary DESC
+	</select>
+	
+	<select id="getChargeByUserId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.UserPosition">
+	SELECT * FROM sys_user_pos WHERE USERID=#{userId} AND ISPRIMARY=1 And ISDELETE=0
+	</select>
+	<select id="getMaxLevelByUserId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT up.*, MIN(job.grade) AS grade FROM sys_user_pos up
+		LEFT JOIN sys_job job ON up.jobid=job.jobid
+		WHERE up.userid=#{userId} and up.isdelete=0
+	</select>
+	<!-- 查找用户是否有某个级别的职务 -->
+	<select id="getByGradeAndUserId" parameterType="hashmap" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT up.*, job.grade AS grade FROM sys_user_pos up
+		LEFT JOIN sys_job job ON up.jobid=job.jobid
+		WHERE up.userid=#{userId} and job.grade =${aGrade} and up.isdelete=0
+	</select>
+	
+	
+	<select id="getByPosId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.UserPosition">
+	select distinct a.*,o.orgName,p.posName,u.fullname as userName from sys_user_pos a  
+	inner join sys_org o on o.orgid=a.orgid 
+	inner join sys_pos p on p.posid=a.posid
+	inner join sys_user u on u.userid=a.userid
+		where a.posId=#{userId} and a.isdelete=0
+	</select>
+	
+	
+	<select id="getOrgListByUserId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.UserPosition">
+    select p.orgid,
+           p.userid,
+           o.orgname,
+           u.fullname as username,
+           max(p.isprimary) as isprimary,
+           max(p.ischarge) as ischarge
+      from sys_user_pos p
+      left join sys_org o on o.orgid = p.orgid
+      left join sys_user u on p.userid = u.userid
+     where p.userid = #{userId}
+       and p.isdelete = 0
+     group by p.orgid, p.userid, o.orgname, u.fullname
+	</select>
+	
+	<select id="getPrimaryUserPositionByUserId" parameterType="java.util.Map" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT a.* FROM sys_user_pos a  
+		LEFT JOIN sys_org org ON org.orgid=a.orgid AND org.isdelete=0
+		WHERE a.userId=#{userId}
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND org.orgcode=#{enterpriseCode}
+		</if>
+		AND a.ISPRIMARY=1 AND a.ISDELETE=0
+	</select>
+	
+	<select id="getUserByOrgIds" parameterType="String" resultType="com.suneee.platform.model.system.UserPosition">
+	    select a.*,   u.account,u.fullname as username,o.orgname from sys_user_pos a 
+	     inner join sys_user u on a.userid=u.userid
+	    inner join sys_org o on a.orgid=o.orgid
+	    where   a.orgId in (${orgIds})
+	</select>
+	<!-- 根据组织id获取组织负责人 -->
+	<select id="getChargeByOrgId" parameterType="Long" resultType="com.suneee.platform.model.system.UserPosition">
+	    select  distinct a.orgid,a.userid,a.isprimary,a.ischarge,u.fullname as userName,u.alias_name as aliasName
+	    from SYS_USER_POS a 
+	    inner join sys_user u on u.userid=a.userid
+	    where  a.orgid=#{orgId} and a.ischarge=1
+	    and a.isdelete=0 and u.status =1
+	</select>
+	
+	<!-- 根据负责人获取组织 -->
+	<select id="getChargeOrgByUserId" parameterType="Long" resultType="com.suneee.platform.model.system.UserPosition">
+	    select a.*
+	    from SYS_USER_POS a
+	    where  a.userid=#{userId}
+	    and a.ischarge=1
+	    and isdelete=0
+	</select>
+	
+		
+	<select id="getByOrgId" parameterType="Long" resultType="com.suneee.platform.model.system.UserPosition">
+	    select a.userPosId,a.orgId,a.posId,a.USERID,a.ISPRIMARY,a.ISCHARGE,a.ISDELETE,
+	    u.account,u.fullname as username,o.orgname
+	    from SYS_USER_POS a
+	    inner join sys_user u on a.userid=u.userid
+	    inner join sys_org o on a.orgid=o.orgid
+	    where  a.orgid=#{orgId}
+	    and a.isdelete=0
+	</select>
+	
+	<update id="delByOrgId" parameterType="java.util.Map">
+		UPDATE sys_user_pos SET 
+			isdelete=1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC}
+		WHERE orgId=#{orgId} AND isdelete=0
+	</update>
+	
+	<!-- 需要级联删除该组织下的所有子组织与岗位的关系 -->
+	<update id="delByOrgPath" parameterType="java.util.Map">
+		UPDATE sys_user_pos SET 
+			isdelete=1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE orgId in(
+		select o.orgId from sys_org o where o.path like #{path}) and isdelete=0
+	</update>
+	
+	<select id="getByOrgPath" parameterType="String" resultMap="UserPosition">
+		SELECT <include refid="columns"/>
+		FROM sys_user_pos a
+		WHERE orgId in(
+		select o.orgId from sys_org o where o.path like #{path})
+		and isdelete=0
+	</select>
+	
+	<update id="delByPosId">
+		UPDATE sys_user_pos SET 
+			isdelete=1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE posId=#{posId} and isdelete=0
+	</update>
+ 
+	<!-- 根据职务ID更新关系表  -->
+    <update id="delByJobId" parameterType="java.util.Map">
+		UPDATE sys_user_pos SET 
+			isdelete=1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE jobId=#{jobId} AND isdelete=0
+	</update>
+	
+	<select id="getByJobId" parameterType="Long" resultMap="UserPosition">
+		SELECT <include refid="columns"/>
+		FROM sys_user_pos a
+		WHERE jobId=#{jobId} and isdelete=0
+	</select>
+
+     <select id="getUserPosModel" parameterType="java.util.Map" resultMap="UserPosition">
+	    select <include refid="columns"/>
+	    from SYS_USER_POS a
+	    where  userId=#{userId}  and posId=#{posId}
+	    and isdelete=0
+	</select>
+	
+	<!--在设置用户主岗位时，先将其他所有岗位设置成非主岗位， 一个人只有一个主岗位 -->
+	<update id="updNotPrimaryByUserId" parameterType="java.util.Map">
+		UPDATE SYS_USER_POS SET 
+			isPrimary=0,
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE userId=#{userId}
+	</update>
+	
+	<select id="getPosByUserId" parameterType="java.lang.Long" resultMap="UserPosition">
+		SELECT * FROM sys_user_pos a  
+		WHERE  a.userId=#{userId} AND ISDELETE=0
+	</select>
+
+	<select id="getBydepartAndGrade" parameterType="java.util.Map" resultMap="UserPosition">
+		SELECT up.* FROM sys_user_pos up
+		LEFT JOIN sys_job job ON job.jobid=up.jobid		
+		WHERE up.orgId=#{orgId} AND job.grade=#{grade} AND up.`ISDELETE`=0
+
+	</select>
+
+	<select id="getUserIdByJobIds" resultType="java.lang.Long">
+		SELECT
+			DISTINCT userId
+		FROM
+			sys_user_pos
+		WHERE
+			jobid IN
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item.jobid}
+			</foreach>
+		 AND
+			isdelete=0
+	</select>
+<!-- 根据用户id判断该用户是否有多个岗位-->
+	<select id="getCountByUserId" parameterType="java.lang.Long"  resultType="java.lang.Integer">
+		select COUNT(userId) 
+		from sys_user_pos a
+		where  a.userId=#{userId}  and ISDELETE=0
+	</select>
+	
+	<select id="getUserIdByOrgPath" parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT DISTINCT userid FROM sys_user_pos up 
+		LEFT JOIN sys_org org ON org.orgId=up.orgId
+		WHERE org.orgCode = #{enterpriseCode} AND org.path LIKE #{path} AND up.isdelete=0 AND org.isdelete=0
+	</select>
+
+
+	<select id="getPrimaryOrgByUserId" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT a.*, org.ORGNAME orgName,
+		org.PATH path,
+		org.ORGPATHNAME,
+		pos.POSNAME,
+		job.JOBNAME FROM sys_user_pos a
+		LEFT JOIN sys_org org ON org.orgid = a.orgid
+		AND org.isdelete = 0
+		LEFT JOIN sys_pos pos ON a.POSID = pos.POSID
+		LEFT JOIN sys_job job ON job.JOBID = a.JOBID
+		WHERE a.userId=#{userId}
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND org.orgcode=#{enterpriseCode}
+		</if>
+		AND a.ISPRIMARY=1 AND a.ISDELETE=0
+	</select>
+</mapper>

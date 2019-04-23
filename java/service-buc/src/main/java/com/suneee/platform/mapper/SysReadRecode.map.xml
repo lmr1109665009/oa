@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysReadRecode">
+	<resultMap id="SysReadRecode" type="com.suneee.platform.model.system.SysReadRecode">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="source" column="SOURCE" jdbcType="VARCHAR"/>
+		<result property="groupid" column="GROUPID" jdbcType="NUMERIC"/>
+		<result property="objectid" column="OBJECTID" jdbcType="NUMERIC"/>
+		<result property="userid" column="USERID" jdbcType="NUMERIC"/>
+		<result property="createtime" column="CREATETIME" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,SOURCE,GROUPID,OBJECTID,USERID,CREATETIME
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(source)"> AND SOURCE  LIKE #{source}  </if>
+			<if test="@Ognl@isNotEmpty(groupid)"> AND GROUPID  =#{groupid} </if>
+			<if test="@Ognl@isNotEmpty(objectid)"> AND OBJECTID  =#{objectid} </if>
+			<if test="@Ognl@isNotEmpty(userid)"> AND USERID  =#{userid} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysReadRecode">
+		INSERT INTO SYS_READ_RECORD
+		(ID,SOURCE,GROUPID,OBJECTID,USERID,CREATETIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{source,jdbcType=VARCHAR}, #{groupid,jdbcType=NUMERIC}, #{objectid,jdbcType=NUMERIC}, #{userid,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_READ_RECORD 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<delete id="deleteByParam" parameterType="Map">
+		DELETE FROM SYS_READ_RECORD 
+		<where>
+			<if test="@Ognl@isNotEmpty(groupid)"> AND GROUPID  =#{groupid} </if>
+			<if test="@Ognl@isNotEmpty(objectid)"> AND OBJECTID  =#{objectid} </if>
+			<if test="@Ognl@isNotEmpty(userid)"> AND USERID  =#{userid} </if>
+		</where>
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysReadRecode">
+		UPDATE SYS_READ_RECORD SET
+		SOURCE=#{source,jdbcType=VARCHAR},
+		GROUPID=#{groupid,jdbcType=NUMERIC},
+		OBJECTID=#{objectid,jdbcType=NUMERIC},
+		USERID=#{userid,jdbcType=NUMERIC},
+		CREATETIME=#{createtime,jdbcType=DATE}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long">
+		SELECT <include refid="columns"/>
+		FROM SYS_READ_RECORD
+		WHERE ID=#{id}
+	</select> 
+	
+	<select id="hasRead" parameterType="Map" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM SYS_READ_RECORD
+		WHERE OBJECTID=#{objectId} and USERID =#{userId}
+	</select> 
+	
+	<select id="getAll" resultMap="SysReadRecode">
+		SELECT <include refid="columns"/>
+		FROM SYS_READ_RECORD   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

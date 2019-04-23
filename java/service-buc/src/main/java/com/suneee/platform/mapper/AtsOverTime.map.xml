@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.ats.AtsOverTime">
+	<resultMap id="AtsOverTime" type="com.suneee.platform.model.ats.AtsOverTime">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="userId" column="USER_ID" jdbcType="NUMERIC"/>
+		<result property="otType" column="OT_TYPE" jdbcType="VARCHAR"/>
+		<result property="startTime" column="START_TIME" jdbcType="DATE"/>
+		<result property="endTime" column="END_TIME" jdbcType="DATE"/>
+		<result property="otTime" column="OT_TIME" jdbcType="NUMERIC"/>
+		<result property="otCompens" column="OT_COMPENS" jdbcType="NUMERIC"/>
+		<result property="runId" column="RUN_ID" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,USER_ID,OT_TYPE,START_TIME,END_TIME,OT_TIME,OT_COMPENS,RUN_ID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND USER_ID  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(otType)"> AND OT_TYPE  LIKE #{otType}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND START_TIME  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginstartTime)"> AND START_TIME  >=#{beginstartTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstartTime)"> AND START_TIME <![CDATA[ <=#{endstartTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND END_TIME  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginendTime)"> AND END_TIME  >=#{beginendTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendTime)"> AND END_TIME <![CDATA[ <=#{endendTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(otTime)"> AND OT_TIME  =#{otTime} </if>
+			<if test="@Ognl@isNotEmpty(otCompens)"> AND OT_COMPENS  =#{otCompens} </if>
+			<if test="@Ognl@isNotEmpty(runId)"> AND RUN_ID  =#{runId} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.ats.AtsOverTime">
+		INSERT INTO ATS_OVER_TIME
+		(ID,USER_ID,OT_TYPE,START_TIME,END_TIME,OT_TIME,OT_COMPENS,RUN_ID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{otType,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, #{otTime,jdbcType=NUMERIC}, #{otCompens,jdbcType=NUMERIC}, #{runId,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ATS_OVER_TIME 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.ats.AtsOverTime">
+		UPDATE ATS_OVER_TIME SET
+		USER_ID=#{userId,jdbcType=NUMERIC},
+		OT_TYPE=#{otType,jdbcType=VARCHAR},
+		START_TIME=#{startTime,jdbcType=DATE},
+		END_TIME=#{endTime,jdbcType=DATE},
+		OT_TIME=#{otTime,jdbcType=NUMERIC},
+		OT_COMPENS=#{otCompens,jdbcType=NUMERIC},
+		RUN_ID=#{runId,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AtsOverTime">
+		SELECT <include refid="columns"/>
+		FROM ATS_OVER_TIME
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="AtsOverTime">
+		SELECT <include refid="columns"/>
+		FROM ATS_OVER_TIME   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

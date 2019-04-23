@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %p [%t] %c{1}.%M(%L) | %m%n"/>
+        </Console>
+        <File name="AppErrorFile" fileName="/logs/eas/app_error.log" append="false">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="warm" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <File name="AppDebugFile" fileName="/logs/eas/app_debug.log" append="false">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <File name="MqttLogFile" fileName="/logs/eas/mqtt.log" append="false">
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <File name="ExternalLogFile" fileName="/logs/eas/external.log" append="false">
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+        </File>
+        <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="AppLogFile" fileName="/logs/eas/app.log"
+                     filePattern="/logs/oa/$${date:yyyy-MM}/bpmx-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="[buc] %-d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1}.%M(%L) | %m%n"/>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!--异步打印日志-->
+        <AsyncRoot level="info">
+            <appender-ref ref="AppLogFile" />
+            <appender-ref ref="AppErrorFile" />
+        </AsyncRoot>
+        <AsyncLogger name="com.suneee.eas" level="debug" includeLocation="true">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppDebugFile" />
+        </AsyncLogger>
+        <AsyncLogger name="org.apache.ibatis" level="debug" includeLocation="true">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppDebugFile" />
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.web" level="debug" includeLocation="true">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppDebugFile" />
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.boot" level="debug" includeLocation="true">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppDebugFile" />
+        </AsyncLogger>
+        <AsyncLogger name="org.activiti" level="debug" includeLocation="true">
+            <appender-ref ref="Console" />
+            <appender-ref ref="AppDebugFile" />
+        </AsyncLogger>
+        <AsyncLogger name="httplog" level="debug" includeLocation="true">
+            <appender-ref ref="ExternalLogFile" />
+        </AsyncLogger>
+        <AsyncLogger name="mqttlog" level="debug" includeLocation="true">
+            <appender-ref ref="MqttLogFile" />
+        </AsyncLogger>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceReserveDeviceDao">
+	<resultMap id="ConferenceReserveDevice" type="com.suneee.eas.oa.model.conference.ConferenceReserveDevice">
+		<id column="conferenceId" property="conferenceId" jdbcType="NUMERIC"/>
+		<id column="deviceType" property="deviceType" jdbcType="NUMERIC"/>
+		<result column="deviceTypeName" property="deviceTypeName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="tableName">oa_conference_reserve_device</sql>
+	
+	<sql id="dbColumn">
+		conferenceId, deviceType, deviceTypeName
+	</sql>
+	
+	<insert id="batchSave" parameterType="java.util.List">
+		INSERT INTO <include refid="tableName"/>(<include refid="dbColumn"/>)
+		VALUES
+		<foreach collection="list" item="device" separator=",">
+			(#{device.conferenceId, jdbcType=NUMERIC}, #{device.deviceType, jdbcType=NUMERIC}, 
+			#{device.deviceTypeName, jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteByConferenceId" parameterType="java.lang.Long">
+		DELETE FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId}
+	</delete>
+	
+	<select id="getByConferenceId" parameterType="java.lang.Long" resultType="conferenceReserveDevice">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId}
+	</select>
+	
+	<select id="getUsedDeviceNumber" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT crd.deviceType, crd.deviceTypeName, count(*) number
+		FROM <include refid="tableName"/> crd
+		JOIN oa_conference_reserve cr on cr.conferenceId = crd.conferenceId
+		WHERE cr.enterpriseCode = #{enterpriseCode} AND cr.region = #{region} 
+			<![CDATA[ AND cr.beginTime < #{endTime} AND cr.endTime > #{beginTime} 
+			AND cr.auditStatus > 1 AND cr.auditStatus < 5]]>
+			<if test="@Ognl@isNotEmpty(conferenceId)"> AND cr.conferenceId != #{conferenceId}</if>
+		GROUP BY crd.deviceType
+	</select>
+</mapper>

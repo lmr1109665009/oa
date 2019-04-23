@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.ShiftSetting">
+	<resultMap id="ShiftSetting" type="com.suneee.kaoqin.model.kaoqin.ShiftSetting">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="calendarId" column="calendar_id" jdbcType="NUMERIC"/>
+		<result property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="startDate" column="start_date" jdbcType="DATE"/>
+		<result property="endDate" column="end_date" jdbcType="DATE"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,calendar_id,shift_id,start_date,end_date,description,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(calendarId)"> AND calendar_id  =#{calendarId} </if>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(startDate)"> AND start_date  =#{startDate} </if>
+			<if test="@Ognl@isNotEmpty(beginstartDate)"> AND start_date  >=#{beginstartDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstartDate)"> AND start_date <![CDATA[ <=#{endstartDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endDate)"> AND end_date  =#{endDate} </if>
+			<if test="@Ognl@isNotEmpty(beginendDate)"> AND end_date  >=#{beginendDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendDate)"> AND end_date <![CDATA[ <=#{endendDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(description)"> AND description  LIKE #{description}  </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftSetting">
+		INSERT INTO se_shift_setting
+		(id_,calendar_id,shift_id,start_date,end_date,description,status_,createBy,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{calendarId,jdbcType=NUMERIC}, #{shiftId,jdbcType=NUMERIC}, #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_shift_setting 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftSetting">
+		UPDATE se_shift_setting SET
+		calendar_id=#{calendarId,jdbcType=NUMERIC},
+		shift_id=#{shiftId,jdbcType=NUMERIC},
+		start_date=#{startDate,jdbcType=DATE},
+		end_date=#{endDate,jdbcType=DATE},
+		description=#{description,jdbcType=VARCHAR},
+		status_=#{status,jdbcType=NUMERIC},
+		createBy=#{createby,jdbcType=NUMERIC},
+		createtime=#{createtime,jdbcType=DATE}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ShiftSetting">
+		SELECT <include refid="columns"/>
+		FROM se_shift_setting
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="ShiftSetting">
+		SELECT <include refid="columns"/>
+		FROM se_shift_setting   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	
+</mapper>

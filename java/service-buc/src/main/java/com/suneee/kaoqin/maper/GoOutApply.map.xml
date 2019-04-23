@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.GoOutApply">
+	<resultMap id="GoOutApply" type="com.suneee.kaoqin.model.kaoqin.GoOutApply">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="warterNum" column="F_WARTER_NUM" jdbcType="VARCHAR"/>
+		<result property="userCn" column="F_USER_CN" jdbcType="VARCHAR"/>
+		<result property="userCnid" column="F_USER_CNID" jdbcType="VARCHAR"/>
+		<result property="deptName" column="F_DEPT_NAME" jdbcType="VARCHAR"/>
+		<result property="deptNameid" column="F_DEPT_NAMEID" jdbcType="VARCHAR"/>
+		<result property="userCode" column="F_USER_CODE" jdbcType="VARCHAR"/>
+		<result property="startTime" column="F_START_TIME" jdbcType="DATE"/>
+		<result property="endTime" column="F_END_TIME" jdbcType="DATE"/>
+		<result property="timeLong" column="F_TIME_LONG" jdbcType="VARCHAR"/>
+		<result property="comments" column="F_COMMENTS" jdbcType="VARCHAR"/>
+		<result property="positionLeve" column="F_POSITION_LEVE" jdbcType="NUMERIC"/>
+		<result property="instanceId" column="ACTINSTID" jdbcType="NUMERIC"/>
+		<result property="assingner" column="assingner" jdbcType="VARCHAR"/>
+		<result property="outTime" column="F_OUT_TIME" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,F_WARTER_NUM,F_USER_CN,F_USER_CNID,F_DEPT_NAME,F_DEPT_NAMEID,F_USER_CODE,F_START_TIME,F_END_TIME,F_TIME_LONG,F_COMMENTS,F_OUT_TIME,F_POSITION_LEVE
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(warterNum)"> AND F_WARTER_NUM  LIKE #{warterNum}  </if>
+			<if test="@Ognl@isNotEmpty(userCn)"> AND F_USER_CN  LIKE #{userCn}  </if>
+			<if test="@Ognl@isNotEmpty(userCnid)"> AND F_USER_CNID  LIKE #{userCnid}  </if>
+			<if test="@Ognl@isNotEmpty(deptName)"> AND F_DEPT_NAME  LIKE #{deptName}  </if>
+			<if test="@Ognl@isNotEmpty(deptNameid)"> AND F_DEPT_NAMEID  LIKE #{deptNameid}  </if>
+			<if test="@Ognl@isNotEmpty(userCode)"> AND F_USER_CODE  LIKE #{userCode}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND F_START_TIME  =#{startTime} </if>
+			<if test="@Ognl@isNotEmpty(beginstartTime)"> AND F_START_TIME  >=#{beginstartTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstartTime)"> AND F_START_TIME <![CDATA[ <=#{endstartTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND F_END_TIME  =#{endTime} </if>
+			<if test="@Ognl@isNotEmpty(beginendTime)"> AND F_END_TIME  >=#{beginendTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendTime)"> AND F_END_TIME <![CDATA[ <=#{endendTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(timeLong)"> AND F_TIME_LONG  LIKE #{timeLong}  </if>
+			<if test="@Ognl@isNotEmpty(comments)"> AND F_COMMENTS  LIKE #{comments}  </if>
+			<if test="@Ognl@isNotEmpty(outTime)"> AND F_OUT_TIME  =#{outTime} </if>
+			<if test="@Ognl@isNotEmpty(beginoutTime)"> AND F_OUT_TIME  >=#{beginoutTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endoutTime)"> AND F_OUT_TIME <![CDATA[ <=#{endoutTime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.GoOutApply">
+		INSERT INTO w_gooutapply
+		(ID,F_WARTER_NUM,F_USER_CN,F_USER_CNID,F_DEPT_NAME,F_DEPT_NAMEID,F_USER_CODE,F_START_TIME,F_END_TIME,F_TIME_LONG,F_COMMENTS,F_OUT_TIME,F_POSITION_LEVE)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{warterNum,jdbcType=VARCHAR}, #{userCn,jdbcType=VARCHAR}, #{userCnid,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{deptNameid,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, #{timeLong,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{outTime,jdbcType=TIMESTAMP}, #{positionLeve,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM w_gooutapply 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.GoOutApply">
+		UPDATE w_gooutapply SET
+		F_WARTER_NUM=#{warterNum,jdbcType=VARCHAR},
+		F_USER_CN=#{userCn,jdbcType=VARCHAR},
+		F_USER_CNID=#{userCnid,jdbcType=VARCHAR},
+		F_DEPT_NAME=#{deptName,jdbcType=VARCHAR},
+		F_DEPT_NAMEID=#{deptNameid,jdbcType=VARCHAR},
+		F_USER_CODE=#{userCode,jdbcType=VARCHAR},
+		F_START_TIME=#{startTime,jdbcType=DATE},
+		F_END_TIME=#{endTime,jdbcType=DATE},
+		F_TIME_LONG=#{timeLong,jdbcType=VARCHAR},
+		F_COMMENTS=#{comments,jdbcType=VARCHAR},
+		F_POSITION_LEVE=#{positionLeve,jdbcType=NUMERIC},
+		F_OUT_TIME=#{outTime,jdbcType=TIMESTAMP}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="GoOutApply">
+		SELECT <include refid="columns"/>
+		FROM w_gooutapply
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="GoOutApply">
+		SELECT <include refid="columns"/>
+		FROM w_gooutapply   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+		<select id="getAllApply" resultMap="GoOutApply">
+		SELECT DISTINCT rs.* FROM (${AllSql}) rs 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by rs.ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

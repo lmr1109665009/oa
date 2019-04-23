@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.eas.oa.dao.system.ResourcesDao">
+	<resultMap id="Resources" type="com.suneee.eas.oa.model.system.Resources">
+		<id property="resId" column="resId" jdbcType="NUMERIC"/>
+		<result property="resName" column="resName" jdbcType="VARCHAR"/>
+		<result property="alias" column="alias" jdbcType="VARCHAR"/>
+		<result property="sn" column="sn" jdbcType="NUMERIC"/>
+		<result property="icon" column="icon" jdbcType="VARCHAR"/>
+		<result property="iconfont" column="iconfont" jdbcType="VARCHAR"/>
+		<result property="parentId" column="parentId" jdbcType="NUMERIC"/>
+		<result property="defaultUrl" column="defaultUrl" jdbcType="VARCHAR"/>
+		<result property="isFolder" column="isFolder" jdbcType="NUMERIC"/>
+		<result property="isDisplayInMenu" column="isDisplayInMenu" jdbcType="NUMERIC"/>
+		<result property="isOpen" column="isOpen" jdbcType="NUMERIC"/>
+		<result property="path" column="path" jdbcType="VARCHAR" />
+		<result property="isNewOpen" column="isNewOpen" jdbcType="NUMERIC"/>
+		<result property="resType" column="restype" jdbcType="NUMERIC"/>
+		<result property="isPublic" column="isPublic" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		resId,resName,alias,sn,icon,iconfont,parentId,defaultUrl,isFolder,isDisplayInMenu,isOpen,path,isNewOpen,resType,isPublic
+	</sql>
+
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(resId)"> AND resId =#{resId} </if>
+			<if test="@Ognl@isNotEmpty(resName)"> AND resName LIKE #{resName} </if>
+			<if test="@Ognl@isNotEmpty(alias)"> AND alias LIKE #{alias} </if>
+			<if test="@Ognl@isNotEmpty(sn)"> AND sn =#{sn} </if>
+			<if test="@Ognl@isNotEmpty(icon)"> AND icon LIKE #{icon} </if>
+			<if test="@Ognl@isNotEmpty(parentId)"> AND parentId =#{parentId} </if>
+			<if test="@Ognl@isNotEmpty(defaultUrl)"> AND defaultUrl LIKE #{defaultUrl} </if>
+			<if test="@Ognl@isNotEmpty(isFolder)"> AND isFolder =#{isFolder} </if>
+			<if test="@Ognl@isNotEmpty(isDisplayInMenu)"> AND isDisplayInMenu =#{isDisplayInMenu} </if>
+			<if test="@Ognl@isNotEmpty(isOpen)"> AND isOpen =#{isOpen} </if>
+			<if test="@Ognl@isNotEmpty(isPublic)"> AND isPublic =#{isPublic} </if>
+		</where>
+	</sql>
+
+	<insert id="save" parameterType="com.suneee.eas.oa.model.system.Resources">
+		INSERT INTO sys_res
+		(<include refid="columns"/>)
+		VALUES
+		(#{resId,jdbcType=NUMERIC}, #{resName,jdbcType=VARCHAR}, #{alias,jdbcType=VARCHAR},
+		#{sn,jdbcType=NUMERIC}, #{icon,jdbcType=VARCHAR}, #{iconfont,jdbcType=VARCHAR},
+		#{parentId,jdbcType=NUMERIC}, #{defaultUrl,jdbcType=VARCHAR}, #{isFolder,jdbcType=NUMERIC},
+		#{isDisplayInMenu,jdbcType=NUMERIC}, #{isOpen,jdbcType=NUMERIC},
+		#{path,jdbcType=VARCHAR},#{isNewOpen,jdbcType=NUMERIC}, #{resType,jdbcType=NUMERIC},
+		#{isPublic,jdbcType=NUMERIC})
+	</insert>
+
+	<update id="update" parameterType="com.suneee.eas.oa.model.system.Resources">
+		UPDATE sys_res SET
+		resName=#{resName,jdbcType=VARCHAR} ,
+		alias=#{alias,jdbcType=VARCHAR} ,
+		icon=#{icon,jdbcType=VARCHAR} ,
+		iconfont=#{iconfont,jdbcType=VARCHAR} ,
+		parentId=#{parentId,jdbcType=NUMERIC} ,
+		defaultUrl=#{defaultUrl,jdbcType=VARCHAR} ,
+		isFolder=#{isFolder,jdbcType=NUMERIC} ,
+		isDisplayInMenu=#{isDisplayInMenu,jdbcType=NUMERIC} ,
+		isOpen=#{isOpen,jdbcType=NUMERIC} ,
+		path =#{path,jdbcType=VARCHAR},
+		isNewOpen=#{isNewOpen,jdbcType=NUMERIC},
+		restype=#{resType, jdbcType=NUMERIC},
+		<if test="@Ognl@isNotEmpty(sn)">
+			sn=#{sn,jdbcType=NUMERIC},
+		</if>
+		isPublic=#{isPublic, jdbcType=NUMERIC}
+		WHERE
+		resId=#{resId}
+	</update>
+
+	<select id="getSuperMenu" parameterType="java.util.Map" resultMap="Resources">
+		SELECT <include refid="columns"/>
+		FROM SYS_RES ORDER BY sn
+	</select>
+
+	<select id="getNormMenuByAllRole" parameterType="java.util.Map" resultMap="Resources">
+		SELECT DISTINCT res.resId,res.resName,res.alias,res.sn,res.icon,res.iconfont,res.parentId,res.defaultUrl,
+		res.isFolder,res.isDisplayInMenu,res.isOpen,res.isNewOpen, res.resType, res.isPublic
+		FROM SYS_ROLE_RES role_res
+		LEFT JOIN SYS_RES res ON role_res.resId=res.resId
+		WHERE role_res.roleId in (select t.roleid from sys_role t where t.alias in (${rolealias})
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">AND t.enterprise_code=#{enterpriseCode}</if>
+		)
+		AND res.isDisplayInMenu=1
+		ORDER BY sn
+	</select>
+
+	<select id="getNormMenuByRole" parameterType="java.util.Map" resultMap="Resources">
+		SELECT DISTINCT res.resId,res.resName,res.alias,res.sn,res.icon,res.iconfont,res.parentId,res.defaultUrl,
+		res.isFolder,res.isDisplayInMenu,res.isOpen,res.isNewOpen, res.resType, res.isPublic
+		FROM
+		SYS_ROLE_RES role_res,
+		SYS_RES res,
+		sys_user_role ur ,sys_role r
+		WHERE role_res.roleId = ur.roleId
+		and ur.userId=#{userId}
+		and ur.roleId=r.ROLEID
+		and r.ENABLED=1
+		AND role_res.resId=res.resId
+		AND res.isDisplayInMenu=1
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND r.enterprise_code=#{enterpriseCode}
+		</if>
+		ORDER BY sn
+	</select>
+
+	<select id="getAll" resultMap="Resources">
+		SELECT <include refid="columns"/>
+		FROM SYS_RES
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sn
+		</if>
+	</select>
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="Resources">
+		SELECT <include refid="columns"/>
+		FROM SYS_RES
+		WHERE
+		resId=#{resId}
+	</select>
+
+	<select id="getByAliasForCheck" parameterType="java.util.Map" resultMap="Resources">
+		SELECT <include refid="columns"/>
+		FROM SYS_RES WHERE alias=#{alias}
+		<if test="@Ognl@isNotEmpty(resId)">
+			AND resId != #{resId}
+		</if>
+	</select>
+
+	<update id="updDisplay" parameterType="java.util.Map">
+		UPDATE sys_res SET isdisplayinmenu = #{isDisplayInMenu, jdbcType=NUMERIC}
+		WHERE resId = #{resId}
+	</update>
+
+	<select id="getByParentId" parameterType="java.util.Map" resultMap="Resources">
+		SELECT <include refid="columns"/> FROM SYS_RES
+		WHERE parentId=#{parentId} ORDER BY sn
+	</select>
+
+	<update id="updSn" parameterType="Map">
+		update SYS_RES set
+		sn=#{sn,jdbcType=NUMERIC}
+		where
+		resId = #{resId}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		DELETE FROM SYS_RES
+		WHERE
+		resId=#{resId}
+	</delete>
+
+	<select id="getPublicList" resultType="Resources">
+		SELECT <include refid="columns"/> FROM SYS_RES
+		WHERE isPublic=1 AND isDisplayInMenu=1
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND enterprise_code=#{enterpriseCode}
+		</if>
+	    ORDER BY sn
+	</select>
+</mapper>

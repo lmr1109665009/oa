@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.system.DicTypeDao">
+    <select id="findById" resultType="dicType">
+        SELECT dt.*,t.name typeName FROM sys_dic_type dt LEFT JOIN sys_type t ON dt.typeId=t.typeId WHERE dt.dicId = #{id}
+    </select>
+
+    <select id="listAll" resultType="dicType">
+        SELECT dt.*,t.name typeName FROM sys_dic_type dt LEFT JOIN sys_type t ON dt.typeId=t.typeId
+        <where>
+            <if test="@Ognl@isNotEmpty(code)">
+                AND dt.code= #{code}
+            </if>
+            <if test="@Ognl@isNotEmpty(name)">
+                AND dt.name LIKE #{name}
+            </if>
+            <if test="@Ognl@isNotEmpty(typeId)">
+                AND dt.typeId= #{typeId}
+            </if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">
+                AND dt.enterpriseCode= #{enterpriseCode}
+            </if>
+            <if test="@Ognl@isNotEmpty(desc)">
+                AND `dt.desc` LIKE #{desc}
+            </if>
+        </where>
+    </select>
+
+    <select id="countAll" resultType="integer">
+        SELECT COUNT(*) FROM sys_dic_type WHERE code= #{code} AND enterpriseCode= #{enterpriseCode}
+        <if test="@Ognl@isNotEmpty(notSelf)">
+            AND dicId!=#{notSelf}
+        </if>
+    </select>
+
+    <insert id="save">
+        INSERT INTO sys_dic_type(dicId,typeId,name,code,`desc`,enterpriseCode) VALUES(#{dicId},#{typeId},#{name},#{code},#{desc},#{enterpriseCode})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dic_type
+        <set>
+            <if test="@Ognl@isNotEmpty(typeId)">
+                typeId=#{typeId},
+            </if>
+            <if test="@Ognl@isNotEmpty(name)">
+                name=#{name},
+            </if>
+            <if test="@Ognl@isNotEmpty(code)">
+                code=#{code},
+            </if>
+            <if test="@Ognl@isNotEmpty(desc)">
+                `desc`=#{desc},
+            </if>
+        </set>
+        WHERE dicId=#{dicId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_dic_type WHERE dicId=#{id}
+    </delete>
+</mapper>

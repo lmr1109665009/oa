@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.AnnualVacationSetting">
+	<resultMap id="AnnualVacationSetting" type="com.suneee.kaoqin.model.kaoqin.AnnualVacationSetting">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="yearType" column="year_type" jdbcType="NUMERIC"/>
+		<result property="yearLimit" column="year_limit" jdbcType="NUMERIC"/>
+		<result property="days" column="days_" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,year_type,year_limit,days_
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(yearType)"> AND year_type  =#{yearType} </if>
+			<if test="@Ognl@isNotEmpty(yearLimit)"> AND year_limit  =#{yearLimit} </if>
+			<if test="@Ognl@isNotEmpty(days)"> AND days_  =#{days} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.AnnualVacationSetting">
+		INSERT INTO se_annual_vacation_setting
+		(id_,year_type,year_limit,days_)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{yearType,jdbcType=NUMERIC}, #{yearLimit,jdbcType=NUMERIC}, #{days,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_annual_vacation_setting 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.AnnualVacationSetting">
+		UPDATE se_annual_vacation_setting SET
+		year_type=#{yearType,jdbcType=NUMERIC},
+		year_limit=#{yearLimit,jdbcType=NUMERIC},
+		days_=#{days,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AnnualVacationSetting">
+		SELECT <include refid="columns"/>
+		FROM se_annual_vacation_setting
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="AnnualVacationSetting">
+		SELECT <include refid="columns"/>
+		FROM se_annual_vacation_setting   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	<delete id="emptyTable" >
+		DELETE from se_annual_vacation_setting
+	</delete>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.fs.AuthDao">
+	<sql id="columns">
+		id,type,docId,ownerId,ownerType,ownerName
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id=#{id, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(type)">AND type=#{type, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(docId)">AND docId=#{docId, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(ownerId)"> AND ownerId = #{ownerId, jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(ownerIds)"> AND ownerId in
+				<foreach item="item" index="index" collection="ownerIds" open="("
+					 separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerType)"> AND ownerType =#{ownerType, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(ownerName)"> AND ownerName =#{ownerName, jdbcType=VARCHAR} </if>
+		</where>
+	</sql>
+
+<!-- 	新增 -->
+	<insert id="save" parameterType="authorization">
+		INSERT INTO fs_auth
+		(type,docId,ownerId,ownerType,ownerName)
+		 VALUES
+		(
+		#{type, jdbcType=VARCHAR},
+		#{docId, jdbcType=NUMERIC},
+		#{ownerId, jdbcType=NUMERIC},
+		#{ownerType, jdbcType=VARCHAR},
+		#{ownerName, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="saveList" >
+		INSERT INTO fs_auth
+		(type,docId,ownerId,ownerType,ownerName)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.type, jdbcType=VARCHAR},
+			#{item.docId, jdbcType=NUMERIC},
+			#{item.ownerId, jdbcType=NUMERIC},
+			#{item.ownerType, jdbcType=VARCHAR},
+			#{item.ownerName, jdbcType=VARCHAR}
+			)
+		</foreach>
+	</insert>
+
+<!-- 	修改 -->
+	<update id="update">
+		UPDATE fs_auth
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="@Ognl@isNotEmpty(type)">
+				NAME =#{type, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(docId)">
+				docId =#{docId ,jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerId)">
+				ownerId =#{ownerId, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerType)">
+				ownerType =#{ownerType, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(ownerName)">
+				ownerName = #{ownerName, jdbcType=VARCHAR}
+			</if>
+		</trim>
+		<where>
+			<if test="@Ognl@isNotEmpty(id)">id = #{id, jdbcType=NUMERIC}</if>
+		</where>
+	</update>
+	<select id="findById" resultType="authorization">
+		SELECT
+		<include refid="columns" />
+		FROM fs_auth
+		WHERE
+		id=#{id, jdbcType=NUMERIC}
+	</select>
+
+	<select id="getList" resultType="authorization">
+		SELECT
+		<include refid="columns" />
+		FROM fs_auth
+		<include refid="dynamicWhere"/>
+	</select>
+	<delete id="deleteByDocId">
+		delete from fs_auth where docId=#{docId}
+	</delete>
+</mapper>

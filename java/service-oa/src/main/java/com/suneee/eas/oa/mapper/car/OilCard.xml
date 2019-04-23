@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.car.OilCardDao">
+    
+    <sql id="columns">
+        cardId,cardNum,`date`,handId,handName,issueUnit,managerId,managerName,
+        `status`,`password`,remarks,enterpriseCode,isDelete,createBy,createTime,updateBy,updateTime
+    </sql>
+    
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(cardNum)"> AND  cardNum LIKE  #{cardNum}</if>
+            <if test="@Ognl@isNotEmpty(begindate)"> AND  `date` >=  #{begindate}</if>
+            <if test="@Ognl@isNotEmpty(enddate)"> AND  `date` <![CDATA[<=#{enddate}]]>  </if>
+            <if test="@Ognl@isNotEmpty(handName)"> AND  handName LIKE  #{handName}</if>
+            <if test="@Ognl@isNotEmpty(issueUnit)"> AND  issueUnit LIKE  #{issueUnit}</if>
+            <if test="@Ognl@isNotEmpty(managerName)"> AND  managerName LIKE  #{managerName}</if>
+            <if test="@Ognl@isNotEmpty(status)"> AND  status =  #{status}</if>
+            <if test="@Ognl@isNotEmpty(remarks)"> AND  remarks LIKE  #{remarks}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND  enterpriseCode =  #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)"> AND  isDelete =  #{isDelete}</if>
+            <if test="@Ognl@isNotEmpty(createBy)"> AND  createBy =  #{createBy}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime >=  #{beginCreateTime}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime <![CDATA[<=#{endCreateTime}]]>  </if>
+            <if test="@Ognl@isNotEmpty(updateBy)"> AND  updateBy =  #{updateBy}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime >=  #{beginUpdateTime}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime <![CDATA[<=#{endUpdateTime}]]>  </if>
+        </where>
+    </sql>
+    
+    <insert id="save" parameterType="oilCard" >
+        INSERT  INTO oa_car_oilcard
+        (cardId,cardNum,`date`,handId,handName,issueUnit,managerId,managerName,
+        `status`,`password`,remarks,enterpriseCode,isDelete,createBy,createTime)
+        VALUES (
+        #{cardId},#{cardNum},#{date},#{handId},#{handName},#{issueUnit},#{managerId},#{managerName},
+        #{status},#{password},#{remarks},#{enterpriseCode},#{isDelete},#{createBy},#{createTime}
+        )   
+    </insert>
+    
+    <update id="update" parameterType="oilCard">
+        UPDATE oa_car_oilcard
+        SET 
+        cardNum = #{cardNum},
+        date = #{date},
+        handId = #{handId},
+        handName = #{handName},
+        issueUnit = #{issueUnit},
+        managerId = #{managerId},
+        managerName = #{managerName},
+        `status` = #{status},
+        `password` = #{password},
+        remarks = #{remarks},
+        enterpriseCode = #{enterpriseCode},
+        isDelete = #{isDelete},
+        updateBy = #{updateBy},
+        updateTime = #{updateTime}
+        WHERE 
+        cardId = #{cardId}
+    </update>
+    
+    <select id="listAll" resultType="oilCard">
+        SELECT <include refid="columns"/>
+        FROM  oa_car_oilcard
+        <where>
+            <if test="@Ognl@isNotEmpty(cardNum)"> AND  cardNum LIKE  #{cardNum}</if>
+            <if test="@Ognl@isNotEmpty(begindate)"> AND  `date` >=  #{begindate}</if>
+            <if test="@Ognl@isNotEmpty(enddate)"> AND  `date` <![CDATA[<=#{enddate}]]>  </if>
+            <if test="@Ognl@isNotEmpty(handName)"> AND  handName LIKE  #{handName}</if>
+            <if test="@Ognl@isNotEmpty(issueUnit)"> AND  issueUnit LIKE  #{issueUnit}</if>
+            <if test="@Ognl@isNotEmpty(managerName)"> AND  managerName LIKE  #{managerName}</if>
+            <if test="@Ognl@isNotEmpty(status)"> AND  `status` =  #{status}</if>
+            <if test="@Ognl@isNotEmpty(remarks)"> AND  remarks LIKE  #{remarks}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND  enterpriseCode =  #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)"> AND  isDelete =  #{isDelete}</if>
+            <if test="@Ognl@isNotEmpty(createBy)"> AND  createBy =  #{createBy}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime >=  #{beginCreateTime}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime <![CDATA[<=#{endCreateTime}]]>  </if>
+            <if test="@Ognl@isNotEmpty(updateBy)"> AND  updateBy =  #{updateBy}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime >=  #{beginUpdateTime}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime <![CDATA[<=#{endUpdateTime}]]>  </if>
+        </where>
+        and isDelete = 0
+        <if test="@Ognl@isNotEmpty(searchCondition)"> AND (cardNum LIKE  #{searchCondition} OR issueUnit LIKE  #{searchCondition} ) </if>
+        ORDER BY createTime DESC
+    </select>
+    
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM oa_car_oilcard
+        WHERE cardId = #{cardId}
+    </delete>
+    
+    <select id="checkCardNumIsExist" parameterType="java.lang.String" resultType="Integer">
+        SELECT  COUNT(cardNum)
+        FROM oa_car_oilcard
+        WHERE 
+        cardNum = #{cardNum}
+    </select>
+    
+    <select id="findById" resultType="oilCard">
+        SELECT <include refid="columns"/>
+        FROM oa_car_oilcard
+        WHERE cardId = #{cardId}
+    </select>
+</mapper>

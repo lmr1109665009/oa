@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.codeTable.CodeTable">
+	<resultMap id="CodeTable" type="com.suneee.ucp.mh.model.codeTable.CodeTable">
+		<id property="settingId" column="setting_id" jdbcType="NUMERIC"/>
+		<result property="settingType" column="setting_type" jdbcType="VARCHAR"/>
+		<result property="itemId" column="item_id" jdbcType="VARCHAR"/>
+		<result property="itemValue" column="item_value" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		setting_id,setting_type,item_id,item_value,description,enterprise_code
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(settingType)"> AND setting_type  =#{settingType} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)">AND enterprise_code =#{enterpriseCode}</if>
+		</where>
+	</sql>
+
+    <insert id="add" parameterType="com.suneee.ucp.mh.model.codeTable.CodeTable">
+		INSERT INTO ucp_system_setting
+			(setting_id,setting_type,item_id,item_value,description,enterprise_code)
+		VALUES
+			(#{settingId,jdbcType=NUMERIC}, #{settingType,jdbcType=VARCHAR}, 
+			#{itemId,jdbcType=VARCHAR}, #{itemValue,jdbcType=VARCHAR},
+			 #{description,jdbcType=VARCHAR},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+	<select id="getAll" resultMap="CodeTable">
+		SELECT <include refid="columns"/>
+		FROM ucp_system_setting 
+		<!-- where d.eid=#{eid}  -->
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY item_id  desc
+		</if>
+	</select>
+	
+	<select id="getTypeList" resultMap="CodeTable">
+		SELECT *  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value REGEXP '[a-z]+'
+		<if test="@Ognl@isNotEmpty(settingType)"> AND setting_type=#{settingType}</if>
+		<if test="@Ognl@isNotEmpty(itemValue)"> AND item_value=#{itemValue}</if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">AND enterprise_code =#{enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(itemId)">
+			AND
+			item_id IN
+			<foreach collection="itemId" item="itemId_" open="(" close=")" separator=",">
+				#{itemId_}
+			</foreach>
+		</if>
+	</select>
+
+    <select id="getTypeListMistiness" resultMap="CodeTable">
+        SELECT *  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value REGEXP '[a-z]+'
+		<if test="@Ognl@isNotEmpty(mistiness)">
+			AND
+			(
+			<trim prefixOverrides="OR">
+				<if test="type_ != null">
+					OR setting_type=#{type_}
+				</if>
+				<if test="region_ != null">
+					OR item_value = #{region_}
+				</if>
+				<if test="itemId != null">OR item_id
+					IN
+					<foreach collection="itemId" item="itemId_" open="(" close=")" separator=",">
+						#{itemId_}
+					</foreach>
+				</if>
+			</trim>
+			)
+		</if>
+    </select>
+
+	<select id="getOtherList" resultMap="CodeTable">
+		SELECT *  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value>0
+		<if test="@Ognl@isNotEmpty(settingType)"> AND setting_type=#{settingType}</if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">AND enterprise_code =#{enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(itemId)">
+			AND
+			item_id IN
+			<foreach collection="itemId" item="item_Id" open="(" separator="," close=")">
+				#{item_Id}
+			</foreach>
+		</if>
+		
+	</select>
+
+	<!--<select id="getOtherListOr" resultMap="CodeTable">
+		SELECT *  from  ucp_system_setting where (setting_type REGEXP '[a-z]+' AND  item_value>0)
+            <if test="@Ognl@isNotEmpty(mistiness)">
+                AND (
+                setting_type=#{mistiness}
+                <if test="itemId != null">OR item_id
+                    IN
+                    <foreach collection="itemId" item="itemId_" open="(" close=")" separator=",">
+                        #{itemId_}
+                    </foreach>
+                </if>
+                )
+            </if>
+	</select>-->
+	<update id="update" parameterType="com.suneee.ucp.mh.model.codeTable.CodeTable">
+		UPDATE ucp_system_setting SET
+			item_id = #{itemId,jdbcType=VARCHAR},
+			item_value = #{itemValue,jdbcType=VARCHAR},	
+			setting_type=#{settingType,jdbcType=VARCHAR},		
+			description = #{description,jdbcType=VARCHAR}
+		WHERE setting_id = #{settingId}
+	</update>
+	
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="CodeTable">
+		SELECT <include refid="columns"/>
+		FROM ucp_system_setting
+		WHERE setting_id = #{settingId}
+	</select>
+	<select id="getByType" parameterType="java.lang.String" resultMap="CodeTable">
+		SELECT <include refid="columns"/>
+		FROM ucp_system_setting
+		WHERE setting_type = #{type}
+	</select>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ucp_system_setting 
+		WHERE setting_id = #{settingId}
+	</delete>
+	<select id="isExist" resultMap="CodeTable">
+		SELECT <include refid="columns"/>
+		FROM ucp_system_setting
+		WHERE item_id=#{itemId} AND item_value=#{itemValue}
+	</select>
+	
+	<select id="getByCondition" parameterType="java.util.Map" resultMap="CodeTable">
+		SELECT * FROM ucp_system_setting
+		WHERE 1=1
+		<if test="@Ognl@isNotEmpty(settingType)"> AND setting_type=#{settingType}</if>
+		<if test="@Ognl@isNotEmpty(itemValue)">AND item_value=#{itemValue}</if>
+		<if test="@Ognl@isNotEmpty(itemId)">AND item_id=#{itemId}</if>
+	</select>
+	
+	<select id="getByItemId" resultMap="CodeTable">
+		SELECT <include refid="columns"/>
+		FROM ucp_system_setting
+		WHERE item_id=#{itemId} AND setting_type=#{settingType}
+	</select>
+
+	<select id="getTypeListCount" resultType="int">
+		SELECT count(1)  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value REGEXP '[a-z]+'
+		<if test="@Ognl@isNotEmpty(filters.settingType)"> AND setting_type=#{filters.settingType}</if>
+		<if test="@Ognl@isNotEmpty(filters.itemValue)"> AND item_value=#{filters.itemValue}</if>
+		<if test="@Ognl@isNotEmpty(filters.enterpriseCode)"> AND enterprise_code=#{filters.enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(filters.itemId)">
+			AND
+			item_id IN
+			<foreach collection="filters.itemId" item="itemId_" open="(" close=")" separator=",">
+				#{itemId_}
+			</foreach>
+		</if>
+	</select>
+
+   <!-- <select id="getTypeListCountMistiness" resultType="int">
+		SELECT count(1)  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value REGEXP '[a-z]+'
+        <if test="@Ognl@isNotEmpty(mistiness)">
+            AND
+            (
+			<trim prefixOverrides="OR">
+				<if test="type_ != null">
+					OR setting_type=#{type_}
+				</if>
+				<if test="region_ != null">
+					OR item_value = #{region_}
+				</if>
+				<if test="itemId != null">OR item_id
+					IN
+					<foreach collection="itemId" item="itemId_" open="(" close=")" separator=",">
+						#{itemId_}
+					</foreach>
+				</if>
+			</trim>
+            )
+        </if>
+	</select>-->
+
+	<select id="getOtherListCount" resultType="int">
+		SELECT count(1)  from  ucp_system_setting where setting_type REGEXP '[a-z]+' AND  item_value>0
+		<if test="@Ognl@isNotEmpty(filters.settingType)"> AND setting_type=#{filters.settingType}</if>
+		<if test="@Ognl@isNotEmpty(filters.itemId)">
+			AND
+			item_id IN
+			<foreach collection="filters.itemId" item="itemId" open="(" close=")" separator=",">
+				#{itemId}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getOtherListCountOr" resultType="int">
+		SELECT count(1)  from  ucp_system_setting where (setting_type REGEXP '[a-z]+' AND  item_value>0)
+        <if test="@Ognl@isNotEmpty(filters.mistiness)">
+			AND (
+			setting_type=#{filters.mistiness}
+			<if test="@Ognl@isNotEmpty(filters.itemId)">OR item_id
+				IN
+				<foreach collection="filters.itemId" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</if>
+
+	</select>
+</mapper>

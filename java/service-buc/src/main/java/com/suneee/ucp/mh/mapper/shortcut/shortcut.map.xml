@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.shortcut.ShortCut">
+	<resultMap id="ShortCut" type="com.suneee.ucp.mh.model.shortcut.ShortCut">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="icon" column="icon" jdbcType="VARCHAR"/>
+		<result property="router" column="router" jdbcType="VARCHAR"/>
+		<result property="order" column="order" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+		<result property="color" column="color" jdbcType="VARCHAR"/>
+		<result property="mobileItem" column="mobile_item" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,`name`,icon,description,createtime,router,enterprise_code,color,mobile_item
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null ">
+				AND id=#{id}
+			</if>
+			<if test="name != null and name != ''">
+				AND `name`=#{name}
+			</if>
+			<if test="enterpriseCode != null">
+				AND enterprise_code = #{enterpriseCode}
+			</if>
+		</where>
+	</sql>
+
+    <insert id="add">
+		INSERT INTO sys_shortcut
+			(`name`,create_by,enterprise_code,color
+			<if test="icon != null">
+				,icon
+			</if>
+			<if test="description != null">
+				,description
+			</if>
+			)
+		VALUES
+			(#{name,jdbcType=VARCHAR},#{createBy},#{enterpriseCode},#{color}
+			<if test="icon != null">
+				,#{icon}
+			</if>
+			<if test="description != null">
+				,#{description}
+			</if>
+			)
+	</insert>
+
+	<select id="getAll" resultMap="ShortCut">
+		SELECT <include refid="columns"/>
+		FROM sys_shortcut
+		<!-- where d.eid=#{eid}  -->
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sn
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			limit #{limit}
+		</if>
+	</select>
+	
+
+	<update id="update">
+		UPDATE sys_shortcut
+		<set>
+			<if test="name != null">
+				`name` = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				icon = #{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="color != null">
+				color = #{color,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				description = #{description,jdbcType=VARCHAR},
+			</if>
+			<if test="enterpriseCode != null">
+				enterprise_code = #{enterpriseCode},
+			</if>
+			<if test="updatetime != null">
+				updatetime=#{updatetime}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="ShortCut">
+		SELECT <include refid="columns"/>
+		FROM sys_shortcut
+		WHERE id = #{id}
+	</select>
+
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM
+			sys_shortcut
+		WHERE
+			id = #{id}
+	</delete>
+
+	<select id="getCustomShortCutByUserId" parameterType="java.lang.Long" resultMap="ShortCut">
+		SELECT
+			B.shortcut_id AS id, `name`, icon, description,router,color,mobile_item
+		FROM
+			sys_shortcut A
+		RIGHT JOIN
+			sys_user_shortcut_custom B
+		ON
+		    A.id = B.shortcut_id
+		WHERE
+			B.user_id = #{userId} AND B.enterprise_code=#{enterpriseCode}
+		ORDER BY B.order
+	</select>
+
+
+	<insert id="saveCustomShortCut">
+		  INSERT INTO
+		  	sys_user_shortcut_custom(shortcut_id, user_id, `order`,enterprise_code)
+		  VALUES
+		  	<foreach collection="list" item="item" separator=",">
+				(
+				#{item.id},
+				#{userId},
+				#{item.order},
+				#{item.enterpriseCode}
+				)
+			</foreach>
+	</insert>
+
+	<insert id="saveNoneCustomShortCut" parameterType="java.lang.Long">
+		INSERT INTO
+		sys_user_shortcut_custom(shortcut_id, user_id,enterprise_code)
+		VALUES
+			(
+				0,
+				#{userId},
+				#{enterpriseCode}
+			)
+	</insert>
+
+	<delete id="deleteCustomShortCut">
+		DELETE FROM
+			 sys_user_shortcut_custom
+		WHERE  user_id = #{userId} AND enterprise_code=#{enterpriseCode}
+	</delete>
+
+	<select id="getSelectedByUserId" parameterType="java.lang.Long" resultMap="ShortCut">
+		SELECT
+			A.id, `name`, icon, description,router,color,mobile_item
+		FROM
+			sys_shortcut A
+		JOIN
+			sys_user_shortcut_custom B
+		ON
+			A.id = B.shortcut_id
+		WHERE
+			B.user_id = #{userId} AND B.enterprise_code=#{enterpriseCode}
+		ORDER BY B.order
+	</select>
+
+	<select id="getUnSelectedByUserId" resultMap="ShortCut">
+      	SELECT
+	  		<include refid="columns"/>
+      	FROM
+			sys_shortcut A
+      	WHERE
+			A.is_delete = 0
+		AND
+        	NOT EXISTS(SELECT id FROM sys_user_shortcut_custom B WHERE B.user_id=#{userId} AND shortcut_id = A.`id` AND B.enterprise_code=#{enterpriseCode})
+	</select>
+
+	<delete id="deleteCustomShortCutByUserIds">
+		DELETE FROM
+			sys_user_shortcut_custom
+		WHERE
+			enterprise_code=#{enterpriseCode}
+			AND user_id IN
+			<foreach collection="list" item="userId" open="(" close=")" separator=",">
+				#{userId}
+			</foreach>
+	</delete>
+
+	<delete id="deleteByShortCutId">
+		DELETE FROM
+			sys_user_shortcut_custom
+		WHERE
+			shortcut_id IN
+		<foreach collection="array" item="shortcutId" open="(" close=")" separator=",">
+			#{shortcutId}
+		</foreach>
+	</delete>
+</mapper>

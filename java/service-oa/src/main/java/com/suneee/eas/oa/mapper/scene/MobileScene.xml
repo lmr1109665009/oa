@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.eas.oa.dao.scene.MobileSceneDao">
+	<resultMap type="com.suneee.eas.oa.model.scene.MobileScene" id="mobileScene">
+		<id property="Id" column="Id" jdbcType="NUMERIC"/>
+		<result property="sceneName" column="sceneName" jdbcType="VARCHAR" />
+		<result property="defId" column="defId" jdbcType="NUMERIC"/>
+		<result property="defName" column="defName" jdbcType="VARCHAR" />
+		<result property="defKey" column="defKey" jdbcType="VARCHAR" />
+		<result property="actDefId" column="actDefId" jdbcType="VARCHAR" />
+		<result property="typeId" column="typeId" jdbcType="NUMERIC"/>
+		<result property="typeName" column="typeName" jdbcType="VARCHAR"/>
+		<result property="relDefIds" column="relDefIds" jdbcType="VARCHAR"/>
+		<result property="relDefNames" column="relDefNames" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="enterpriseCode" column="enterpriseCode" jdbcType="VARCHAR" />
+		<result property="imgPath" column="imgPath" jdbcType="VARCHAR" />
+		<result property="sn" column="sn" jdbcType="NUMERIC"/>
+		<result property="type" column="type" jdbcType="NUMERIC"/>
+		<result property="url" column="url" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		mb.Id, mb.sceneName, mb.defId, mb.defName, mb.defKey,mb.actDefId, mb.typeId, mb.typeName, mb.relDefIds, mb.relDefNames, mb.description, mb.enterpriseCode,mb.imgPath,mb.sn,mb.type,mb.url
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(sceneName)"> AND mb.sceneName LIKE #{sceneName}</if>
+			<if test="@Ognl@isNotEmpty(defName)"> AND mb.defName LIKE #{defName}</if>
+			<if test="@Ognl@isNotEmpty(defId)"> AND mb.defId=#{defId}</if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND mb.enterpriseCode = #{enterpriseCode}</if>
+			<if test="@Ognl@isNotEmpty(defKey)"> AND mb.defKey = #{defKey}</if>
+			<if test="@Ognl@isNotEmpty(actDefId)"> AND mb.actDefId = #{actDefId}</if>
+			<if test="@Ognl@isNotEmpty(typeName)"> AND mb.typeName = #{typeName}</if>
+			<if test="@Ognl@isNotEmpty(typeId)"> AND mb.typeId = #{typeId}</if>
+			<if test="@Ognl@isNotEmpty(relDefIds)"> AND mb.relDefIds LIKE #{relDefIds}</if>
+			<if test="@Ognl@isNotEmpty(relDefNames)"> AND mb.relDefNames LIKE #{relDefNames}</if>
+			<if test="@Ognl@isNotEmpty(searchCondition)"> 
+				AND (mb.sceneName LIKE #{searchCondition}  OR  mb.defName LIKE #{searchCondition}
+					OR  mb.typeName  LIKE #{searchCondition} OR  mb.relDefNames  LIKE #{searchCondition} 
+					OR  mb.description  LIKE #{searchCondition}OR  mb.url  LIKE #{searchCondition})
+			</if>
+		</where>
+	</sql>
+	<insert id="save" parameterType="com.suneee.eas.oa.model.scene.MobileScene">
+		INSERT INTO ucp_mobile_scene
+		(Id, defId, typeId,sceneName,defKey, defName, actDefId, typeName,relDefIds,relDefNames,description,enterpriseCode,imgPath,sn,type,url)
+		VALUES(
+			#{Id, jdbcType=NUMERIC}, #{defId, jdbcType=NUMERIC}, #{typeId, jdbcType=NUMERIC}, #{sceneName, jdbcType=VARCHAR},
+			#{defKey, jdbcType=VARCHAR}, #{defName, jdbcType=VARCHAR}, #{actDefId, jdbcType=VARCHAR},#{typeName, jdbcType=VARCHAR},#{relDefIds, jdbcType=VARCHAR},
+			#{relDefNames, jdbcType=VARCHAR},#{description, jdbcType=VARCHAR},#{enterpriseCode, jdbcType=VARCHAR},#{imgPath, jdbcType=VARCHAR},#{sn, jdbcType=VARCHAR},
+			#{type, jdbcType=NUMERIC},#{url, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ucp_mobile_scene SET
+			defId = #{defId, jdbcType=NUMERIC},
+			typeId = #{typeId, jdbcType=NUMERIC},
+			sceneName = #{sceneName, jdbcType=VARCHAR},
+			defKey = #{defKey, jdbcType=VARCHAR},
+			defName = #{defName, jdbcType=VARCHAR},
+			actDefId = #{actDefId, jdbcType=VARCHAR},
+			typeName = #{typeName, jdbcType=VARCHAR},
+			type= #{type, jdbcType=NUMERIC},
+			relDefIds = #{relDefIds, jdbcType=VARCHAR},
+			relDefNames = #{relDefNames, jdbcType=VARCHAR},
+			url = #{url, jdbcType=VARCHAR},
+			description = #{description, jdbcType=VARCHAR},
+			imgPath = #{imgPath, jdbcType=VARCHAR},
+			sn = #{sn,jdbcType=NUMERIC}
+		WHERE Id = #{Id}
+	</update>
+	
+	<delete id="deleteById">
+		DELETE FROM ucp_mobile_scene WHERE Id = #{Id}
+	</delete>
+
+	<select id="getAll" resultMap="mobileScene">
+		SELECT <include refid="columns" />
+		FROM ucp_mobile_scene mb
+		<include refid="dynamicWhere"/>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY mb.id DESC,mb.sn DESC
+		</if>
+	</select>
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="mobileScene">
+		SELECT * FROM ucp_mobile_scene
+		WHERE Id = #{Id}
+	</select>
+
+	<select id="getByTypeId" parameterType="java.lang.Long" resultMap="mobileScene">
+		SELECT * FROM ucp_mobile_scene
+		WHERE typeId = #{typeId}
+	</select>
+
+	<select id="getByDefId" parameterType="java.lang.Long" resultMap="mobileScene">
+		SELECT * FROM ucp_mobile_scene
+		WHERE defId = #{defId}
+		<if test="@Ognl@isNotEmpty(sceneId)"> AND id != #{sceneId}</if>
+	</select>
+</mapper>

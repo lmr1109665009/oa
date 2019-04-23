@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceReceiptDao">
+	<sql id="tableName">oa_conference_receipt</sql>
+	<sql id="dbColumn">
+		receiptId, conferenceId, userId, userName, status, remark, receiptTime
+	</sql>
+	
+	<insert id="save" parameterType="conferenceReceipt">
+		INSERT INTO <include refid="tableName"/>(<include refid="dbColumn"/>) VALUES(
+			#{receiptId, jdbcType=NUMERIC}, #{conferenceId, jdbcType=NUMERIC}, #{userId, jdbcType=NUMERIC}, 
+			#{userName, jdbcType=VARCHAR}, #{status, jdbcType=NUMERIC}, #{remark, jdbcType=VARCHAR},
+			#{receiptTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<delete id="deleteByConferenceId" parameterType="java.lang.Long">
+		DELETE FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId}
+	</delete>
+	
+	<select id="getByConferenceId" parameterType="java.lang.Long" resultType="conferenceReceipt">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId}
+	</select>
+	
+	<select id="getConferenceReceipt" parameterType="java.util.Map" resultType="conferenceReceipt">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId} AND userId = #{userId}
+	</select>
+</mapper>

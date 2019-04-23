@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysKnowledgePer">
+	<resultMap id="SysKnowledgePer" type="com.suneee.platform.model.system.SysKnowledgePer">
+		<result property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="typeId" column="TYPEID" jdbcType="NUMERIC"/>
+		<result property="permissionType" column="PERMISSIONTYPE" jdbcType="VARCHAR"/>
+		<result property="ownerId" column="OWNERID" jdbcType="NUMERIC"/>
+		<result property="owner" column="OWNER" jdbcType="VARCHAR"/>
+		<result property="permissionJson" column="PERMISSIONJSON" jdbcType="VARCHAR"/>
+		<result property="typeName" column="TYPENAME" jdbcType="VARCHAR"/>
+		<result property="refId" column="REFID" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		ID,TYPEID,PERMISSIONTYPE,OWNERID,OWNER,PERMISSIONJSON,REFID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(typeId)"> AND TYPEID  =#{typeId} </if>
+			<if test="@Ognl@isNotEmpty(permissionType)"> AND PERMISSIONTYPE  LIKE #{permissionType}  </if>
+			<if test="@Ognl@isNotEmpty(ownerId)"> AND OWNERID  =#{ownerId} </if>
+			<if test="@Ognl@isNotEmpty(owner)"> AND OWNER  =#{owner} </if>
+			<if test="@Ognl@isNotEmpty(permissionJson)"> AND PERMISSIONJSON  LIKE #{permissionJson}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysKnowledgePer">
+		INSERT INTO SYS_KNOWLEDGE_PERMISSION
+		(ID,TYPEID,PERMISSIONTYPE,OWNERID,OWNER,PERMISSIONJSON,REFID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{typeId,jdbcType=NUMERIC}, #{permissionType,jdbcType=VARCHAR}, #{ownerId,jdbcType=NUMERIC},#{owner,jdbcType=VARCHAR}, 
+		#{permissionJson,jdbcType=VARCHAR},#{refId,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOWLEDGE_PERMISSION 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<delete id="delByRefId" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOWLEDGE_PERMISSION 
+		WHERE
+		REFID=#{refId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysKnowledgePer">
+		UPDATE SYS_KNOWLEDGE_PERMISSION SET
+		id=#{id,jdbcType=NUMERIC},
+		TYPEID=#{typeId,jdbcType=NUMERIC},
+		PERMISSIONTYPE=#{permissionType,jdbcType=VARCHAR},
+		OWNERID=#{ownerId,jdbcType=NUMERIC},
+		OWNER=#{owner,jdbcType=VARCHAR},
+		PERMISSIONJSON=#{permissionJson,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysKnowledgePer">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_PERMISSION
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getPerById" parameterType="java.lang.Long" resultMap="SysKnowledgePer">
+		SELECT per.ID,per.TYPEID,per.PERMISSIONTYPE,per.OWNERID,per.OWNER,per.PERMISSIONJSON,gl.typeName
+		FROM SYS_KNOWLEDGE_PERMISSION per,SYS_GL_TYPE gl
+		WHERE
+		per.TYPEID = gl.TYPEID
+		and
+		id=#{id} 
+	</select>
+	
+	<select id="getAll" resultMap="SysKnowledgePer">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_PERMISSION 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	
+	<select id="getAllList" resultMap="SysKnowledgePer">
+		SELECT per.ID id,per.TYPEID,per.PERMISSIONTYPE permissionType,per.OWNERID ownerId,per.OWNER owner,per.PERMISSIONJSON permissionJson,t.TYPENAME typeName
+		FROM SYS_KNOWLEDGE_PERMISSION per , SYS_GL_TYPE t
+		where per.TYPEID = t.TYPEID
+		<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+		<if test="@Ognl@isNotEmpty(typeId)"> AND TYPEID  =#{typeId} </if>
+		<if test="@Ognl@isNotEmpty(typeName)"> AND TYPENAME like #{typeName} </if>
+		<if test="@Ognl@isNotEmpty(permissionType)"> AND PERMISSIONTYPE  LIKE #{permissionType}  </if>
+		<if test="@Ognl@isNotEmpty(ownerId)"> AND OWNERID  =#{ownerId} </if>
+		<if test="@Ognl@isNotEmpty(owner)"> AND OWNER  like #{owner} </if>
+		<if test="@Ognl@isNotEmpty(permissionJson)"> AND PERMISSIONJSON  LIKE #{permissionJson}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	
+	<select id="getListByTypeId" resultMap="SysKnowledgePer" >
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOWLEDGE_PERMISSION   
+		where TYPEID  = #{typeId}
+	</select>
+	
+	<select id="getByUserIdFilter" resultMap="SysKnowledgePer"  parameterType="java.util.Map" >
+		select * from (
+			<foreach collection="relationMap" index="key"  item="ent" separator="union">
+				   select per.ID,per.TYPEID,gt.TYPENAME,per.PERMISSIONTYPE,per.OWNERID,per.OWNER,per.PERMISSIONJSON from SYS_GL_TYPE gt,SYS_KNOWLEDGE_PERMISSION per where per.TYPEID=gt.TYPEID and per.PERMISSIONTYPE=#{key} and gt.CATKEY = 'KNOWLEDGE_TYPE' 
+				   <if test="@Ognl@notEquals(key,'all') and @Ognl@isNotEmpty(ent)">
+				        and per.OWNERID in 
+						<foreach collection="ent"  item="id" separator="," open="(" close=")">
+							#{id}
+						</foreach>
+					</if> 
+			</foreach>
+		) t 
+	</select>
+	
+	<select id="getByRefId" resultMap="SysKnowledgePer" >
+		select per.ID,per.TYPEID,per.PERMISSIONTYPE,per.OWNERID,per.OWNER,per.PERMISSIONJSON,per.refId,gl.typeName
+		FROM SYS_KNOWLEDGE_PERMISSION per,SYS_GL_TYPE gl
+		WHERE
+		per.TYPEID = gl.TYPEID 
+		and
+		per.REFID  = #{refId}
+		UNION 
+		select p.ID,p.TYPEID,p.PERMISSIONTYPE,p.OWNERID,p.OWNER,p.PERMISSIONJSON,p.refId,g.typeName 
+		from SYS_KNOWLEDGE_PERMISSION p ,sys_type_key g where p.TYPEID = g.TYPEID and p.refId = #{refId}  
+	</select>
+	
+</mapper>

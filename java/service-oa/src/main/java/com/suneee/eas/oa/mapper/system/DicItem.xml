@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.system.DicItemDao">
+    <select id="findById" resultType="dicItem">
+        SELECT * FROM sys_dic_item WHERE id = #{id}
+    </select>
+
+    <select id="listAll" resultType="dicItem">
+        SELECT * FROM sys_dic_item
+        <where>
+            <if test="@Ognl@isNotEmpty(dicId)">
+                AND dicId= #{dicId}
+            </if>
+        </where>
+        ORDER BY sn ASC
+    </select>
+
+    <select id="countAll" resultType="integer">
+        SELECT COUNT(*) FROM sys_dic_item WHERE dicId=#{dicId} AND val=#{val}
+        <if test="@Ognl@isNotEmpty(notSelf)">
+            id!=#{notSelf}
+        </if>
+    </select>
+
+    <insert id="save">
+        INSERT INTO sys_dic_item(id,dicId,`option`,val
+        <if test="@Ognl@isNotEmpty(sn)">
+            ,sn
+        </if>
+        ) VALUES(#{id},#{dicId},#{option},#{val}
+        <if test="@Ognl@isNotEmpty(sn)">
+            ,#{sn}
+        </if>
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dic_item
+        <set>
+            <if test="@Ognl@isNotEmpty(option)">
+                `option`=#{option},
+            </if>
+            <if test="@Ognl@isNotEmpty(val)">
+                val=#{val},
+            </if>
+            <if test="@Ognl@isNotEmpty(sn)">
+                sn=#{sn},
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_dic_item WHERE id=#{id}
+    </delete>
+
+    <delete id="delByDicId">
+        DELETE FROM sys_dic_item WHERE dicId=#{dicId}
+    </delete>
+</mapper>

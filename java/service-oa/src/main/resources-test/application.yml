@@ -1,0 +1,49 @@
+spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+    time-zone: GMT+8
+
+  #流程引擎activiti配置
+  activiti:
+    check-process-definitions: false
+    async-executor-activate: false
+
+  #配置文件上传大小
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1000Mb
+      max-request-size: 5000Mb
+  #  分布式session配置
+  session:
+    timeout: 43200s
+
+#文件上传下载配置
+uploader:
+  type: minio
+  minio:
+    bucket: suneee
+    url: http://172.19.7.102
+    port: 9000
+    accessKey: suneee
+    secretKey: suneeeminio
+    urlExpire: 86400
+  localFs:
+    storePath: /opt/data/eas
+    url: http://dev.suneee.com/store
+
+
+#文件柜处理
+fs:
+  docFile:
+    departmentId: 2
+    personalId: 4
+    publicId: 3
+    groupId: 6
+    flowFileId: 40
+
+#系统配置
+system:
+  #姓名模式，alias为字号模式，其他为姓名模式
+  username-mode: alias

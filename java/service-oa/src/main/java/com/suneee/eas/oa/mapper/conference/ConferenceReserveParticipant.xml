@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceReserveParticipantDao">
+	<resultMap id="ConferenceReserveParticipant" type="com.suneee.eas.oa.model.conference.ConferenceReserveParticipant">
+		<id column="conferenceId" property="conferenceId" jdbcType="NUMERIC"/>
+		<id column="type" property="type" jdbcType="NUMERIC"/>
+		<id column="userId" property="userId" jdbcType="NUMERIC"/>
+		<result column="userName" property="userName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="tableName">oa_conference_reserve_participant</sql>
+	
+	<sql id="dbColumn">
+		conferenceId, type, userId, userName
+	</sql>
+	
+	<insert id="batchSave" parameterType="java.util.List">
+		INSERT INTO <include refid="tableName"/>(
+			<include refid="dbColumn"/>
+		)VALUES
+		<foreach collection="list" item="participant" separator=",">
+			(#{participant.conferenceId, jdbcType=NUMERIC}, #{participant.type, jdbcType=NUMERIC}, 
+			#{participant.userId, jdbcType=NUMERIC}, #{participant.userName, jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteByConferenceIdAndType" parameterType="java.util.Map">
+		DELETE FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId} AND type=#{type}
+	</delete>
+	
+	<select id="getByConferenceId" parameterType="java.util.Map" resultType="conferenceReserveParticipant">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId} AND type = #{type}
+	</select>
+	
+	<select id="getConferenceReserveParticipant" parameterType="java.util.Map" resultType="conferenceReserveParticipant">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId} AND type = #{type} AND userId = #{userId}
+	</select>
+</mapper>

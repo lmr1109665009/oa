@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceAuditDao">
+	<resultMap id="ConferenceAudit" type="com.suneee.eas.oa.model.conference.ConferenceAudit">
+		<id column="auditId" property="auditId" jdbcType="NUMERIC"/>
+		<result column="targetId" property="targetId" jdbcType="NUMERIC"/>
+		<result column="targetType" property="targetType" jdbcType="VARCHAR"/>
+		<result column="auditor" property="auditor" jdbcType="NUMERIC"/>
+		<result column="auditorName" property="auditorName" jdbcType="VARCHAR"/>
+		<result column="auditStatus" property="auditStatus" jdbcType="NUMERIC"/>
+		<result column="isRead" property="isRead" jdbcType="NUMERIC"/>
+		<result column="opinion" property="opinion" jdbcType="VARCHAR"/>
+		<result column="beginTime" property="beginTime" jdbcType="TIMESTAMP"/>
+		<result column="endTime" property="endTime" jdbcType="TIMESTAMP"/>
+		<result column="duration" property="duration" jdbcType="NUMERIC"/>
+		<result column="step" property="step" jdbcType="NUMERIC"/>
+		<result column="stepPath" property="stepPath" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="tableName">oa_conference_audit</sql>
+	<sql id="dbColumn">
+		auditId, targetId, targetType, auditor, auditorName, auditStatus, isRead, opinion, beginTime, 
+		endTime, duration, step, stepPath
+	</sql>
+	
+	<insert id="save" parameterType="com.suneee.eas.oa.model.conference.ConferenceAudit">
+		INSERT INTO <include refid="tableName"/> (<include refid="dbColumn"/>)
+		VALUES(
+			#{auditId, jdbcType=NUMERIC}, #{targetId, jdbcType=NUMERIC}, #{targetType, jdbcType=VARCHAR},
+			#{auditor, jdbcType=NUMERIC}, #{auditorName, jdbcType=VARCHAR}, #{auditStatus, jdbcType=NUMERIC},
+			#{isRead, jdbcType=NUMERIC}, #{opinion, jdbcType=VARCHAR}, #{beginTime, jdbcType=TIMESTAMP},
+			#{endTime, jdbcType=TIMESTAMP}, #{duration, jdbcType=NUMERIC}, #{step, jdbcType=NUMERIC},
+			#{stepPath, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.suneee.eas.oa.model.conference.ConferenceAudit">
+		UPDATE <include refid="tableName"/> SET
+			auditStatus = #{auditStatus, jdbcType=NUMERIC},
+			isRead = #{isRead,  jdbcType=NUMERIC},
+			opinion = #{opinion, jdbcType=VARCHAR}, 
+			endTime = #{endTime, jdbcType=TIMESTAMP},
+			duration = #{duration, jdbcType=NUMERIC}
+		WHERE auditId = #{auditId}
+	</update>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		DELETE FROM <include refid="tableName"/>
+		WHERE auditId = #{auditId}
+	</delete>
+	
+	<delete id="deleteByTargetIdAndType" parameterType="java.util.Map">
+		DELETE FROM <include refid="tableName"/>
+		WHERE targetId = #{targetId} AND targetType = #{targetType}
+	</delete>
+	
+	<select id="findById" parameterType="java.lang.Long" resultMap="ConferenceAudit">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE auditId = #{auditId}
+	</select>
+	
+	<select id="getByTargetIdAndType" parameterType="java.util.Map" resultMap="ConferenceAudit">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE targetId = #{targetId} AND targetType = #{targetType}
+	</select>
+	
+	<select id="listAll" resultMap="ConferenceAudit">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+	</select>
+</mapper>

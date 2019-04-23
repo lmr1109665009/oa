@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.conference.ConferenceDevice">
+	<resultMap id="ConferenceDevice" type="com.suneee.ucp.me.model.conference.ConferenceDevice">
+		<id property="deviceId" column="device_id" jdbcType="NUMERIC"/>
+		<result property="roomId" column="room_id" jdbcType="NUMERIC"/>
+		<result property="roomName" column="room_name" jdbcType="VARCHAR"/>
+		<result property="region" column="region" jdbcType="NUMERIC"/>
+		<result property="regionName" column="region_name" jdbcType="VARCHAR"/>
+		<result property="deviceType" column="device_type" jdbcType="NUMERIC"/>
+		<result property="deviceTypeName" column="device_type_name" jdbcType="VARCHAR"/>
+		<result property="deviceName" column="device_name" jdbcType="VARCHAR"/>
+		<result property="deviceNo" column="device_no" jdbcType="VARCHAR"/>
+		<result property="isPublic" column="is_public" jdbcType="NUMERIC"/>
+		<result property="remark" column="remark" jdbcType="CLOB"/>
+		<result property="createtime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="create_by" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="update_time" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="update_by" jdbcType="NUMERIC"/>
+		<result property="isDelete" column="ISDELETE" jdbcType="NUMERIC"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		cd.device_id, cd.room_id, cd.region, cd.device_type, cd.device_name, cd.device_no, cd.remark, cd.is_public, 
+		cd.create_time, cd.create_by, cd.update_time, cd.update_by,cd.ISDELETE
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			cd.ISDELETE=0
+			<if test="@Ognl@isNotEmpty(deviceId)"> AND cd.device_id  =#{deviceId} </if>
+			<if test="@Ognl@isNotEmpty(deviceName)"> AND cd.device_name  LIKE #{deviceName}  </if>
+			<if test="@Ognl@isNotEmpty(region)"> AND cd.region = #{region}  </if>
+			<if test="@Ognl@isNotEmpty(deviceType)"> AND cd.device_type = #{deviceType}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.conference.ConferenceDevice">
+		INSERT INTO ucp_conference_device
+			(device_id, room_id, region, device_type, device_name, device_no, is_public, remark,
+			create_time,create_by,update_time,update_by,ISDELETE,enterprise_code)
+		VALUES
+			(#{deviceId,jdbcType=NUMERIC}, #{roomId,jdbcType=NUMERIC}, #{region,jdbcType=NUMERIC}, 
+			#{deviceType,jdbcType=NUMERIC}, #{deviceName,jdbcType=VARCHAR}, #{deviceNo,jdbcType=VARCHAR}, 
+			#{isPublic,jdbcType=NUMERIC}, #{remark,jdbcType=CLOB}, #{createtime,jdbcType=TIMESTAMP}, 
+			#{createBy,jdbcType=NUMERIC}, #{updatetime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=NUMERIC},
+			#{isDelete,jdbcType=NUMERIC},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		UPDATE ucp_conference_device
+		SET ISDELETE=1
+		WHERE device_id=#{deviceId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.me.model.conference.ConferenceDevice">
+		UPDATE ucp_conference_device 
+		SET
+			room_id = #{roomId,jdbcType=NUMERIC}, 
+			region = #{region,jdbcType=NUMERIC}, 
+			device_type = #{deviceType,jdbcType=NUMERIC}, 
+			device_name = #{deviceName,jdbcType=VARCHAR},
+			device_no = #{deviceNo,jdbcType=VARCHAR},
+			is_public = #{isPublic,jdbcType=NUMERIC},
+			remark = #{remark,jdbcType=CLOB},
+			update_time = #{updatetime,jdbcType=TIMESTAMP},
+			update_by = #{updateBy,jdbcType=NUMERIC},
+			ISDELETE = #{isDelete,jdbcType=NUMERIC},
+			enterprise_code = #{enterpriseCode,jdbcType=VARCHAR}
+		WHERE device_id = #{deviceId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ConferenceDevice">
+		SELECT 
+			<include refid="columns"/>, 
+			dr.itemname as region_name,  
+			dt.itemname as device_type_name, 
+			cr.room_name
+		FROM ucp_conference_device cd
+		LEFT JOIN sys_dic dr ON dr.dicid=cd.region
+		LEFT JOIN sys_dic dt ON dt.dicid=cd.device_type 
+		LEFT JOIN ucp_conference_room cr ON cr.room_id=cd.room_id
+		WHERE device_id = #{deviceId}
+	</select>
+	
+	<select id="getAll" resultMap="ConferenceDevice">
+		SELECT 
+			<include refid="columns"/>, 
+			dr.itemname as region_name, 
+			dt.itemname as device_type_name,
+			cr.room_name
+		FROM ucp_conference_device cd
+		LEFT JOIN sys_dic dr ON dr.dicid=cd.region
+		LEFT JOIN sys_dic dt ON dt.dicid=cd.device_type
+		LEFT JOIN ucp_conference_room cr ON cr.room_id=cd.room_id
+		<include refid="dynamicWhere" />
+        <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND cd.enterprise_code=#{enterpriseCode} </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY device_id  DESC
+		</if>
+	</select>
+	
+	<select id="getConferenceDevicesByIds" parameterType="java.util.List" resultMap="ConferenceDevice">
+		SELECT
+			<include refid="columns"/>
+		FROM ucp_conference_device cd
+		WHERE cd.device_id IN
+		<foreach item="deviceId" collection="list" open="(" separator="," close=")">
+			#{deviceId}
+		</foreach>
+	</select>
+	
+	<select id="getConferenceDevicesNotIn" parameterType="java.util.Map" resultMap="ConferenceDevice">
+		SELECT
+			<include refid="columns"/>,
+			cr.room_name
+		FROM ucp_conference_device cd
+		LEFT JOIN ucp_conference_room cr ON cr.room_id=cd.room_id
+		WHERE cd.region = #{region}
+		AND is_public = 1
+		AND cd.ISDELETE = 0
+		AND cd.device_id NOT IN
+		<foreach item="deviceId" collection="deviceIds" open="(" separator="," close=")">
+			#{deviceId}
+		</foreach>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND cd.enterprise_code=#{enterpriseCode} </if>
+	</select>
+
+	<select id="getConferenceDevicesByRoomId" parameterType="java.lang.Long" resultMap="ConferenceDevice">
+		SELECT <include refid="columns"/>
+		FROM ucp_conference_device cd
+		WHERE cd.room_id=#{roomId} AND cd.ISDELETE=0
+	</select>
+</mapper>

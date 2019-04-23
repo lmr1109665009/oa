@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.codeTable.ApiTaskHistory">
+	<resultMap id="ApiTaskHistory" type="com.suneee.ucp.mh.model.codeTable.ApiTaskHistory">
+		<id property="Id" column="id" jdbcType="NUMERIC"/>
+		<id property="runId" column="runId" jdbcType="NUMERIC"/>
+		<result property="processName" column="processName" jdbcType="VARCHAR"/>
+		<result property="comeFrom" column="comeFrom" jdbcType="VARCHAR"/>
+		<result property="createBy" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createDate" column="description" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,runId,processName,comeFrom,createBy,createDate
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(runId)"> AND runId  =#{runId} </if>
+			<if test="@Ognl@isNotEmpty(createBy)"> AND createBy  =#{createBy} </if>
+			<if test="@Ognl@isNotEmpty(comeFrom)">AND comeFrom =#{comeFrom}</if>
+		</where>
+	</sql>
+
+    <insert id="add" parameterType="com.suneee.ucp.mh.model.codeTable.ApiTaskHistory">
+		INSERT INTO ucp_api_task
+			(id,runId,processName,comeFrom,createBy,createDate)
+		VALUES
+			(#{id,jdbcType=NUMERIC}, #{runId,jdbcType=NUMERIC}, #{processName,jdbcType=VARCHAR},
+			#{comeFrom,jdbcType=VARCHAR}, #{createBy,jdbcType=NUMERIC},
+			 #{createDate,jdbcType=TIMESTAMP})
+	</insert>
+	<select id="getAll" resultMap="ApiTaskHistory">
+		SELECT <include refid="columns"/>
+		FROM ucp_api_task
+		<!-- where d.eid=#{eid}  -->
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY createDate  desc
+		</if>
+	</select>
+
+	<select id="getById" parameterType="java.lang.Long" resultMap="ApiTaskHistory">
+		SELECT <include refid="columns"/>
+		FROM ucp_api_task
+		WHERE id = #{id}
+	</select>
+	<select id="getByRunId" parameterType="java.lang.Long" resultMap="ApiTaskHistory">
+		SELECT <include refid="columns"/>
+		FROM ucp_api_task
+		WHERE runId = #{runId}
+	</select>
+
+</mapper>

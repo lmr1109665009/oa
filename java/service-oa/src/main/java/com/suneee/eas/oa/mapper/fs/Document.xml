@@ -1,0 +1,332 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.fs.DocumentDao">
+	<sql id="documentColumns">
+		id,name,size,path,parentId,keyWord,readNum,dirPath,dirPathName,contentType,ext,isDir,enterpriseCode,describes,isDelete,createTime,createBy,createByName,updateTime,updateBy,updateByName
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+		    isDelete=0
+			<if test="@Ognl@isNotEmpty(id)"> AND id=#{id, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(parentId)">AND parentId=#{parentId, jdbcType=NUMERIC}</if>
+				<if test="@Ognl@isEmpty(parentIds)">
+					typeId in
+					<foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
+						#{parentId, jdbcType=NUMERIC}
+					</foreach>
+				</if>
+
+			<if test="@Ognl@isNotEmpty(name)"> AND name Like #{name, jdbcType=VARCHAR})</if>
+			<if test="@Ognl@isNotEmpty(keyWord)"> AND keyWord =#{keyWord, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(dirPath)"> AND dirPath Like CONCAT(#{enterpriseCode, jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(isDir)"> AND isDir =#{isDir, jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(isDelete)"> AND isDelete =#{isDelete, jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(contentType)"> AND contentType = #{contentType, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(ext)"> AND ext = #{ext, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(searchCondition)"> AND (name like #{searchCondition, jdbcType=VARCHAR} or keyWord like #{searchCondition, jdbcType=VARCHAR}) </if>
+		</where>
+	</sql>
+
+	<select id="list" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		<where>
+			isDir=1 and isDelete=0
+			<if test="@Ognl@isNotEmpty(ids)">
+			AND id in
+				<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+					#{item, jdbcType=NUMERIC}
+				</foreach>
+			</if>
+			<if test="@Ognl@isNotEmpty(id)"> AND id=#{id, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(parentId)">AND parentId=#{parentId, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(parentIds)">
+				typeId in
+				<foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
+					#{parentId, jdbcType=NUMERIC}
+				</foreach>
+			</if>
+			<if test="@Ognl@isNotEmpty(searchCondition)"> AND (name like #{searchCondition, jdbcType=VARCHAR} or keyWord like #{searchCondition, jdbcType=VARCHAR}) </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name Like #{name, jdbcType=VARCHAR})</if>
+			<if test="@Ognl@isNotEmpty(keyWord)"> AND keyWord Like #{keyWord, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(dirPath)"> AND dirPath Like CONCAT(#{enterpriseCode, jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(isDelete)"> AND isDelete =#{isDelete, jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(contentType)"> AND contentType = #{contentType, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(ext)"> AND ext = #{ext, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR} </if>
+		</where>
+		union all
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		<where>
+			isDir=0 and isDelete=0
+			<if test="@Ognl@isNotEmpty(id)"> AND id=#{id, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(parentId)">AND parentId=#{parentId, jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(parentIds)">
+				typeId in
+				<foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
+					#{parentId, jdbcType=NUMERIC}
+				</foreach>
+			</if>
+			<if test="@Ognl@isNotEmpty(searchCondition)"> AND (name like #{searchCondition, jdbcType=VARCHAR} or keyWord like #{searchCondition, jdbcType=VARCHAR}) </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name Like #{name, jdbcType=VARCHAR})</if>
+			<if test="@Ognl@isNotEmpty(keyWord)"> AND keyWord =#{keyWord, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(dirPath)"> AND dirPath Like CONCAT(#{enterpriseCode, jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(contentType)"> AND contentType = #{contentType, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(ext)"> AND ext = #{ext, jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR} </if>
+		</where>
+		order by isDir DESC,updateTime DESC
+	</select>
+
+
+	<select id="listAll" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		<include refid="dynamicWhere"/>
+	</select>
+
+
+	<!--获取所有的子文件（不管有没有权限）-->
+	<select id="getByParentId" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		WHERE
+		parentId = #{parentId, jdbcType=NUMERIC} and isDelete=0 and enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR}
+	</select>
+
+<!-- 	新增 -->
+	<insert id="save" parameterType="document">
+		INSERT INTO oa_fs_document
+		(<include refid="documentColumns" />)
+		 VALUES
+		(
+		#{id, jdbcType=NUMERIC},
+		#{name, jdbcType=VARCHAR},
+		#{size, jdbcType=VARCHAR},
+		#{path, jdbcType=VARCHAR},
+		#{parentId, jdbcType=NUMERIC},
+		#{keyWord, jdbcType=VARCHAR},
+		#{readNum, jdbcType=NUMERIC},
+		#{dirPath, jdbcType=VARCHAR},
+		#{dirPathName, jdbcType=VARCHAR},
+		#{contentType, jdbcType=VARCHAR},
+		#{ext, jdbcType=VARCHAR},
+		#{isDir, jdbcType=NUMERIC},
+		#{enterpriseCode, jdbcType=VARCHAR},
+		#{describes, jdbcType=VARCHAR},
+		0,
+		#{createTime,jdbcType=TIMESTAMP},
+		#{createBy,jdbcType=TIMESTAMP},
+		#{createByName,jdbcType=VARCHAR},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{updateBy,jdbcType=TIMESTAMP},
+		#{updateByName,jdbcType=VARCHAR}
+		)
+	</insert>
+
+
+	<!-- 批量插入-->
+	<insert id="saveList">
+		INSERT INTO oa_fs_document
+		(<include refid="documentColumns" />)
+		VALUES
+		<foreach collection="list"  item="item"  separator="," >
+			(
+			#{item.id, jdbcType=NUMERIC},
+			#{item.name, jdbcType=VARCHAR},
+			#{item.size, jdbcType=VARCHAR},
+			#{item.path, jdbcType=VARCHAR},
+			#{item.parentId, jdbcType=NUMERIC},
+			#{item.keyWord, jdbcType=VARCHAR},
+			#{item.readNum, jdbcType=NUMERIC},
+			#{item.dirPath, jdbcType=VARCHAR},
+			#{item.dirPathName, jdbcType=VARCHAR},
+			#{item.contentType, jdbcType=VARCHAR},
+			#{item.ext, jdbcType=VARCHAR},
+			#{item.isDir, jdbcType=NUMERIC},
+			#{item.enterpriseCode, jdbcType=VARCHAR},
+			#{item.describes, jdbcType=VARCHAR},
+			0,
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.createBy,jdbcType=TIMESTAMP},
+			#{item.createByName,jdbcType=VARCHAR},
+			#{item.updateTime,jdbcType=TIMESTAMP},
+			#{item.updateBy,jdbcType=TIMESTAMP},
+			#{item.updateByName,jdbcType=VARCHAR}
+			)
+		</foreach>
+
+	</insert>
+
+<!-- 	修改 -->
+	<update id="update">
+		UPDATE oa_fs_document
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="@Ognl@isNotEmpty(name)">
+				NAME =#{name, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(size)">
+				size =#{size ,jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(path)">
+				path =#{path, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(parentId)">
+				parentId =#{parentId, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(keyWord)">
+				keyWord = #{keyWord, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(readNum)">
+				readNum = #{readNum, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(dirPath)">
+				dirPath = #{dirPath, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(dirPathName)">
+				dirPathName = #{dirPathName, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(contentType)">
+				contentType = #{contentType, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(ext)">
+				ext = #{ext, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(isDir)">
+				isDir = #{isDir, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(isDelete)">
+				isDelete = #{isDelete, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(updateBy)">
+				updateBy = #{updateBy, jdbcType=NUMERIC},
+			</if>
+			<if test="@Ognl@isNotEmpty(updateByName)">
+				updateByName = #{updateByName, jdbcType=VARCHAR},
+			</if>
+			<if test="@Ognl@isNotEmpty(updateTime)">
+				updateTime = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+			where
+			id = #{id, jdbcType=NUMERIC}
+
+	</update>
+
+	<select id="findById" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		WHERE
+		id=#{id, jdbcType=NUMERIC}
+	</select>
+
+	<select id="findByIds" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		WHERE
+		isDelete=0 and enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR} and
+		id IN
+		<foreach item="item" index="index" collection="ids" open="("
+				 separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+<!-- 	计算相同命名重复数量 -->
+	<select id="countNameRepetition" resultType="integer">
+		SELECT count(*)
+		FROM oa_fs_document
+		<where>
+			isDelete =0
+			<if test="@Ognl@isNotEmpty(isDir)">
+				AND isDir = #{isDir, jdbcType=NUMERIC}
+			</if>
+			<if test="@Ognl@isNotEmpty(name)">
+				AND name=#{name, jdbcType=VARCHAR}
+			</if>
+			<if test="@Ognl@isNotEmpty(parentId)">
+				AND parentId = #{parentId, jdbcType=NUMERIC}
+			</if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)">
+				AND enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR}
+			</if>
+			<if test="@Ognl@isNotEmpty(id)">
+				AND id != #{id, jdbcType=NUMERIC}
+			</if>
+		</where>
+	</select>
+
+	<!-- 批量删除 -->
+	<update id="deleteAll">
+		update oa_fs_document set isDelete=1,updateBy=#{updateBy},updateTime=#{updateTime} WHERE id IN
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<update id="delByPath">
+		update oa_fs_document
+		set isDelete=1,updateBy=#{updateBy},updateByName=#{updateByName},updateTime=#{updateTime}
+		WHERE dirPath like CONCAT(#{dirPath, jdbcType=VARCHAR},'%') and enterpriseCode = #{enterpriseCode, jdbcType=VARCHAR}
+	</update>
+
+	<update id="delById">
+		update oa_fs_document
+		set isDelete=1,updateBy=#{updateBy},updateByName=#{updateByName},updateTime=#{updateTime}
+		WHERE id=#{id, jdbcType=NUMERIC}
+	</update>
+
+	<select id="getByDirPath" resultType="document">
+		SELECT
+		<include refid="documentColumns" />
+		FROM oa_fs_document
+		WHERE isDelete =0 and enterpriseCode = #{enterpriseCode}and  dirPath like CONCAT(#{dirPath,, jdbcType=VARCHAR },'%')
+		<if test="@Ognl@isNotEmpty(isDir)">
+			and isDir = #{isDir, jdbcType=NUMERIC}
+		</if>
+		<if test="@Ognl@isNotEmpty(createBy)">
+			and createBy = #{createBy, jdbcType=NUMERIC}
+		</if>
+	</select>
+</mapper>

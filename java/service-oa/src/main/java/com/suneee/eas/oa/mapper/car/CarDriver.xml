@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.car.CarDriverDao">
+    <sql id="columns">
+        id,`name`,mobile,licenseDate,validDate,remarks,enterpriseCode,isLock,isDelete,driverId,
+        createBy,createTime,updateBy,updateTime
+    </sql>
+    
+    <sql id="dynamicWhere">
+        <where>
+        <if test="@Ognl@isNotEmpty(name)"> AND  `name` LIKE  #{name}</if>
+        <if test="@Ognl@isNotEmpty(mobile)"> AND  mobile LIKE  #{mobile}</if>
+        <if test="@Ognl@isNotEmpty(licenseDate)"> AND  licenseDate >=  #{beginLicenseDate}</if>
+        <if test="@Ognl@isNotEmpty(licenseDate)"> AND  licenseDate <![CDATA[<=#{endLicenseDate}]]>  </if>
+        <if test="@Ognl@isNotEmpty(validDate)"> AND  validDate >=  #{beginValidDate}</if>
+        <if test="@Ognl@isNotEmpty(validDate)"> AND  validDate <![CDATA[<=#{endValidDate}]]>  </if>
+        <if test="@Ognl@isNotEmpty(remarks)"> AND  remarks LIKE  #{remarks}</if>
+        <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND  enterpriseCode =  #{enterpriseCode}</if>
+        <if test="@Ognl@isNotEmpty(isLock)"> AND  isLock LIKE  #{isLock}</if>
+        <if test="@Ognl@isNotEmpty(isDelete)"> AND  isDelete =  #{isDelete}</if>
+        <if test="@Ognl@isNotEmpty(createBy)"> AND  createBy =  #{createBy}</if>
+        <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime >=  #{beginCreateTime}</if>
+        <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime <![CDATA[<=#{endCreateTime}]]>  </if>
+        <if test="@Ognl@isNotEmpty(updateBy)"> AND  updateBy =  #{updateBy}</if>
+        <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime >=  #{beginUpdateTime}</if>
+        <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime <![CDATA[<=#{endUpdateTime}]]>  </if>
+            <if test="@Ognl@isNotEmpty(driverId)"> AND  driverId =  #{driverId}</if>
+        </where>
+    </sql>
+    
+    <insert id="save" parameterType="carDriver" >
+        insert  into oa_car_driver
+        (
+        id,`name`,mobile,licenseDate,validDate,remarks,enterpriseCode,isLock,isDelete,driverId,
+        createBy,createTime
+        )
+        values ( #{id},#{name},#{mobile},
+        #{licenseDate},#{validDate},#{remarks},#{enterpriseCode},#{isLock},#{isDelete},#{driverId},
+        #{createBy},#{createTime}
+        )   
+    </insert>
+    
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM  oa_car_driver
+        WHERE id = #{id}
+    </delete>
+    
+    <update id="update" parameterType="carDriver">
+        UPDATE oa_car_driver
+        SET 
+        `name` = #{name},
+        mobile = #{mobile},
+        licenseDate = #{licenseDate},
+        validDate = #{validDate},
+        remarks = #{remarks},
+        enterpriseCode = #{enterpriseCode},
+        isLock = #{isLock},
+        isDelete = #{isDelete},
+        updateBy = #{updateBy},
+        updateTime = #{updateTime}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="listAll" resultType="carDriver">
+        SELECT <include refid="columns"/>
+        FROM oa_car_driver
+        <where>
+            <if test="@Ognl@isNotEmpty(name)"> AND  `name` LIKE  #{name}</if>
+            <if test="@Ognl@isNotEmpty(mobile)"> AND  mobile LIKE  #{mobile}</if>
+            <if test="@Ognl@isNotEmpty(beginLicenseDate)"> AND  licenseDate >=  #{beginLicenseDate}</if>
+            <if test="@Ognl@isNotEmpty(endLicenseDate)"> AND  licenseDate <![CDATA[<=#{endLicenseDate}]]>  </if>
+            <if test="@Ognl@isNotEmpty(beginValidDate)"> AND  validDate >=  #{beginValidDate}</if>
+            <if test="@Ognl@isNotEmpty(endValidDate)"> AND  validDate <![CDATA[<=#{endValidDate}]]>  </if>
+            <if test="@Ognl@isNotEmpty(remarks)"> AND  remarks LIKE  #{remarks}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND  enterpriseCode =  #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(isLock)"> AND  isLock LIKE  #{isLock}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)"> AND  isDelete =  #{isDelete}</if>
+            <if test="@Ognl@isNotEmpty(createBy)"> AND  createBy =  #{createBy}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime >=  #{beginCreateTime}</if>
+            <if test="@Ognl@isNotEmpty(createTime)"> AND  createTime <![CDATA[<=#{endCreateTime}]]>  </if>
+            <if test="@Ognl@isNotEmpty(updateBy)"> AND  updateBy =  #{updateBy}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime >=  #{beginUpdateTime}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)"> AND  updateTime <![CDATA[<=#{endUpdateTime}]]>  </if>
+            <if test="@Ognl@isNotEmpty(driverId)"> AND  driverId =  #{driverId}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)"> AND  isDelete = 0  </if>
+            <if test="@Ognl@isNotEmpty(searchCondition)"> AND (`name` LIKE  #{searchCondition} ) </if>
+        </where>
+        ORDER BY createTime DESC
+    </select>
+    
+    <select id="findById" resultType="carDriver">
+        SELECT <include refid="columns"/>
+        FROM oa_car_driver
+        WHERE id = #{id}
+    </select>
+
+    <select id="countByDriverId" resultType="java.lang.Integer">
+        SELECT COUNT(`name`)
+        FROM oa_car_driver
+        WHERE driverId = #{driverId} AND enterpriseCode = #{enterpriseCode}
+    </select>
+    
+</mapper>

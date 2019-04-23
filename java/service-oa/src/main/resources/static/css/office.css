@@ -1,0 +1,37 @@
+html,body{
+    width: 100%;
+    height: 100%;
+}
+.office-container{
+    padding-bottom: 41px;
+}
+.office-container .office-toolbar{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-bottom: 0;
+    border-top: 1px solid #dddddd;
+}
+.office-toolbar .office-button{
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 30px;
+    border-right: 1px solid #dddddd;
+    color: #000000;
+    font-size: 16px;
+    text-decoration: none;
+}
+.office-toolbar .group.pull-right{
+    margin-top: -40px;
+}
+.office-toolbar .group.pull-right{
+    border-left: 1px solid #dddddd;
+}
+.office-toolbar .group.pull-right:last-child{
+    border-right: none;
+}
+.office-container,.office-container .office-body{
+    width: 100%;
+    height: 100%;
+}

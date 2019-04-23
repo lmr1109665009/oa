@@ -1,0 +1,1 @@
+package com.suneee.eas.oa.service.car;import com.suneee.eas.common.service.BaseService;import com.suneee.eas.oa.model.car.CarArrangeHistory;/** * @program: eas-parent * @description: * @author: liuhai * @create: 2018-10-11 09:31 **/public interface CarArrangeHistoryService extends BaseService<CarArrangeHistory>{}

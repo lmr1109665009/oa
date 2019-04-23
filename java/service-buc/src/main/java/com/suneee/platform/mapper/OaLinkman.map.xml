@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.oa.OaLinkman">
+	<resultMap id="OaLinkman" type="com.suneee.platform.model.oa.OaLinkman">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="name" column="NAME" jdbcType="VARCHAR"/>
+		<result property="sex" column="SEX" jdbcType="VARCHAR"/>
+		<result property="phone" column="PHONE" jdbcType="VARCHAR"/>
+		<result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+		<result property="company" column="COMPANY" jdbcType="VARCHAR"/>
+		<result property="job" column="JOB" jdbcType="VARCHAR"/>
+		<result property="address" column="ADDRESS" jdbcType="VARCHAR"/>
+		<result property="createtime" column="CREATETIME" jdbcType="DATE"/>
+		<result property="status" column="STATUS" jdbcType="NUMERIC"/>
+		<result property="userid" column="USERID" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,NAME,SEX,PHONE,EMAIL,COMPANY,JOB,ADDRESS,CREATETIME,STATUS,USERID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(sex)"> AND SEX  LIKE #{sex}  </if>
+			<if test="@Ognl@isNotEmpty(phone)"> AND PHONE  LIKE #{phone}  </if>
+			<if test="@Ognl@isNotEmpty(email)"> AND EMAIL  LIKE #{email}  </if>
+			<if test="@Ognl@isNotEmpty(company)"> AND COMPANY  LIKE #{company}  </if>
+			<if test="@Ognl@isNotEmpty(job)"> AND JOB  LIKE #{job}  </if>
+			<if test="@Ognl@isNotEmpty(address)"> AND ADDRESS  LIKE #{address}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+		    <if test="@Ognl@isNotEmpty(status)"> AND STATUS  LIKE #{status}  </if>
+		    <if test="@Ognl@isNotEmpty(userid)"> AND USERID  LIKE #{userid}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.oa.OaLinkman">
+		INSERT INTO OA_LINKMAN
+		(ID,NAME,SEX,PHONE,EMAIL,COMPANY,JOB,ADDRESS,CREATETIME,STATUS,USERID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE},#{status,jdbcType=NUMERIC},#{userid,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM OA_LINKMAN 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.oa.OaLinkman">
+		UPDATE OA_LINKMAN SET
+		NAME=#{name,jdbcType=VARCHAR},
+		SEX=#{sex,jdbcType=VARCHAR},
+		PHONE=#{phone,jdbcType=VARCHAR},
+		EMAIL=#{email,jdbcType=VARCHAR},
+		COMPANY=#{company,jdbcType=VARCHAR},
+		JOB=#{job,jdbcType=VARCHAR},
+		ADDRESS=#{address,jdbcType=VARCHAR},
+		CREATETIME=#{createtime,jdbcType=DATE},
+		STATUS=#{status,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="OaLinkman">
+		SELECT <include refid="columns"/>
+		FROM OA_LINKMAN
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="OaLinkman">
+		SELECT <include refid="columns"/>
+		FROM OA_LINKMAN   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by createtime  desc
+		</if>
+	</select>
+	<!-- 根据用户id获取该用户的联系人列表 -->
+	<select id="getByUserId"  resultMap="OaLinkman">
+		SELECT <include refid="columns"/>
+		FROM OA_LINKMAN   
+		where userid = #{userId}
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+		<if test="@Ognl@isNotEmpty(sex)"> AND SEX  LIKE #{sex}  </if>
+		<if test="@Ognl@isNotEmpty(phone)"> AND PHONE  LIKE #{phone}  </if>
+		<if test="@Ognl@isNotEmpty(email)"> AND EMAIL  LIKE #{email}  </if>
+		<if test="@Ognl@isNotEmpty(company)"> AND COMPANY  LIKE #{company}  </if>
+		<if test="@Ognl@isNotEmpty(job)"> AND JOB  LIKE #{job}  </if>
+		<if test="@Ognl@isNotEmpty(address)"> AND ADDRESS  LIKE #{address}  </if>
+		<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+	    <if test="@Ognl@isNotEmpty(status)"> AND STATUS  LIKE #{status}  </if>
+	    <if test="@Ognl@isNotEmpty(userid)"> AND USERID  LIKE #{userid}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by createtime  desc
+		</if>
+	</select>
+	<!-- 选择启用状态下的联系人 -->
+	<select id="getSelectorList" resultMap="OaLinkman">
+		SELECT <include refid="columns"/>
+		FROM OA_LINKMAN   
+		where userid = #{userId} and status = 1
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+		<if test="@Ognl@isNotEmpty(email)"> AND EMAIL  LIKE #{email}  </if>
+		<if test="@Ognl@isNotEmpty(company)"> AND COMPANY  LIKE #{company}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by createtime  desc
+		</if>
+	</select>
+	
+	<!-- 根据userId email 判断该记录已经存在于联系人中 -->
+	<select id="getByUserEmail" parameterType="java.util.Map" resultMap="OaLinkman" >
+	    select * from OA_LINKMAN where userId=#{userId} and email=#{email}
+	</select>
+
+</mapper>

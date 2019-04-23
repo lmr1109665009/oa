@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysOrg">
+	<sql id="unionColumns">
+		a.orgId,a.demId,a.orgName,a.orgDesc,a.orgSupId,a.path,a.orgPathname, a.depth,a.orgType,
+        a.creatorId,a.createtime,a.updateId,a.updatetime,a.sn,a.fromType,a.code, a.companyId,a.company,
+        a.orgStaff,a.orgCode
+	</sql>
+	
+	<sql id="condition">
+	    <if test="@Ognl@isNotEmpty(orgCode)"> AND a.orgCode  =#{orgCode} </if>
+		<if test="@Ognl@isNotEmpty(demId)"> AND a.demId  =#{demId} </if>
+		<if test="@Ognl@isNotEmpty(orgName)"> AND a.orgName  LIKE #{orgName}  </if>
+		<if test="@Ognl@isNotEmpty(orgSupId)"> AND a.orgSupId  =#{orgSupId} </if>
+		<if test="@Ognl@isNotEmpty(path)"> AND a.path  LIKE #{path}  </if>
+		<if test="@Ognl@isNotEmpty(orgType)"> AND a.orgType  =#{orgType} </if>
+		<if test="@Ognl@isNotEmpty(fromType)"> AND a.fromType  =#{fromType} </if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND a.orgCode=#{enterpriseCode}</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (a.orgName LIKE #{searchCondition} OR a.orgCode LIKE #{searchCondition} OR a.name LIKE #{searchCondition})
+		</if>
+		AND a.isdelete=0
+	</sql>
+	<select id="getByDemId" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM sys_org 
+		WHERE demid = #{demID}
+	</select>
+	
+	<select id="getByOrgId" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT  <include refid="unionColumns"/>, b.demName, IFNULL(c.orgName, b.demName) AS OrgSupName, d.name orgTypeName
+		FROM sys_org a 
+		LEFT JOIN sys_org c ON a.orgSupId=c.orgId 
+		JOIN sys_demension b ON a.demId=b.demId  
+		LEFT JOIN sys_org_type d ON d.id = a.orgtype
+		WHERE a.orgId=#{orgId} 
+	</select>
+	
+	<select id="getByCondition" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT  <include refid="unionColumns"/>, b.demName, IFNULL(c.orgName, b.demName) AS OrgSupName, d.name orgTypeName,
+			(SELECT COUNT(*) FROM sys_org t WHERE t.orgsupid=a.orgid AND  t.isdelete=0
+				<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND t.orgcode=#{enterpriseCode}</if> )  isLeaf,
+			(SELECT COUNT(*) FROM sys_org t1 WHERE t1.orgid=a.orgsupid AND  t1.isdelete=0
+				<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND t1.orgcode=#{enterpriseCode}</if>) parentNum
+		FROM sys_org a 
+		LEFT JOIN sys_org c ON a.orgSupId=c.orgId 
+		JOIN sys_demension b ON a.demId=b.demId  
+		LEFT JOIN sys_org_type d ON d.id = a.orgtype
+		<where>
+			<include refid="condition" />
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sn ASC
+		</if>
+	</select>
+	
+	<select id="getSimpleByCondition" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT  <include refid="unionColumns"/>, b.demName, IFNULL(c.orgName, b.demName) AS OrgSupName, d.name orgTypeName,
+			(SELECT COUNT(*) FROM sys_org t WHERE t.orgsupid=a.orgid AND  t.isdelete=0
+				<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND t.orgcode=#{enterpriseCode}</if> )  isLeaf,
+			(SELECT COUNT(*) FROM sys_org t1 WHERE t1.orgid=a.orgsupid AND  t1.isdelete=0
+				<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND t1.orgcode=#{enterpriseCode}</if>) parentNum
+		FROM sys_org a 
+		LEFT JOIN sys_org c ON a.orgSupId=c.orgId 
+		LEFT JOIN sys_demension b ON a.demId=b.demId  
+		LEFT JOIN sys_org_type d ON d.id = a.orgtype
+		<where>
+			<include refid="condition" />
+			<if test="@Ognl@isEmpty(orgSupId)">
+				AND a.orgSupId NOT IN (
+					SELECT org.orgId FROM sys_org org WHERE org.demId=#{demId} 
+					<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND org.orgcode=#{enterpriseCode}</if> AND org.isdelete=0)
+			</if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sn ASC
+		</if>
+	</select>
+
+	<select id="getOrgListByUserId" parameterType="java.util.Map" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT
+		DISTINCT o.*
+		FROM
+			sys_org o
+			LEFT JOIN sys_pos p ON p.ORGID = o.ORGID and p.ISDELETE=0
+			LEFT JOIN sys_user_pos up ON up.POSID = p.POSID and up.ISDELETE=0
+			LEFT JOIN sys_user u ON u.USERID = up.USERID and u.`STATUS`=1
+		where  o.ORGCODE=#{enterpriseCode} and o.isdelete=0 and u.USERID=#{userId}
+	</select>
+</mapper>

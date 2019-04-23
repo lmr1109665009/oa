@@ -1,0 +1,35 @@
+spring:
+#  分布式session配置
+  session:
+    timeout: 43200s
+
+#文件上传下载配置
+uploader:
+  type: minio
+  minio:
+    bucket: suneee
+    url: http://test6.zkb.xt.weilian.cn
+    port: 80
+    accessKey: suneee
+    secretKey: suneeeminio
+    urlExpire: 86400
+  localFs:
+    storePath: /opt/data/eas
+    url: http://dev.suneee.com/store
+  s3:
+    host: http://172.19.7.102
+    port: 9000
+    region: cn-north-1
+    accessKey: suneee
+    secretKey: suneeeminio
+    singer: AWSS3V4SignerType
+    bucket:
+      lhy: lhy
+      xy: suneee
+      yn: yn
+    urlExpire: 60
+
+#系统配置
+system:
+  #姓名模式，alias为字号模式，其他为姓名模式
+  username-mode: alias

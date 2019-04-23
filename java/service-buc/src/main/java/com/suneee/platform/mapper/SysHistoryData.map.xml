@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysHistoryData">
+	<resultMap id="SysHistoryData" type="com.suneee.platform.model.system.SysHistoryData">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="type" column="type_" jdbcType="VARCHAR"/>
+		<result property="objId" column="obj_id" jdbcType="NUMERIC"/>
+		<result property="subject" column="subject" jdbcType="VARCHAR"/>
+		<result property="content" column="content" jdbcType="CLOB"/>
+		<result property="creator" column="creator" jdbcType="VARCHAR"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="columns">
+		id,type_,obj_id,subject,content,creator,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type_  LIKE #{type}  </if>
+			<if test="@Ognl@isNotEmpty(objId)"> AND obj_id  =#{objId} </if>
+			<if test="@Ognl@isNotEmpty(content)"> AND content  LIKE #{content}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND creator  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysHistoryData">
+		INSERT INTO SYS_HISTORY_DATA
+		(id,type_,obj_id,subject,content,creator,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{type,jdbcType=VARCHAR}, #{objId,jdbcType=NUMERIC},#{subject,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, #{creator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_HISTORY_DATA 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysHistoryData">
+		UPDATE SYS_HISTORY_DATA SET
+		type_=#{type,jdbcType=VARCHAR},
+		obj_id=#{objId,jdbcType=NUMERIC},
+		content=#{content,jdbcType=CLOB},
+		creator=#{creator,jdbcType=VARCHAR},
+		createtime=#{createtime,jdbcType=DATE}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysHistoryData">
+		SELECT <include refid="columns"/>
+		FROM SYS_HISTORY_DATA
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysHistoryData">
+		SELECT id,type_,obj_id,subject,creator,createtime
+		FROM SYS_HISTORY_DATA   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	
+	<select id="getByObjId"   resultMap="SysHistoryData">
+		SELECT id,type_,obj_id,subject,creator,createtime
+		FROM SYS_HISTORY_DATA
+		WHERE
+		obj_id=#{objId} order by createtime desc
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.ucp.mh.model.rowTemp.SysRowTemp">
+
+    <resultMap id="SysColumnTemp" type="com.suneee.ucp.mh.model.rowTemp.SysRowTemp" >
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="temp_name" property="tempName" jdbcType="VARCHAR"/>
+        <result column="col_num" property="colNum" jdbcType="TINYINT"/>
+        <result column="width" property="width" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="BIGINT"/>
+        <result column="update_by" property="updateBy" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="baseColumn">
+        id,temp_name,col_num,width,description
+    </sql>
+    <sql id="dynamicWhere">
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="tempName">
+            AND temp_name = #{tempName}
+        </if>
+    </sql>
+
+    <select id="getById" resultMap="SysColumnTemp">
+        SELECT
+          <include refid="baseColumn"/>
+        FROM
+          sys_row_temp
+        WHERE
+          id = #{id}
+    </select>
+    <select id="getAll" resultMap="SysColumnTemp">
+        SELECT
+          <include refid="baseColumn"/>
+        FROM
+          sys_row_temp
+        WHERE
+          1=1
+        <include refid="dynamicWhere"/>
+        <if test="orderField != null">
+            ORDER BY #{orderField}
+        </if>
+    </select>
+
+    <insert id="add">
+        INSERT INTO
+          sys_row_temp(temp_name,width,col_num,create_by
+            <if test="description != null">
+                ,description
+            </if>
+          )
+        VALUES(
+          #{tempName},
+          #{width},
+          #{colNum,},
+          #{createBy}
+        <if test="description != null">
+           ,#{description}
+        </if>
+        )
+    </insert>
+
+    <update id="update" parameterType="com.suneee.ucp.mh.model.rowTemp.SysRowTemp">
+        UPDATE
+          sys_row_temp
+        SET
+            temp_name = #{tempName},
+            width = #{width},
+            description = #{description},
+            updatetime = #{updatetime},
+            update_by = #{updateBy}
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="delById">
+        DELETE FROM
+          sys_row_temp
+        WHERE
+          id = #{id}
+    </delete>
+
+
+
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.SignCardApply">
+	<resultMap id="SignCardApply" type="com.suneee.kaoqin.model.kaoqin.SignCardApply">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="waterNum" column="F_WATER_NUM" jdbcType="VARCHAR"/>
+		<result property="userCn" column="F_USER_CN" jdbcType="VARCHAR"/>
+		<result property="userCnid" column="F_USER_CNID" jdbcType="VARCHAR"/>
+		<result property="userCode" column="F_USER_CODE" jdbcType="VARCHAR"/>
+		<result property="deptName" column="F_DEPT_NAME" jdbcType="VARCHAR"/>
+		<result property="deptNameid" column="F_DEPT_NAMEID" jdbcType="VARCHAR"/>
+		<result property="signTime" column="F_SIGN_TIME" jdbcType="TIMESTAMP"/>
+		<result property="signProve" column="F_SIGN_PROVE" jdbcType="VARCHAR"/>
+		<result property="comments" column="F_COMMENTS" jdbcType="VARCHAR"/>
+		<result property="positionLeve" column="F_POSITION_LEVE" jdbcType="NUMERIC"/>
+		<result property="instanceId" column="ACTINSTID" jdbcType="NUMERIC"/>
+		<result property="assingner" column="assingner" jdbcType="VARCHAR"/>
+		<result property="proccessName" column="PROCESSNAME" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,F_WATER_NUM,F_USER_CN,F_USER_CNID,F_USER_CODE,F_DEPT_NAME,F_DEPT_NAMEID,F_SIGN_TIME,F_SIGN_PROVE,F_COMMENTS,F_POSITION_LEVE
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(waterNum)"> AND F_WATER_NUM  LIKE #{waterNum}  </if>
+			<if test="@Ognl@isNotEmpty(userCn)"> AND F_USER_CN  LIKE #{userCn}  </if>
+			<if test="@Ognl@isNotEmpty(userCnid)"> AND F_USER_CNID  LIKE #{userCnid}  </if>
+			<if test="@Ognl@isNotEmpty(userCode)"> AND F_USER_CODE  LIKE #{userCode}  </if>
+			<if test="@Ognl@isNotEmpty(deptName)"> AND F_DEPT_NAME  LIKE #{deptName}  </if>
+			<if test="@Ognl@isNotEmpty(deptNameid)"> AND F_DEPT_NAMEID  LIKE #{deptNameid}  </if>
+			<if test="@Ognl@isNotEmpty(signTime)"> AND F_SIGN_TIME  =#{signTime} </if>
+			<if test="@Ognl@isNotEmpty(beginSignTime)"> AND F_SIGN_TIME  >=#{beginSignTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endSignTime)"> AND F_SIGN_TIME <![CDATA[ <=#{endSignTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(signProve)"> AND F_SIGN_PROVE  LIKE #{signProve}  </if>
+			<if test="@Ognl@isNotEmpty(comments)"> AND F_COMMENTS  LIKE #{comments}  </if>
+			<if test="@Ognl@isNotEmpty(positionLeve)"> AND F_POSITION_LEVE  =#{positionLeve} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.SignCardApply">
+		INSERT INTO w_sign_card_apply
+		(ID,F_WATER_NUM,F_USER_CN,F_USER_CNID,F_USER_CODE,F_DEPT_NAME,F_DEPT_NAMEID,F_SIGN_TIME,F_SIGN_PROVE,F_COMMENTS,F_POSITION_LEVE)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{waterNum,jdbcType=VARCHAR}, #{userCn,jdbcType=VARCHAR}, #{userCnid,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{deptNameid,jdbcType=VARCHAR}, #{signTime,jdbcType=TIMESTAMP}, #{signProve,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, #{positionLeve,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM w_sign_card_apply 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.SignCardApply">
+		UPDATE w_sign_card_apply SET
+		F_WATER_NUM=#{waterNum,jdbcType=VARCHAR},
+		F_USER_CN=#{userCn,jdbcType=VARCHAR},
+		F_USER_CNID=#{userCnid,jdbcType=VARCHAR},
+		F_USER_CODE=#{userCode,jdbcType=VARCHAR},
+		F_DEPT_NAME=#{deptName,jdbcType=VARCHAR},
+		F_DEPT_NAMEID=#{deptNameid,jdbcType=VARCHAR},
+		F_SIGN_TIME=#{signTime,jdbcType=TIMESTAMP},
+		F_SIGN_PROVE=#{signProve,jdbcType=VARCHAR},
+		F_COMMENTS=#{comments,jdbcType=VARCHAR},
+		F_POSITION_LEVE=#{positionLeve,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SignCardApply">
+		SELECT <include refid="columns"/>
+		FROM w_sign_card_apply
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SignCardApply">
+		SELECT <include refid="columns"/>
+		FROM w_sign_card_apply   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<select id="getAllApply" resultMap="SignCardApply">
+		SELECT DISTINCT rs.* FROM (${AllSql}) rs 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by rs.ID  desc
+		</if>
+	</select>
+	
+</mapper>

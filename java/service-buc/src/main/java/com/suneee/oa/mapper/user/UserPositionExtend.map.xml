@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.UserPosition">
+	<select id="getByIds" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT <include refid="columns" />
+		FROM sys_user_pos a
+		WHERE a.userid = #{userId}
+		AND a.posid = #{posId}
+		AND a.orgid = #{orgId}
+		AND a.jobId = #{jobId}
+		AND a.isdelete=0
+	</select>
+	
+	<select id="getDelByUserId" resultType="com.suneee.platform.model.system.UserPosition">
+		SELECT up.*, o.orgname, o.orgcode
+		FROM sys_user_pos up
+		LEFT JOIN sys_org o ON o.orgid=up.orgid
+		WHERE userid = #{userId} and up.isDelete = 1
+	</select>
+	
+	<select id="getPositonByUserId" resultType="java.util.Map">
+		SELECT up.userPosId, up.userId, up.orgId, up.posId, up.jobId, up.isPrimary, up.isCharge, o.orgName, o.orgCode,o.path,
+			p.posName, j.jobName,j.enterprise_code AS enterpriseCode
+		FROM sys_user_pos up
+		INNER JOIN sys_org o ON o.orgid=up.orgid
+		INNER JOIN sys_pos p ON p.posid=up.posid
+		INNER JOIN sys_job j ON j.jobid=up.jobid
+		WHERE userid = #{userId} and up.isDelete=0
+	</select>
+	
+	<update id="delByUserIdAndEnterpriseCode" parameterType="java.util.Map">
+		UPDATE sys_user_pos SET
+			isdelete =1,
+			delfrom=#{delFrom, jdbcType=VARCHAR},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE userid=#{userId} AND orgId in (
+			SELECT orgid FROM sys_org WHERE orgcode=#{enterpriseCode}
+		)
+	</update>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.suneee.oa.model.user.UserEnterprise">
+	<resultMap id="UserEnterprise" type="com.suneee.oa.model.user.UserEnterprise">
+		<id property="userEnterpriseId" column="user_enterprise_id" jdbcType="NUMERIC"/>
+		<result property="userId" column="userid" jdbcType="NUMERIC"/>
+		<result property="enterpriseCode" column="enterprisecode" jdbcType="VARCHAR"/>
+		<result property="isDelete" column="isdelete" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="createby" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="updateby" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		user_enterprise_id, userid, enterprisecode, isdelete, createtime, createby, updatetime, updateby
+	</sql>
+	
+	<sql id="mappedColumns">
+		ue.user_enterprise_id AS userEnterpriseId, ue.userid AS userId, ue.enterprisecode AS enterpriseCode, ue.isdelete as isDelete
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<if test="@Ognl@isNotEmpty(userEnterpriseId)"> AND user_enterprise_info = #{userEnterpriseId}</if>
+		<if test="@Ognl@isNotEmpty(userId)"> AND userid = #{userId}</if>
+		<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterprisecode = #{enterpriseCode}</if>
+		AND isdelete=0
+	</sql>
+	
+	<insert id="add" parameterType="com.suneee.oa.model.user.UserEnterprise">
+		INSERT INTO ucp_user_enterprise (<include refid="columns"/>)
+		VALUES(
+			#{userEnterpriseId, jdbcType=NUMERIC}, #{userId, jdbcType=NUMERIC}, #{enterpriseCode, jdbcType=NUMERIC},
+			#{isDelete, jdbcType=NUMERIC}, #{createtime, jdbcType=TIMESTAMP}, #{createBy, jdbcType=NUMERIC}, 
+			#{updatetime, jdbcType=TIMESTAMP}, #{updateBy, jdbcType=NUMERIC}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.suneee.oa.model.user.UserEnterprise">
+		UPDATE ucp_user_enterprise SET 
+			isdelete=#{isDelete, jdbcType=NUMERIC},
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC}
+		WHERE user_enterprise_id = #{userEnterpriseId}
+	</update>
+	
+	<update id="delById" parameterType="java.util.Map">
+		UPDATE ucp_user_enterprise SET 
+			isdelete=1,
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE user_enterprise_id = #{userEnterpriseId}
+	</update>
+	
+	<update id="delByUserId" parameterType="java.util.Map">
+		UPDATE ucp_user_enterprise  SET 
+			isdelete=1,
+			updatetime=#{updatetime, jdbcType=TIMESTAMP}, 
+			updateby=#{updateBy, jdbcType=NUMERIC} 
+		WHERE userid = #{userId}
+	</update>
+	
+	<select id="getByUserId" parameterType="java.lang.Long" resultType="com.suneee.oa.model.user.UserEnterprise">
+		SELECT <include refid="mappedColumns"/>, e.groupCode FROM ucp_user_enterprise ue
+		INNER JOIN ucp_enterprise_info e ON ue.enterprisecode=e.comp_code
+		WHERE ue.userid = #{userId} AND ue.isdelete=0
+	</select>
+	
+	<select id="getDelByUserId" parameterType="java.lang.Long" resultType="com.suneee.oa.model.user.UserEnterprise">
+		SELECT <include refid="mappedColumns"/>, e.groupCode FROM ucp_user_enterprise ue
+		INNER JOIN ucp_enterprise_info e ON ue.enterprisecode=e.comp_code
+		WHERE ue.userid = #{userId} AND ue.isdelete=1
+	</select>
+	
+	<select id="getAll" parameterType="java.util.Map" resultMap="UserEnterprise">
+		SELECT <include refid="columns"/> FROM ucp_user_enterprise
+		<where>
+			<include refid="dynamicWhere"/>
+		</where>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY userid DESC
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+	</select>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="UserEnterprise">
+		SELECT <include refid="columns"/> FROM ucp_user_enterprise WHERE user_enterprise_id = #{userEnterpriseId}
+	</select>
+	
+	<select id="getByUserIdAndCode" parameterType="java.util.Map" resultType="com.suneee.oa.model.user.UserEnterprise">
+		SELECT <include refid="mappedColumns"/>, ei.groupCode
+		FROM ucp_user_enterprise ue
+		LEFT JOIN ucp_enterprise_info ei ON ei.comp_code=ue.enterprisecode
+		WHERE ue.userid = #{userId} AND ue.enterprisecode = #{enterpriseCode}
+	</select>
+</mapper>

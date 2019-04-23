@@ -1,0 +1,1 @@
+package com.suneee.eas.oa.service.user;import com.suneee.eas.common.service.BaseService;import com.suneee.platform.model.system.UserRole;/** * @program: eas-parent * @description: 用户角色 * @author: liuhai * @create: 2018-08-27 11:42 **/public interface UserRoleService extends BaseService<UserRole> {    void saveUserRole(Long roleId, Long[] userIds) throws Exception;}

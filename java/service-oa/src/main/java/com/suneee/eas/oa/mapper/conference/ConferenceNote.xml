@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceNoteDao">
+	<resultMap id="ConferenceNote" type="com.suneee.eas.oa.model.conference.ConferenceNote">
+		<id column="noteId" property="noteId" jdbcType="NUMERIC"/>
+		<result column="conferenceId" property="conferenceId" jdbcType="NUMERIC"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
+		<result column="attachmentIds" property="attachmentIds" jdbcType="VARCHAR"/>
+		<result column="attachmentNames" property="attachmentNames" jdbcType="VARCHAR"/>
+		<result column="informType" property="informType" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="NUMERIC"/>
+		<result column="enterpriseCode" property="enterpriseCode" jdbcType="VARCHAR"/>
+		<result column="isDelete" property="isDelete" jdbcType="NUMERIC"/>
+		<result column="createBy" property="createBy" jdbcType="NUMERIC"/>
+		<result column="createByName" property="createByName" jdbcType="VARCHAR"/>
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="updateBy" property="updateBy" jdbcType="NUMERIC"/>
+		<result column="updateByName" property="updateByName" jdbcType="VARCHAR"/>
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<sql id="tableName">oa_conference_note</sql>
+	
+	<sql id="dbColumn">
+		noteId, conferenceId, content, attachmentIds, attachmentNames, informType, status, enterpriseCode, 
+		isDelete, createBy, createByName, createTime, updateBy, updateByName, updateTime
+	</sql>
+	
+	<insert id="save" parameterType="com.suneee.eas.oa.model.conference.ConferenceNote">
+		INSERT INTO <include refid="tableName"/>(
+			noteId, conferenceId, content, attachmentIds, attachmentNames, informType, status, enterpriseCode, 
+			isDelete, createBy, createByName, createTime, updateBy, updateByName, updateTime
+		)VALUES(
+			#{noteId, jdbcType=NUMERIC}, #{conferenceId, jdbcType=NUMERIC}, #{content, jdbcType=VARCHAR},
+			#{attachmentIds, jdbcType=VARCHAR}, #{attachmentNames, jdbcType=VARCHAR}, #{informType, jdbcType=VARCHAR}, 
+			#{status, jdbcType=NUMERIC}, #{enterpriseCode, jdbcType=VARCHAR}, #{isDelete, jdbcType=NUMERIC}, 
+			#{createBy, jdbcType=NUMERIC}, #{createByName, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP}, 
+			#{updateBy, jdbcType=NUMERIC}, #{updateByName, jdbcType=VARCHAR}, #{updateTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.suneee.eas.oa.model.conference.ConferenceNote">
+		UPDATE <include refid="tableName"/> SET
+			content = #{content, jdbcType=VARCHAR},
+			attachmentIds = #{attachmentIds, jdbcType=VARCHAR}, 
+			attachmentNames = #{attachmentNames, jdbcType=VARCHAR}, 
+			informType = #{informType, jdbcType=VARCHAR}, 
+			status = #{status, jdbcType=NUMERIC}, 
+			updateBy = #{updateBy, jdbcType=NUMERIC},
+			updateByName = #{updateByName, jdbcType=VARCHAR},  
+			updateTime = #{updateTime, jdbcType=TIMESTAMP}
+		WHERE noteId = #{noteId}
+	</update>
+	
+	<update id="deleteById" parameterType="java.lang.Long">
+		UPDATE <include refid="tableName"/> SET
+			isDelete = 1
+		WHERE noteId = #{noteId}
+	</update>
+	
+	<update id="updateStatus" parameterType="java.util.Map">
+		UPDATE <include refid="tableName"/> SET
+			status = #{status, jdbcType=NUMERIC}
+		WHERE noteId = #{noteId}
+	</update>
+	
+	<select id="findById" parameterType="java.lang.Long" resultMap="ConferenceNote">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE noteId = #{noteId}
+	</select>
+	
+	<select id="getByConferenceId" parameterType="java.lang.Long" resultMap="ConferenceNote">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE conferenceId = #{conferenceId}
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultMap="ConferenceNote">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE isDelete=0
+	</select>
+	
+	<sql id="dynamicWhere">
+		<if test="@Ognl@isNotEmpty(roomId)"> AND reserve.roomId = #{roomId}</if>
+		<if test="@Ognl@isNotEmpty(region)"> AND reserve.region = #{region}</if>
+		<if test="@Ognl@isNotEmpty(theme)"> AND reserve.theme LIKE #{theme}</if>
+		<if test="@Ognl@isNotEmpty(organizerName)"> AND reserve.organizerName LIKE #{organizerName}</if>
+		<if test="@Ognl@isNotEmpty(recorderName)"> AND reserve.recorderName LIKE #{recorderName}</if>
+		<if test="@Ognl@isNotEmpty(roomName)"> AND room.roomName LIKE #{roomName}</if>
+		<if test="@Ognl@isNotEmpty(noteStatus)"> AND reserve.noteStatus = #{noteStatus}</if>
+		<if test="@Ognl@isNotEmpty(beginTime)"> AND reserve.beginTime <![CDATA[ >= #{beginTime,jdbcType=TIMESTAMP}]]></if>
+        <if test="@Ognl@isNotEmpty(endTime)"> AND reserve.endTime <![CDATA[ <= #{endTime,jdbcType=TIMESTAMP}]]></if>
+	</sql>
+	
+	<select id="getAllRecorder" parameterType="java.util.Map" resultType="com.suneee.eas.oa.model.conference.ConferenceReserve">
+		SELECT reserve.*, room.roomName, room.regionName 
+		FROM oa_conference_reserve reserve
+		LEFT JOIN oa_conference_room room ON room.roomId=reserve.roomId
+		WHERE reserve.recorder = #{recorder} AND reserve.enterpriseCode = #{enterpriseCode} AND reserve.isDelete = 0
+		AND reserve.auditStatus not in (1, 5, 6) AND reserve.endTime <![CDATA[ <= #{nowDate}]]>
+		<include refid="dynamicWhere"/>	
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+        	AND (reserve.theme LIKE #{searchCondition} OR reserve.organizerName LIKE #{searchCondition}
+        		OR room.roomName LIKE #{searchCondition})
+        </if>
+        ORDER BY reserve.endTime DESC
+	</select>
+	
+	<select id="getAllAudit" parameterType="java.util.Map" resultType="com.suneee.eas.oa.model.conference.ConferenceReserve">
+		SELECT reserve.*, room.roomName, room.regionName, audit.auditId
+		FROM oa_conference_reserve reserve
+		LEFT JOIN oa_conference_room room ON room.roomId=reserve.roomId
+		JOIN oa_conference_note note ON note.conferenceId=reserve.conferenceId
+		JOIN oa_conference_audit audit ON audit.targetId=note.noteId AND audit.targetType='conference-note'
+		JOIN (SELECT targetId, auditor, MAX(beginTime) beginTime FROM oa_conference_audit GROUP BY targetId, auditor) tmp 
+			ON tmp.targetId=audit.targetId AND tmp.auditor=audit.auditor AND tmp.beginTime=audit.beginTime
+		WHERE reserve.organizer = #{organizer} AND reserve.noteStatus != 0  AND reserve.enterpriseCode = #{enterpriseCode} 
+		AND reserve.isDelete = 0 AND reserve.auditStatus not in (1, 5, 6)
+		<include refid="dynamicWhere"/>
+	 	<if test="@Ognl@isNotEmpty(searchCondition)">
+       		AND (reserve.theme LIKE #{searchCondition} OR reserve.recorderName LIKE #{searchCondition}
+       			OR room.roomName LIKE #{searchCondition})
+       	</if>
+       	ORDER BY reserve.endTime DESC
+	</select>
+</mapper>

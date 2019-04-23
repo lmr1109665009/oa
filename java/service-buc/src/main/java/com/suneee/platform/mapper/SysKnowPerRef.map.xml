@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysKnowPerRef">
+	<resultMap id="SysKnowPerRef" type="com.suneee.platform.model.system.SysKnowPerRef">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="name" column="NAME" jdbcType="VARCHAR"/>
+		<result property="createtime" column="CREATETIME" jdbcType="DATE"/>
+		<result property="creatorid" column="CREATORID" jdbcType="NUMERIC"/>
+		<result property="creator" column="CREATOR" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,NAME,CREATETIME,CREATORID,CREATOR
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(creatorid)"> AND CREATORID  =#{creatorid} </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATORID  =#{creator} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysKnowPerRef">
+		INSERT INTO SYS_KNOW_PER_REF
+		(ID,NAME,CREATETIME,CREATORID,CREATOR)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE}, #{creatorid,jdbcType=NUMERIC}, #{creator,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_KNOW_PER_REF 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysKnowPerRef">
+		UPDATE SYS_KNOW_PER_REF SET
+		NAME=#{name,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysKnowPerRef">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOW_PER_REF
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysKnowPerRef">
+		SELECT <include refid="columns"/>
+		FROM SYS_KNOW_PER_REF   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

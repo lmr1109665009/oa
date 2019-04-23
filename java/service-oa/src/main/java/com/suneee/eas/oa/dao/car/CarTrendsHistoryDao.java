@@ -1,0 +1,1 @@
+package com.suneee.eas.oa.dao.car;import com.suneee.eas.common.dao.BaseDao;import com.suneee.eas.oa.model.car.CarTrendsHistory;import org.springframework.stereotype.Repository;/** * @program: eas-parent * @description: * @author: liuhai * @create: 2018-10-11 13:42 **/@Repositorypublic class CarTrendsHistoryDao extends BaseDao<CarTrendsHistory>{}

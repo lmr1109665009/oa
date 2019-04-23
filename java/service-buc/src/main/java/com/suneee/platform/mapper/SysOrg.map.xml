@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.platform.model.system.SysOrg">
+    <resultMap id="Result" type="com.suneee.platform.model.system.SysOrg">
+        <id property="orgId" column="orgId" jdbcType="NUMERIC"/>
+        <result property="demId" column="demId" jdbcType="NUMERIC"/>
+        <result property="orgName" column="orgName" jdbcType="VARCHAR"/>
+        <result property="orgPathname" column="orgPathname" jdbcType="VARCHAR"/>
+        <result property="orgDesc" column="orgDesc" jdbcType="VARCHAR"/>
+        <result property="orgSupId" column="orgSupId" jdbcType="NUMERIC"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="depth" column="depth" jdbcType="NUMERIC"/>
+        <result property="orgType" column="orgType" jdbcType="NUMERIC"/>
+        <result property="creatorId" column="creatorId" jdbcType="NUMERIC"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="updateId" column="updateId" jdbcType="NUMERIC"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+        <result property="sn" column="sn" jdbcType="NUMERIC"/>
+        <result property="fromType" column="fromType" jdbcType="NUMERIC"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="companyId" column="COMPANYID" jdbcType="NUMERIC"/>
+        <result property="company" column="COMPANY" jdbcType="VARCHAR"/>
+        <result property="orgStaff" column="ORGSTAFF" jdbcType="NUMERIC"/>
+        <result property="orgCode" column="orgCode" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="columns">
+		orgId,demId,orgName,orgDesc,orgSupId,path,orgPathname,depth,orgType,
+		creatorId,createtime,updateId,updatetime,sn,fromType,code,companyId,company,orgStaff,orgCode
+	</sql>
+
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(orgCode)">AND orgCode =#{orgCode}</if>
+            <if test="@Ognl@isNotEmpty(demId)">AND demId =#{demId}</if>
+            <if test="@Ognl@isNotEmpty(orgName)">AND orgName LIKE #{orgName}</if>
+            <if test="@Ognl@isNotEmpty(orgSupId)">AND orgSupId =#{orgSupId}</if>
+            <if test="@Ognl@isNotEmpty(path)">AND path LIKE #{path}</if>
+            <if test="@Ognl@isNotEmpty(orgType)">AND orgType =#{orgType}</if>
+            <if test="@Ognl@isNotEmpty(fromType)">AND fromType =#{fromType}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">AND orgCode=#{enterpriseCode}</if>
+            and isdelete=0
+        </where>
+    </sql>
+
+    <insert id="add" parameterType="com.suneee.platform.model.system.SysOrg">
+        INSERT INTO sys_org
+        (<include refid="columns"/>)
+        VALUES
+        (#{orgId,jdbcType=NUMERIC}, #{demId,jdbcType=NUMERIC}, #{orgName,jdbcType=VARCHAR},
+        #{orgDesc,jdbcType=VARCHAR}, #{orgSupId,jdbcType=NUMERIC}, #{path,jdbcType=VARCHAR},
+        #{orgPathname,jdbcType=VARCHAR},#{depth,jdbcType=NUMERIC},
+        #{orgType,jdbcType=NUMERIC}, #{creatorId,jdbcType=NUMERIC},
+        #{createtime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=NUMERIC}, #{updatetime,jdbcType=TIMESTAMP},
+        #{sn,jdbcType=NUMERIC},#{fromType,jdbcType=NUMERIC},#{code,jdbcType=VARCHAR},
+        #{companyId,jdbcType=NUMERIC},#{company,jdbcType=VARCHAR},#{orgStaff,jdbcType=NUMERIC},
+        #{orgCode,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_org 
+		WHERE
+		orgId=#{orgId}
+	</delete>
+
+    <update id="update" parameterType="com.suneee.platform.model.system.SysOrg">
+		UPDATE sys_org SET
+		demId=#{demId,jdbcType=NUMERIC} , 
+		orgName=#{orgName,jdbcType=VARCHAR} , 
+		orgDesc=#{orgDesc,jdbcType=VARCHAR} , 
+		orgSupId=#{orgSupId,jdbcType=NUMERIC} , 
+		path=#{path,jdbcType=VARCHAR} , 
+		orgPathname=#{orgPathname,jdbcType=VARCHAR} , 
+		depth=#{depth,jdbcType=NUMERIC} , 
+		orgType=#{orgType,jdbcType=NUMERIC} , 
+		updateId=#{updateId,jdbcType=NUMERIC} , 
+		updatetime=#{updatetime,jdbcType=TIMESTAMP} , 
+		sn=#{sn,jdbcType=NUMERIC} ,
+		fromType=#{fromType,jdbcType=NUMERIC},
+		code=#{code,jdbcType=VARCHAR},
+		companyId=#{companyId,jdbcType=NUMERIC},
+		company=#{company,jdbcType=VARCHAR},
+		orgStaff=#{orgStaff,jdbcType=NUMERIC},
+		orgCode=#{orgCode,jdbcType=VARCHAR}
+		WHERE
+		orgId=#{orgId}
+	</update>
+
+    <update id="updSn" parameterType="Map">
+		UPDATE sys_org SET
+		sn=#{sn,jdbcType=NUMERIC} 
+		WHERE
+		orgId=#{orgId}
+	</update>
+
+    <select id="getByOrgIds" resultMap="Result">
+        select * from sys_org t where t.orgid in
+        <foreach collection="list" index="index" item="orgId" open="(" close=")" separator=",">
+            #{orgId}
+        </foreach>
+        and t.isdelete=0
+        order by sn asc,depth,orgname
+    </select>
+    <!-- 根据组织代码集合获取组织信息 -->
+    <select id="getByOrgCodes" resultMap="Result">
+        select * from sys_org where isdelete=0
+        <if test="@Ognl@isNotEmpty(list)">
+            AND orgcode in
+            <foreach collection="list" item="orgCode" open="(" close=")" separator=",">
+                #{orgCode}
+            </foreach>
+        </if>
+        order by sn asc,depth,orgname
+    </select>
+
+    <select id="getByOrgMonGroup" resultMap="Result">
+    	SELECT * FROM SYS_ORG o where o.orgid in (SELECT distinct ORGID FROM bpm_mon_orgrole WHERE groupId=#{groupId}) and isdelete=0
+    </select>
+
+    <select id="getById" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT  a.orgId,a.demId,a.orgName,a.orgDesc,a.orgSupId,a.path,a.orgPathname, a.depth,a.orgType,
+                a.creatorId,a.createtime,a.updateId,a.updatetime,b.demName,
+                c.orgName OrgSupName,d.fullname createName,u.fullname updateName,a.sn,a.fromType,a.code,
+                a.companyId,a.company,a.orgStaff,a.orgCode
+		FROM sys_org a 
+		left join sys_org c on a.orgSupId=c.orgId 
+		join sys_demension b on a.demId=b.demId  
+		left join sys_user d on a.creatorId=d.userId
+		left join sys_user u on a.updateId=u.userId
+		where a.orgId=#{orgId} 
+	</select>
+
+    <select id="getByCode" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT a.* FROM sys_org a where a.code=#{code}  and a.isdelete=0
+	</select>
+
+    <select id="getByOrgName" parameterType="java.util.Map" resultMap="Result">
+        select
+        <include refid="columns"/>
+        from sys_org where orgName=#{orgName}
+    </select>
+
+    <select id="getAll" resultMap="Result">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_org
+        <include refid="dynamicWhere"/>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by sn asc
+        </if>
+    </select>
+
+    <select id="getAllComp" resultMap="Result">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_org
+        <include refid="dynamicWhere"/>
+        AND orgType &lt; 3
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by sn asc
+        </if>
+    </select>
+
+    <update id="delByPath" parameterType="java.util.Map">
+		UPDATE sys_org SET 
+			isdelete = 1, 
+			updatetime = #{updateTime,jdbcType=TIMESTAMP},
+			updateid = #{updateId,jdbcType=NUMERIC}
+		WHERE path LIKE #{path} AND isdelete=0
+	</update>
+
+    <select id="getOrgByOrgId" resultType="com.suneee.platform.model.system.SysOrg">
+        SELECT a.orgId,a.demId,a.orgName,a.orgDesc,a.orgSupId,a.path,a.orgPathname,a.depth,a.orgType,
+        a.creatorId,a.createtime,a.updateId,a.updatetime,b.demName,c.orgName OrgSupName
+        FROM sys_org a left join sys_org c on a.orgSupId=c.orgId join sys_demension b on a.demId=b.demId
+        where 1=1 and c.isdelete=0 and a.isdelete=0
+        <if test="@Ognl@isNotEmpty(path)">AND a.path LIKE #{path}</if>
+        <if test="@Ognl@isNotEmpty(orgName)">AND a.orgName LIKE #{orgName}</if>
+        <if test="@Ognl@isNotEmpty(orgDesc)">AND a.orgDesc LIKE #{orgDesc}</if>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by a.sn asc,a.path asc
+        </if>
+    </select>
+    <!-- 取得所有组织列表或按维度取得所有组织 -->
+    <select id="getOrgsByDemIdOrAll" parameterType="java.util.Map" resultType="com.suneee.platform.model.system.SysOrg">
+        select * from SYS_ORG org where 1=1 and isdelete=0
+        <if test="@Ognl@isNotEmpty(demId)">and org.demId=#{demId}</if>
+        order by org.sn asc, org.path asc
+    </select>
+    <!-- 根据工号获取主组织 -->
+    <select id="getOrgByAccount" resultMap="Result">
+    	select distinct  org.* from sys_org org , SYS_USER_POS uo,sys_user u where org.orgid=uo.orgid and uo.userid=u.userid and uo.isprimary=1
+		and u.account=#{account} and org.isdelete=0 and  uo.isdelete=0
+    </select>
+    <select id="getOrgs" parameterType="Long" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG org where org.demId=#{demId} and org.isdelete=0 order by org.path asc, org.sn asc
+	</select>
+
+    <select id="getOrgByDemId" parameterType="Long" resultType="com.suneee.platform.model.system.SysOrg">
+		SELECT  a.orgId,a.demId,a.orgName,a.orgDesc,a.orgSupId,a.path,a.orgPathname,a.depth,a.orgType,
+                a.creatorId,a.createtime,a.updateId,a.updatetime,a.sn,a.fromType,
+                b.demName,a.companyId,a.company,a.orgStaff
+		FROM sys_org a join sys_demension b on a.demId=b.demId     
+		where   a.demId=#{demId}
+		and a.isdelete=0
+	    order by a.sn asc
+	</select>
+
+
+    <select id="getByUserId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+	  SELECT distinct  o.*,uo.isPrimary FROM sys_org o join  SYS_USER_POS uo 
+	  on o.orgId = uo.orgId 
+	  where uo.userId=#{userId}
+	  and o.isdelete=0
+	  and uo.isdelete=0
+	</select>
+    <select id="getByUserIdSecond" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+	   SELECT distinct  o.*,uo.isPrimary FROM sys_org o join  SYS_USER_POS uo 
+	  on o.orgId = uo.orgId 
+	  where uo.userId=#{userId}
+	  and o.isdelete=0
+	  and uo.isdelete=0
+      AND uo.ISPRIMARY=1
+	</select>
+
+    <select id="getOrgsByUserId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+		select distinct org.* from SYS_ORG org inner join SYS_USER_POS uo on uo.orgId=org.orgId where uo.userId=#{userId}
+		 and org.isdelete=0  and uo.isdelete=0
+	</select>
+
+
+    <select id="getByDepth" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG where depth=#{depth} and  isdelete=0 order by sn asc	
+	</select>
+
+    <select id="getByOrgPath" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG where path LIKE #{path} and isdelete=0 order by sn asc, path asc 
+	</select>
+
+    <select id="getPrimaryOrgByUserId" resultType="com.suneee.platform.model.system.SysOrg">
+        select distinct a.* from SYS_ORG a,SYS_USER_POS b
+        where a.orgId=b.orgId
+        and b.isPrimary=1
+        and b.userId=#{userId}
+        and a.isdelete=0
+        and b.isdelete=0
+        <if test="@Ognl@isNotEmpty(enterpriseCode)">
+            AND a.ORGCODE=#{enterpriseCode}
+        </if>
+    </select>
+
+    <select id="getByFromType" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG where fromType=#{fromType}  and isdelete=0 order by orgSupId asc	
+	</select>
+
+    <select id="getOrgByIds" parameterType="Map" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG org where org.orgId in (${orgIds}) order by org.path asc
+	</select>
+
+    <select id="getOrgByOrgSupId" parameterType="Map" resultType="com.suneee.platform.model.system.SysOrg">
+		select a.ORGID,a.DEMID,a.ORGNAME,a.ORGDESC,a.ORGSUPID,a.PATH,a.DEPTH,a.ORGTYPE,a.CREATORID,a.CREATETIME,a.UPDATEID,
+		a.UPDATETIME,a.SN,a.FROMTYPE,a.ORGPATHNAME,a.ISDELETE,a.CODE,a.ORGSTAFF,a.ORGCODE,
+		(select count(*) from sys_org t where t.orgsupid=a.orgid and  t.isdelete=0)  isLeaf,
+         a.companyId,a.company from sys_org a where a.orgsupid=#{orgSupId}
+         and a.isdelete=0
+	     order by a.sn asc
+	</select>
+
+    <select id="getOrgByOrgName" parameterType="Map" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG  where orgName = #{orgName} and isdelete=0
+	</select>
+    <select id="getOrgByorgSupId" parameterType="Map" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG  where orgSupId = #{orgSupId} and isdelete=0
+	</select>
+    <select id="getOrgByUserIdPath" parameterType="Map" resultType="com.suneee.platform.model.system.SysOrg">
+		select distinct o.* from sys_org o inner join SYS_USER_POS u on o.orgid=u.orgid   
+        where u.userId=#{userId} and o.path LIKE #{path} and  o.isdelete=0 and u.isdelete=0
+	</select>
+
+    <select id="getBySupId4MobileOrg" parameterType="java.util.Map"
+            resultType="com.suneee.platform.model.system.SysOrg">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_org
+        <where>
+            <if test="@Ognl@isEmpty(orgName)">AND orgSupId=#{orgid}</if>
+            <if test="@Ognl@isNotEmpty(orgName)">
+                AND orgid in (select i.orgid from sys_org i start with i.orgid=#{orgid}
+                connect by prior i.orgid =i.orgsupid)
+                AND orgName LIKE '%'||#{orgName,jdbcType=VARCHAR}||'%'
+            </if>
+        </where>
+        order by depth ,sn ,orgname
+    </select>
+
+    <select id="getByOrgType" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+		select * from SYS_ORG  where orgType = #{orgType} and isdelete=0
+	</select>
+    <select id="getCompany" resultType="java.util.HashMap">
+		SELECT DISTINCT COMPANYID,COMPANY FROM SYS_ORG 
+			WHERE COMPANYID IS NOT NULL AND COMPANY IS NOT NULL
+	</select>
+
+    <select id="getCountByCode" resultType="java.lang.Integer">
+        SELECT count(*) from SYS_ORG where code=#{code} and isdelete=0
+        <if test="id!=null &amp;&amp; id>0">
+            and orgid!=#{id}
+        </if>
+    </select>
+
+    <!-- 根据path查找出所有组织 -->
+    <select id="getOrgByPath" parameterType="java.lang.String" resultType="com.suneee.platform.model.system.SysOrg">
+	  select * from sys_org  where path like #{path} and isdelete=0
+	</select>
+
+    <update id="clearCompany">
+		UPDATE SYS_ORG SET COMPANYID = null,COMPANY= null
+	</update>
+
+    <select id="getByOrgPathName" parameterType="java.util.Map" resultMap="Result">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_org
+        WHERE orgpathname = #{orgPathName} AND demid = #{demId}
+        <if test="orgId != null ">
+            AND orgId != #{orgId}
+        </if>
+        AND isdelete=0
+    </select>
+
+    <select id="getUserListByOrgId" parameterType="java.lang.Long" resultType="com.suneee.platform.model.system.SysOrg">
+		select DISTINCT u.USERID as orgId,o.orgName AS orgPathname, CONCAT(u.FULLNAME, ',', u.alias_name) AS orgName ,
+		0 as demId,o.ORGID as orgSupId ,'false' as isParent, 0 as isLeaf,1 as orgType,u.SN as sn
+		from sys_org o
+		INNER JOIN sys_user_pos up ON o.ORGID = up.ORGID
+		INNER JOIN sys_user u ON u.USERID = up.USERID
+		inner join sys_pos p  on p.posid=up.posid
+		inner join sys_job j on j.jobid=p.jobid
+		WHERE up.ISDELETE = 0 AND o.ORGID = #{orgId}
+		ORDER BY sn ASC
+	</select>
+
+    <select id="getOrgDetailsList" resultType="java.util.Map">
+        SELECT o.orgId, o.orgName, o.orgDesc, o.orgPathName, o.orgCode, os.orgName AS orgSupName, ot.name AS orgTypeName
+        FROM sys_org o
+        LEFT JOIN sys_org os ON os.orgid=o.orgsupid
+        LEFT JOIN sys_org_type ot ON ot.id=o.orgtype
+        WHERE o.isdelete=0
+        <if test="@Ognl@isNotEmpty(orgCode)">
+            AND o.orgcode=#{orgCode}
+        </if>
+        ORDER BY o.path
+    </select>
+
+    <select id="getToUIdByOrg" resultType="java.util.Map">
+	SELECT
+	o.ORGPATHNAME,p.POSDESC,o.code,p.POSNAME,j.JOBID,p.POSCODE,p.POSID,o.ORGID,o.ORGDESC,o.ORGNAME,o.ORGCODE,j.JOBNAME
+    FROM
+	sys_user_pos u
+    LEFT JOIN sys_org o ON u.ORGID = o.ORGID
+    LEFT JOIN sys_pos p ON u.POSID = p.POSID
+    LEFT JOIN sys_job j ON p.JOBID = j.JOBID
+    WHERE
+	u.USERID = #{userId} and  u.ISDELETE=0
+
+	</select>
+
+    <select id="getToUIdByPosition" resultType="com.suneee.platform.model.system.Position">
+	SELECT
+	o.ORGPATHNAME,p.POSDESC,o.code,p.POSNAME,j.JOBID,p.POSCODE,p.POSID,o.ORGID,o.ORGDESC,o.ORGNAME,o.ORGCODE,j.JOBNAME
+    FROM
+	sys_user_pos u
+    LEFT JOIN sys_org o ON u.ORGID = o.ORGID
+    LEFT JOIN sys_pos p ON u.POSID = p.POSID
+    LEFT JOIN sys_job j ON p.JOBID = j.JOBID
+    WHERE
+	u.USERID = #{userId} and  u.ISDELETE=0 and u.isPrimary=1
+
+	</select>
+
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.HolidaysSetting">
+	<resultMap id="HolidaysSetting" type="com.suneee.kaoqin.model.kaoqin.HolidaysSetting">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="holidayName" column="holiday_name" jdbcType="VARCHAR"/>
+		<result property="startDate" column="start_date" jdbcType="DATE"/>
+		<result property="endDate" column="end_date" jdbcType="DATE"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,holiday_name,start_date,end_date,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(holidayName)"> AND holiday_name  LIKE #{holidayName}  </if>
+			<if test="@Ognl@isNotEmpty(startDate)"> AND start_date  =#{startDate} </if>
+			<if test="@Ognl@isNotEmpty(beginstartDate)"> AND start_date  >=#{beginstartDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstartDate)"> AND start_date <![CDATA[ <=#{endstartDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endDate)"> AND end_date  =#{endDate} </if>
+			<if test="@Ognl@isNotEmpty(beginendDate)"> AND end_date  >=#{beginendDate,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendDate)"> AND end_date <![CDATA[ <=#{endendDate,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.HolidaysSetting">
+		INSERT INTO se_holidays_setting
+		(id_,holiday_name,start_date,end_date,status_,createBy,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{holidayName,jdbcType=VARCHAR}, #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_holidays_setting 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.HolidaysSetting">
+		UPDATE se_holidays_setting SET
+		holiday_name=#{holidayName,jdbcType=VARCHAR},
+		start_date=#{startDate,jdbcType=DATE},
+		end_date=#{endDate,jdbcType=DATE},
+		status_=#{status,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="HolidaysSetting">
+		SELECT <include refid="columns"/>
+		FROM se_holidays_setting
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="HolidaysSetting">
+		SELECT <include refid="columns"/>
+		FROM se_holidays_setting   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	<select id="getHolidaysSettingBetween" resultMap="HolidaysSetting">
+		SELECT <include refid="columns"/>
+		FROM se_holidays_setting
+		WHERE status_ = 0
+		AND((end_date &lt;=#{endDate,jdbcType=DATE} AND end_date >= #{startDate,jdbcType=DATE})
+		OR (start_date >=#{startDate,jdbcType=DATE} AND start_date &lt;= #{endDate,jdbcType=DATE}))
+	</select>
+	
+</mapper>

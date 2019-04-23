@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.AuthorityInfoDao">
+	
+	<sql id="columns">
+		authId, authType, ownerId, ownerType, ownerName
+	</sql>
+
+	<insert id="save" parameterType="com.suneee.eas.oa.model.conference.AuthorityInfo">
+		insert into oa_authority_info(<include refid="columns"/>)
+		values(
+			#{authId, jdbcType=NUMERIC}, #{authType, jdbcType=VARCHAR}, #{ownerId, jdbcType=NUMERIC},
+			#{ownerType, jdbcType=VARCHAR}, #{ownerName,  jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<insert id="batchSave" parameterType="java.util.List">
+		insert into oa_authority_info (
+			<include refid="columns"/>
+		)values
+		<foreach collection="list" item="authority" separator=",">
+			(#{authority.authId, jdbcType=NUMERIC}, #{authority.authType, jdbcType=VARCHAR}, 
+			#{authority.ownerId, jdbcType=NUMERIC}, #{authority.ownerType, jdbcType=VARCHAR}, 
+			#{authority.ownerName,  jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="com.suneee.eas.oa.model.conference.AuthorityInfo">
+		update oa_authority_info set
+		authType = #{authType, jdbcType=VARCHAR},
+		ownerId = #{ownerId, jdbcType=NUMERIC},
+		ownerType = #{ownerType, jdbcType=VARCHAR},
+		ownerName = #{ownerName,  jdbcType=VARCHAR}
+		where authId = #{authId}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from oa_authority_info where authId = #{authId}
+	</delete>
+	
+	<select id="deleteBy" parameterType="java.util.Map">
+		DELETE FROM oa_authority_info 
+		WHERE authId = #{authId} AND authType = #{authType} AND ownerType = #{ownerType}
+	</select>
+
+	<select id="listAll" parameterType="java.util.Map" resultType="com.suneee.eas.oa.model.conference.AuthorityInfo">
+		select <include refid="columns"/>
+		from oa_authority_info
+		<where>
+			<if test="@Ognl@isNotEmpty(authId)"> AND authId = #{authId}</if>
+			<if test="@Ognl@isNotEmpty(authType)"> AND authType = #{authType}</if>
+			<if test="@Ognl@isNotEmpty(ownerType)"> AND ownerType = #{ownerType}</if>
+		</where>
+		order by authId desc
+	</select>
+</mapper>

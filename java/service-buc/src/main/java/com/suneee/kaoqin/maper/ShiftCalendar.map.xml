@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.ShiftCalendar">
+	<resultMap id="ShiftCalendar" type="com.suneee.kaoqin.model.kaoqin.ShiftCalendar">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="shiftId" column="shift_id" jdbcType="NUMERIC"/>
+		<result property="week" column="week_" jdbcType="NUMERIC"/>
+		<result property="dayType" column="day_type" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,shift_id,week_,day_type
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(shiftId)"> AND shift_id  =#{shiftId} </if>
+			<if test="@Ognl@isNotEmpty(week)"> AND week_  =#{week} </if>
+			<if test="@Ognl@isNotEmpty(dayType)"> AND day_type  =#{dayType} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftCalendar">
+		INSERT INTO se_shift_calendar
+		(id_,shift_id,week_,day_type)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{shiftId,jdbcType=NUMERIC}, #{week,jdbcType=NUMERIC}, #{dayType,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_shift_calendar 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<delete id="removeByShiftId" parameterType="java.lang.Long">
+		DELETE FROM se_shift_calendar 
+		WHERE
+		shift_id=#{shiftId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.ShiftCalendar">
+		UPDATE se_shift_calendar SET
+		shift_id=#{shiftId,jdbcType=NUMERIC},
+		week_=#{week,jdbcType=NUMERIC},
+		day_type=#{dayType,jdbcType=NUMERIC}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ShiftCalendar">
+		SELECT <include refid="columns"/>
+		FROM se_shift_calendar
+		WHERE
+		id_=#{id}
+	</select>
+		    
+	<select id="getByShiftId" parameterType="java.lang.Long" resultMap="ShiftCalendar">
+		SELECT <include refid="columns"/>
+		FROM se_shift_calendar
+		WHERE
+		shift_id=#{shiftId}
+	</select>
+	
+	<select id="getAll" resultMap="ShiftCalendar">
+		SELECT <include refid="columns"/>
+		FROM se_shift_calendar   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+	
+	<select id="getShiftCalendarBy" resultMap="ShiftCalendar">
+		SELECT sc.* 
+		FROM se_attendance_shift sa 
+		LEFT JOIN se_shift_calendar sc ON sa.shift_id = sc.shift_id AND sc.week_ = #{week}
+		where sc.shift_id = #{shiftId}
+	</select>
+	
+</mapper>

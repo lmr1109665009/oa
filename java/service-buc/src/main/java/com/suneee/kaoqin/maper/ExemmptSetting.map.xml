@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.ExemmptSetting">
+	<resultMap id="ExemmptSetting" type="com.suneee.kaoqin.model.kaoqin.ExemmptSetting">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="targetId" column="target_id" jdbcType="NUMERIC"/>
+		<result property="targetType" column="target_type" jdbcType="NUMERIC"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="status" column="status_" jdbcType="NUMERIC"/>
+		<result property="createby" column="createBy" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="fullname" column="fullname" jdbcType="VARCHAR"/>
+		<result property="account" column="account" jdbcType="VARCHAR"/>
+		<result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+		<result property="orgName" column="orgname" jdbcType="VARCHAR"/>
+		<result property="roleNames" column="rolenames" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,target_id,target_type,description,status_,createBy,createtime
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(targetId)"> AND target_id  =#{targetId} </if>
+			<if test="@Ognl@isNotEmpty(targetType)"> AND target_type  =#{targetType} </if>
+			<if test="@Ognl@isNotEmpty(description)"> AND description  LIKE #{description}  </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status_  =#{status} </if>
+			<if test="@Ognl@isNotEmpty(createby)"> AND createBy  =#{createby} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=TIMESTAMP}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.ExemmptSetting">
+		INSERT INTO se_exemmpt_setting
+		(id_,target_id,target_type,description,status_,createBy,createtime)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{targetId,jdbcType=NUMERIC}, #{targetType,jdbcType=NUMERIC}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=NUMERIC}, #{createby,jdbcType=NUMERIC}, #{createtime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_exemmpt_setting 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.ExemmptSetting">
+		UPDATE se_exemmpt_setting SET
+		target_id=#{targetId,jdbcType=NUMERIC},
+		target_type=#{targetType,jdbcType=NUMERIC},
+		description=#{description,jdbcType=VARCHAR},
+		status_=#{status,jdbcType=NUMERIC},
+		createBy=#{createby,jdbcType=NUMERIC},
+		createtime=#{createtime,jdbcType=TIMESTAMP}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ExemmptSetting">
+		SELECT <include refid="columns"/>
+		FROM se_exemmpt_setting
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getByTargetId" parameterType="java.lang.Long" resultMap="ExemmptSetting">
+		SELECT <include refid="columns"/>
+		FROM se_exemmpt_setting
+		WHERE
+		target_id=#{targetId}
+	</select>
+	
+	<select id="getAll" resultMap="ExemmptSetting">
+		select tt.* from (
+			select e.*,u.fullname,u.staff_no,o.orgname, 
+			(select GROUP_CONCAT(r.rolename) from sys_role r 
+			INNER JOIN sys_user_role ur ON ur.ROLEID = r.roleid 
+			WHERE ur.USERID = u.USERID ) as rolenames 
+			from   se_exemmpt_setting e 
+			INNER JOIN sys_user u ON u.userid = e.target_id AND e.target_type = 0
+			<if test="@Ognl@isNotEmpty(fullname)"> and u.fullname like #{fullname}</if>
+			<if test="@Ognl@isNotEmpty(staffNo)"> and u.staff_no like #{staffNo}</if>
+			LEFT JOIN sys_user_pos p ON p.userid = u.userid AND p.ISDELETE = 0 AND p.ISPRIMARY =1
+			LEFT JOIN sys_org o ON o.orgid = p.orgid
+		) as tt
+		<where>
+			<if test="@Ognl@isNotEmpty(orgname)"> and o.orgname like #{orgname}</if>
+			<if test="@Ognl@isNotEmpty(roleNames)"> and tt.rolenames like #{roleNames}</if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by tt.id_  desc
+		</if>
+	</select>
+	
+	<select id="getExcludeUsers" resultMap="com.suneee.platform.model.system.SysUser.SysUser">
+		SELECT u.* FROM sys_user u , se_exemmpt_setting s 
+		WHERE u.USERID = s.target_id AND s.target_type = 0
+	</select>
+	
+</mapper>

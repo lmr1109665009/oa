@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.AccessRecordDao">
+	<resultMap id="AccessRecord" type="com.suneee.eas.oa.model.conference.AccessRecord">
+		<id column="accessId" property="accessId" jdbcType="NUMERIC"/>
+		<result column="targetId" property="targetId" jdbcType="NUMERIC"/>
+		<result column="targetType" property="targetType" jdbcType="VARCHAR"/>
+		<result column="accessor" property="accessor" jdbcType="NUMERIC"/>
+		<result column="accessorName" property="accessorName" jdbcType="VARCHAR"/>
+		<result column="accessTime" property="accessTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="tableName">oa_access_record</sql>
+	
+	<sql id="dbColumn">
+		accessId, targetId, targetType, accessor, accessorName, accessTime
+	</sql>
+	
+	<sql id="dynamicCondition">
+		
+	</sql>
+	<insert id="save" parameterType="com.suneee.eas.oa.model.conference.AccessRecord">
+		insert into <include refid="tableName"/>(
+			<include refid="dbColumn"/>
+		)values(
+			#{accessId, jdbcType=NUMERIC}, #{targetId, jdbcType=NUMERIC}, #{targetType, jdbcType=VARCHAR},
+			#{accessor, jdbcType=NUMERIC}, #{accessorName,  jdbcType=VARCHAR}, #{accessTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<select id="findById" parameterType="java.lang.Long" resultMap="AccessRecord">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		WHERE accessId = #{accessId}	
+	</select>
+	
+	<select id="getByTargetIdAndType" parameterType="java.util.Map" resultType="accessRecord">
+		SELECT accessId, targetId, targetType, accessor, accessorName, MAX(accessTime) accessTime, 
+			(SELECT COUNT(accessor) FROM oa_access_record tmp WHERE tmp.targetId = ar.targetId  AND tmp.targetType = ar.targetType 
+				AND tmp.accessor=ar.accessor GROUP BY accessor) accessCount
+		FROM <include refid="tableName"/> ar
+		WHERE targetId = #{targetId} AND targetType = #{targetType}
+		GROUP BY accessor 
+		ORDER BY accessTime DESC
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultMap="AccessRecord">
+		select <include refid="dbColumn"/>
+		from <include refid="tableName"/>
+		<where>
+			<include refid="dynamicCondition"/>
+		</where>
+	</select>
+</mapper>

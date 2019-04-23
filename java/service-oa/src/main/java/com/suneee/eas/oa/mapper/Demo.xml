@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.DemoDao">
+    <select id="findById" parameterType="long" resultType="com.suneee.eas.oa.model.Demo">
+        select * from t_demo where id = #{id}
+    </select>
+    <select id="listAll" resultType="demo">
+        select * from t_demo
+        <where>
+            <if test="@Ognl@isNotEmpty(username)">
+                and username like #{username}
+            </if>
+            <if test="@Ognl@isNotEmpty(userId)">
+                and id= #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listCount" resultType="integer">
+        select count(*) from t_demo
+        <where>
+            <if test="@Ognl@isNotEmpty(username)">
+                and username like #{username}
+            </if>
+            <if test="@Ognl@isNotEmpty(userId)">
+                and id= #{userId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.suneee.eas.oa.model.Demo" useGeneratedKeys="true" keyProperty="id">
+        insert into t_demo(username, password) values(#{username}, #{password})
+    </insert>
+
+    <insert id="saveDemo" parameterType="demo">
+        insert into t_demo(id,username, password) values(#{id},#{username}, #{password})
+    </insert>
+</mapper>

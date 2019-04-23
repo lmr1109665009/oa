@@ -1,0 +1,1 @@
+审批人:<b><#if opinion.sysOrg??&&opinion.sysOrg.orgName??>${opinion.sysOrg.orgName}-</#if>${opinion.exeFullname}</b>,状态:<b>${opinion.status}</b>,意见:<b><#if opinion.opinion??> ${opinion.opinion}<#else>无</#if></b><br>

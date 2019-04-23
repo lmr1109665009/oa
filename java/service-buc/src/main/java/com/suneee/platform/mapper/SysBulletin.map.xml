@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.SysBulletin">
+	<resultMap id="SysBulletin" type="com.suneee.platform.model.system.SysBulletin">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="subject" column="SUBJECT" jdbcType="VARCHAR"/>
+		<result property="columnid" column="COLUMNID" jdbcType="NUMERIC"/>
+		<result property="content" column="CONTENT" jdbcType="CLOB"/>
+		<result property="contentTxt" column="CONTENTTXT" jdbcType="CLOB"/>
+		<result property="creatorid" column="CREATORID" jdbcType="NUMERIC"/>
+		<result property="creator" column="CREATOR" jdbcType="VARCHAR"/>
+		<result property="createtime" column="CREATETIME" jdbcType="TIMESTAMP"/>
+		<result property="attachment" column="ATTACHMENT" jdbcType="VARCHAR"/>
+		<result property="status" column="status" jdbcType="NUMERIC"/>
+		<result property="hasRead" column="hasRead" jdbcType="NUMERIC"/>
+		<result property="columnname" column="COLUMNNAME" jdbcType="VARCHAR"/>
+		<result property="tenantid" column="TENANTID" jdbcType="NUMERIC"/>
+		<result property="imgUrl" column="IMGURL" jdbcType="VARCHAR"/>
+		<result property="publishOrg" column="PUBLISHORG" jdbcType="NUMERIC"/>
+		<result property="publishRangeID_user" column="PUBLISHRANGEID_USER" jdbcType="CLOB"/>
+		<result property="publishRangeID_org" column="PUBLISHRANGEID_ORG" jdbcType="CLOB"/>
+		<result property="publishRangeName" column="PUBLISHRANGENAME" jdbcType="CLOB"/>
+		<result property="publishTime" column="PUBLISHTIME" jdbcType="TIMESTAMP"/>
+		<result property="keyWords" column="KEYWORDS" jdbcType="VARCHAR"/>
+		<result property="enterpriseCode" column="enterprise_code" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+
+	<sql id="columns">
+		ID,SUBJECT,COLUMNID,CONTENT,CREATORID,CREATOR,status,CREATETIME,ATTACHMENT,IMGURL,PUBLISHORG,PUBLISHRANGEID_USER,PUBLISHRANGEID_ORG,PUBLISHRANGENAME,KEYWORDS,PUBLISHTIME,enterprise_code
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(columnid)"> AND COLUMNID  = #{columnid}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+			<if test="isSuperAdmin != true"> AND ( BC.TENANTID = #{companyId} OR BC.TENANTID = 0 )</if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.SysBulletin">
+		INSERT INTO sys_bulletin
+		(ID,SUBJECT,COLUMNID,CONTENT,CONTENTTXT,CREATORID,CREATOR,CREATETIME,ATTACHMENT,status,IMGURL,PUBLISHORG,PUBLISHRANGEID_USER,PUBLISHRANGEID_ORG,PUBLISHRANGENAME,PUBLISHTIME,KEYWORDS,enterprise_code)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{subject,jdbcType=VARCHAR}, #{columnid,jdbcType=NUMERIC}, #{content,jdbcType=CLOB},#{contentTxt,jdbcType=CLOB}, #{creatorid,jdbcType=NUMERIC}, #{creator,jdbcType=VARCHAR}, #{createtime}, #{attachment,jdbcType=VARCHAR}, #{status,jdbcType=NUMERIC},#{imgUrl,jdbcType=VARCHAR},#{publishOrg,jdbcType=NUMERIC},#{publishRangeID_user,jdbcType=CLOB},#{publishRangeID_org,jdbcType=CLOB},#{publishRangeName,jdbcType=CLOB},#{publishTime},#{keyWords,jdbcType=VARCHAR},#{enterpriseCode,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_bulletin 
+		WHERE
+		ID=#{id}
+	</delete>
+	<delete id="delByColumnId" parameterType="java.lang.Long">
+		DELETE FROM sys_bulletin 
+		WHERE
+		COLUMNID=#{columnId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.SysBulletin">
+		UPDATE sys_bulletin SET
+		SUBJECT=#{subject,jdbcType=VARCHAR},
+		COLUMNID=#{columnid,jdbcType=NUMERIC},
+		CONTENT=#{content,jdbcType=CLOB},
+		CONTENTTXT=#{contentTxt,jdbcType=CLOB},
+		CREATORID=#{creatorid,jdbcType=NUMERIC},
+		CREATOR=#{creator,jdbcType=VARCHAR},
+		CREATETIME=#{createtime},
+		ATTACHMENT=#{attachment,jdbcType=VARCHAR},
+		status =#{status,jdbcType=NUMERIC},
+		IMGURL=#{imgUrl,jdbcType=VARCHAR},
+		PUBLISHORG=#{publishOrg,jdbcType=NUMERIC},
+		PUBLISHRANGEID_USER=#{publishRangeID_user,jdbcType=CLOB},
+		PUBLISHRANGEID_ORG=#{publishRangeID_org,jdbcType=CLOB},
+		PUBLISHRANGENAME=#{publishRangeName,jdbcType=CLOB},
+		PUBLISHTIME=#{publishTime},
+		KEYWORDS=#{keyWords,jdbcType=VARCHAR},
+		enterprise_code=#{enterpriseCode,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+	
+		<select id="getTopNews"  resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CONTENTTXT,B.CREATOR,B.CREATETIME,BC.NAME COLUMNNAME,BC.TENANTID
+		FROM SYS_BULLETIN B
+    	INNER JOIN SYS_BULLETIN_COLUMN BC ON B.COLUMNID = BC.ID AND BC.STATUS = 1  order by B.CREATETIME desc LIMIT 0,${_parameter}
+	</select>	
+	
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CONTENT,B.CONTENTTXT,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,b.status,BC.NAME COLUMNNAME,B.IMGURL
+		FROM SYS_BULLETIN B
+    	INNER JOIN SYS_BULLETIN_COLUMN BC ON B.COLUMNID = BC.ID
+    	WHERE 
+		B.ID=#{id}
+	</select>
+
+	<select id="getByBulletinId" parameterType="java.lang.Long" resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,B.CONTENTTXT,B.CONTENT,B.PUBLISHRANGENAME,B.PUBLISHRANGEID_USER,B.PUBLISHRANGEID_ORG,B.PUBLISHTIME,B.KEYWORDS,dic.ITEMNAME COLUMNNAME
+		FROM SYS_BULLETIN B
+		LEFT JOIN sys_dic dic ON B.COLUMNID = dic.DICID
+		WHERE
+		B.ID=#{bulletinId}
+	</select>
+	
+	<select id="getAll" resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,B.CONTENTTXT,BC.NAME COLUMNNAME,BC.TENANTID
+		FROM SYS_BULLETIN B
+    	INNER JOIN SYS_BULLETIN_COLUMN BC ON B.COLUMNID = BC.ID AND BC.STATUS = 1
+		<where>
+			<if test="@Ognl@isNotEmpty(subject)"> AND B.SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND B.CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(columnid)"> AND B.COLUMNID  = #{columnid}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND B.CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND B.CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND B.CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND B.status =#{createtime} </if>
+			<if test="isSuperAdmin != true"> AND ( BC.TENANTID = #{companyId} OR BC.TENANTID = 0 )</if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by B.CREATETIME desc
+		</if>
+	</select>
+
+	<select id="getAllBulletin" resultMap="SysBulletin">
+		SELECT DISTINCT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.STATUS,B.CREATETIME,B.ATTACHMENT,B.CONTENTTXT,B.CONTENT,B.PUBLISHRANGENAME,B.PUBLISHRANGEID_USER,B.PUBLISHRANGEID_ORG,B.PUBLISHTIME,B.KEYWORDS,dic.ITEMNAME COLUMNNAME
+		FROM SYS_BULLETIN B
+		LEFT JOIN sys_dic dic ON B.COLUMNID = dic.DICID
+        LEFT JOIN sys_bulletin_org bo ON B.ID=bo.BULLETINID
+		<where>
+			<if test="@Ognl@isNotEmpty(subject)"> AND B.SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND B.CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(creatorId)"> AND B.CREATORID = #{creatorId}  </if>
+			<if test="@Ognl@isNotEmpty(columnid)"> AND B.COLUMNID  = #{columnid}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND B.CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND B.CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND B.CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND B.status =#{createtime} </if>
+            <if test="isSuperAdmin != true">AND (#{orgPaths} LIKE CONCAT('%',bo.ORGID,'%') OR B.PUBLISHRANGEID_USER LIKE CONCAT('%',#{userId},'%')) AND B.STATUS=1</if>
+			<if test="isSuperAdmin = true">AND B.STATUS=1</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND B.enterprise_code=#{enterpriseCode} </if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by B.CREATETIME desc
+		</if>
+	</select>
+
+    <select id="listCreateByMe" resultMap="SysBulletin">
+        SELECT DISTINCT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.STATUS,B.CREATETIME,B.ATTACHMENT,B.CONTENTTXT,B.CONTENT,B.PUBLISHRANGENAME,B.PUBLISHRANGEID_USER,B.PUBLISHRANGEID_ORG,B.PUBLISHTIME,B.KEYWORDS,dic.ITEMNAME COLUMNNAME
+        FROM SYS_BULLETIN B
+        LEFT JOIN sys_dic dic ON B.COLUMNID = dic.DICID
+        LEFT JOIN sys_bulletin_org bo ON B.ID=bo.BULLETINID
+        <where>
+            <if test="@Ognl@isNotEmpty(subject)"> AND B.SUBJECT  LIKE #{subject}  </if>
+            <if test="@Ognl@isNotEmpty(creator)"> AND B.CREATOR  LIKE #{creator}  </if>
+            <if test="@Ognl@isNotEmpty(creatorId)"> AND B.CREATORID = #{creatorId}  </if>
+            <if test="@Ognl@isNotEmpty(columnid)"> AND B.COLUMNID  = #{columnid}  </if>
+            <if test="@Ognl@isNotEmpty(createtime)"> AND B.CREATETIME  =#{createtime} </if>
+            <if test="@Ognl@isNotEmpty(begincreatetime)"> AND B.CREATETIME  >=#{begincreatetime} </if>
+            <if test="@Ognl@isNotEmpty(endcreatetime)"> AND B.CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+            <if test="@Ognl@isNotEmpty(status)"> AND B.status =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND B.enterprise_code=#{enterpriseCode} </if>
+        </where>
+        <if test="@Ognl@isNotEmpty(orderField)">
+            order by ${orderField} ${orderSeq}
+        </if>
+        <if test="@Ognl@isEmpty(orderField)">
+            order by B.CREATETIME desc
+        </if>
+    </select>
+
+	<select id="getAllByAlias" resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,BC.NAME COLUMNNAME,BC.TENANTID,(case when c.id is NULL then 0 else 1 end) hasRead
+		FROM SYS_BULLETIN B
+    	INNER JOIN SYS_BULLETIN_COLUMN BC ON B.COLUMNID = BC.ID AND BC.STATUS = 1
+    	left join sys_read_record c on c.objectId = b.id and c.userid = #{userId}
+    	<where>
+    		BC.ALIAS = #{alias}
+			<if test="@Ognl@isNotEmpty(subject)"> AND B.SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND B.CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(columnid)"> AND B.COLUMNID  = #{columnid}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND B.CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND B.CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND B.CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+			 AND B.status = 1
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by B.CREATETIME desc
+		</if>
+	</select>
+	
+	<update id="updateStatus">
+		UPDATE sys_bulletin SET
+		status =#{status,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update>
+	
+	<select id="getTopBulletin"  parameterType="java.lang.Long" resultMap="SysBulletin">
+		SELECT b.ID,b.SUBJECT,b.CREATOR,b.CONTENTTXT,b.CREATETIME,bc.name,bc.tenantid,bc.status
+		FROM sys_bulletin b,sys_bulletin_column bc
+		where
+		b.COLUMNID=bc.ID
+		<if test="companyId!=null and companyId!=0 ">
+		and 
+		bc.tenantid=#{companyId}
+		</if>
+		and
+		bc.status=1
+		order by B.CREATETIME desc
+		
+	</select>	
+	
+	
+	<select id="getByColumnId" resultMap="SysBulletin">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,(case when c.id is NULL then 0 else 1 end) hasRead
+		FROM SYS_BULLETIN B
+    	left join sys_read_record c on c.objectId = b.id and c.userid = #{userId} 
+    	where  B.COLUMNID  = #{columnid} 
+		order by B.CREATETIME desc
+	</select>
+
+    <!--添加数据到公告组织表-->
+    <insert id="addToBulletinOrg">
+        INSERT INTO sys_bulletin_org VALUES (#{bulletinId},#{orgId})
+    </insert>
+
+    <!--根据公告id删除中间表的数据-->
+    <delete id="dellFromBulletinOrgByBulletin" parameterType="java.lang.Long">
+        DELETE FROM sys_bulletin_org WHERE BULLETINID=#{bulletinId}
+    </delete>
+	
+</mapper>

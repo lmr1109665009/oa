@@ -1,0 +1,106 @@
+spring:
+  #配置文件上传大小
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1000Mb
+      max-request-size: 5000Mb
+  #  分布式session配置
+  session:
+    timeout: 43200s
+
+#文件上传下载配置
+uploader:
+  type: minio
+  minio:
+    bucket:
+      xy: suneee
+      lhy: suneee
+      yr: suneee
+
+    url: http://172.19.7.102
+    port: 9000
+    accessKey: suneee
+    secretKey: suneeeminio
+    urlExpire: 86400
+  localFs:
+    storePath: /opt/data/eas
+    url: http://dev.suneee.com/store
+  s3:
+    host: http://172.19.7.102
+    port: 9000
+    region: cn-north-1
+    accessKey: suneee
+    secretKey: suneeeminio
+    singer: AWSS3V4SignerType
+    bucket:
+      lhy: lhy
+      xy: suneee
+      yn: yn
+    urlExpire: 60
+
+#网关认证配置
+zuul:
+  authentication:
+    ignore-urls:
+      - /**/static/**
+      - /**/css/**
+      - /**/js/**
+      - /**/images/**
+      - /**/media/**
+    #特殊化处理url地址
+    special-urls-hr:
+      - /*/api/bpm/task/startFlow.ht
+      - /bpmx/api/bpm/task/getInfo.ht
+      - /bpmx/platform/bpm/todo/pendingMattersListJson.ht
+      - /bpmx/platform/bpm/todo/alreadyMattersListJson.ht
+      - /bpmx/platform/bpm/task/completed.ht
+      - /bpmx/platform/bpm/revocationrun/recover.ht
+      - /bpmx/platform/bpm/proRun/del.ht
+      - /bpmx/platform/bpm/todo/listJson.ht
+      - /bpmx/platform/bpm/todo/tranTaskUserMap.ht
+    #用户中心配置
+    ucenter:
+      user:
+        default:
+          password: 123456
+          roleId: 1
+          roleName: 普通员工
+          isExpired: 0
+          isLock: 0
+          status: 1
+          userStatus: 正式员工
+          sex: 1
+          emailSuffix: "@suneee.com"
+      api:
+        auth: http://vr12.weilian.cn/account_auth_admin/
+      login:
+        account: OMEGA
+        password: 123456
+      clientIp: 127.0.0.1
+      appCode: XIANGPU
+      enterpriseCode:
+        xy: SUNEEE
+        lhy: LANHUOYI
+        yr: NINGJIAXIANSHENG
+      encryptCode: 1234567899876543
+      system: OA
+
+    #xss攻击忽略地址
+    xss-ignore-urls:
+      - /*/platform/bpm/bpmDefinition/flexDefSave.ht
+      - /*/api/conference/conferenceReserve/reserve
+      - /*/api/conference/conferenceReserve/edit
+      - /*/api/sys/bulletin/save
+      - /*/platform/form/bpmFormDef/save.ht
+
+#系统配置
+system:
+  #姓名模式，alias为字号模式，其他为姓名模式
+  username-mode: alias
+  #超级管理员账号
+  super-admin: admin
+
+  #域名与服务名映射配置,格式：域名-服务类型:服务名称(大写)，demo:zihua_suneee_com: lhy
+  domain:
+    liumr_suneee_com: lhy

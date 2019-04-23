@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.OfficeObjectType">
+	
+	<resultMap type="com.suneee.ucp.me.model.OfficeObjectType" id="OfficeObjectType">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="object_name" property="objectName" jdbcType="VARCHAR" />
+		<result column="specification" property="specification" jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		
+		<result column="create_time" property="createtime" jdbcType="VARCHAR" />
+		<result column="create_by" property="createBy" jdbcType="BIGINT" />
+		<result column="update_time" property="updatetime" jdbcType="VARCHAR" />
+		<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="baseColumn">
+		id, type, object_name, specification, creator, create_time, create_by, update_time, update_by
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(objectName)"> AND object_name LIKE CONCAT(CONCAT('%', #{objectName}), '%')</if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND creator = #{creator}</if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type = #{type}</if>
+			<if test="@Ognl@isNotEmpty(area)"> AND area  =#{area} </if>
+		</where>
+	</sql>
+	
+	<select id="getById" resultMap="OfficeObjectType">
+		SELECT
+		<include refid="baseColumn" />
+		FROM ucp_bgyp_type
+		WHERE id = #{id}
+	</select>
+	
+	<!-- 获取办公用品类型 -->
+	<select id="getAll" resultMap="OfficeObjectType">
+		select <include refid="baseColumn"></include>
+		from ucp_bgyp_type
+		<include refid="dynamicWhere"></include>
+	</select>
+	
+	<insert id="add" parameterType="com.suneee.ucp.me.model.OfficeObjectType">
+		insert into ucp_bgyp_type
+		value(
+			#{id},
+			#{type},
+			#{objectName},
+			#{specification},
+			#{creator},
+			#{createtime},
+			#{createBy},
+			#{updatetime},
+			#{updateBy}
+		);
+	</insert>
+
+	<update id="update" parameterType="com.suneee.ucp.me.model.OfficeObjectType">
+		update ucp_bgyp_type
+		set
+			type = #{type},
+			object_name = #{objectName},
+			specification = #{specification},
+			update_time = #{updatetime},
+			update_by = #{updateBy}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delById">
+		DELETE FROM ucp_bgyp_type WHERE ID=#{ID}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM ucp_bgyp_type WHERE ID IN
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 获取类型列表 -->
+	<select id="queryType" resultMap="OfficeObjectType">
+		select <include refid="baseColumn"></include>
+		from ucp_bgyp_type
+		where type = #{type} 
+		and object_name = #{objectName}
+	</select>
+	
+	<!-- 获取类型列表 -->
+	<select id="typeList" resultMap="OfficeObjectType">
+		select DISTINCT(type)
+		from ucp_bgyp_type
+	</select>
+	
+	<!-- 获取物品列表 -->
+	<select id="nameList" parameterType="string" resultMap="OfficeObjectType">
+		select DISTINCT(object_name)
+		from ucp_bgyp_type 
+		where type = #{type}
+	</select>
+	
+	<!-- 获取规格列表 -->
+	<select id="specificationList" parameterType="com.suneee.ucp.me.model.OfficeObjectType" resultMap="OfficeObjectType">
+		select specification
+		from ucp_bgyp_type
+		where type = #{type}
+		and object_name = #{objectName}
+	</select>
+
+</mapper>

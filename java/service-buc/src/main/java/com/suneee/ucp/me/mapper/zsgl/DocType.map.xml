@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.ucp.me.model.DocType">
+	<sql id="docTypeColumns">
+		a.ID as "id",
+		a.TYPE_NAME as "typeName",
+		a.REMARK as "remake",
+		a.PARENT_ID as "parentId",
+		a.PROMUlGATOR as "promulgator",
+		a.PROMUlGATORNAME as "promulgatorName",
+		a.RELEASE_TIME as "releaseTime",
+		a.IS_PRIVATE as "isPrivate",
+		a.OWNER as "owner",
+		a.department_id as "departmentId",
+	    a.EID as "eid"
+	</sql>
+
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND a.ID =#{id} </if>
+			<if test="@Ognl@isNotEmpty(typeName)"> AND a.TYPE_NAME =#{typeName} </if>
+			<if test="@Ognl@isNotEmpty(promulgator)"> AND a.PROMUlGATOR =#{promulgator} </if>
+			<if test="@Ognl@isNotEmpty(parentId)"> AND a.PARENT_ID =#{parentId} </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.EID =#{eid} </if> 
+			<if test="@Ognl@isNotEmpty(privateFlag)"> AND a.IS_PRIVATE =#{privateFlag} </if>
+			<if test="@Ognl@isNotEmpty(departmentId)"> AND a.department_id =#{departmentId} </if>
+			<if test="@Ognl@isNotEmpty(departmentIdOrNull)"> AND (a.department_id =#{departmentId} OR (a.department_id IS NULL AND a.parent_id>1)) </if>
+		</where>
+	</sql>
+	
+	
+	
+	<!-- 查询 -->
+
+	<select id="getAll" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		FROM UCP_DOCTYPE a
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by a.PARENT_ID desc
+		</if>
+	</select>
+	
+	
+	<select id="getSuperS" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		FROM UCP_DOCTYPE a
+		WHERE a.PARENT_ID=0 
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by a.PARENT_ID desc
+		</if>
+	</select>
+	
+	
+	<select id="getDocByParentIdAndDepartmentIdAndEid" parameterType="DocType" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		,(SELECT COUNT(*) FROM ucp_doctype b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM (select * from UCP_DOCTYPE where PARENT_ID=2 and EID=#{eid}) a
+		<where>		
+		<if test="@Ognl@isNotEmpty(departmentId)">and a.department_id = #{departmentId} or a.department_id is null or a.department_id = ''</if>
+		<if test="@Ognl@isEmpty(departmentId)">and a.department_id is null or a.department_id = ''</if>
+		</where>
+			order by a.ID ASC
+			
+	</select>
+	
+	<select id="getDocByParentIdAndEid" parameterType="DocType" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		,(SELECT COUNT(*) FROM ucp_doctype b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM UCP_DOCTYPE a where a.PARENT_ID = #{parentId} 
+		<!-- AND a.EID=#{eid} -->
+		<if test="@Ognl@isNotEmpty(eid)">and a.eid=#{eid}</if>
+			order by a.ID ASC
+			
+	</select>
+	<select id="getDocByParentId" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		,(SELECT COUNT(*) FROM ucp_doctype b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM UCP_DOCTYPE a where a.PARENT_ID = #{parentId}
+			order by a.ID ASC
+			
+	</select>
+	
+	<select id="getDocByNameAndOwerId" parameterType="DocType" resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		FROM UCP_DOCTYPE a where a.TYPE_NAME = #{typeName}
+			and a.OWNER = #{owner}
+			
+	</select>
+
+	<select id="queyDoctypeChildIds" parameterType="long" resultType="string">
+		SELECT queryDoctypeChildIds(#{pid});
+	</select>
+
+	<select id="getAllName" resultType="DocType">
+		SELECT
+		a.ID as "id",
+		a.TYPE_NAME as "typeName",
+		a.PARENT_ID as "parentId"
+		FROM UCP_DOCTYPE a
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by a.PARENT_ID desc
+		</if>
+	</select>
+
+<!-- 查询子节点个数 -->
+	<select id="getChildNumber"  resultType="int">
+		SELECT
+		COUNT(1)
+		FROM UCP_DOCTYPE 
+		WHERE
+		PARENT_ID = #{id}
+	</select>
+
+
+	<select id="getById"  resultType="DocType">
+		SELECT
+		<include refid="docTypeColumns" />
+		,(SELECT COUNT(*) FROM ucp_doctype b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM UCP_DOCTYPE a
+		WHERE
+		a.ID = #{id}
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="add" parameterType="DocType">
+		INSERT INTO UCP_DOCTYPE
+		(ID,TYPE_NAME,REMARK,PARENT_ID,PROMUlGATOR,PROMUlGATORNAME,RELEASE_TIME,IS_PRIVATE,OWNER,department_id,EID) VALUES
+		(
+		#{id},
+		#{typeName},
+		#{remake},
+		#{parentId},
+		#{promulgator},
+		#{promulgatorName},
+		NOW(),
+		#{isPrivate},
+		#{owner},
+		#{departmentId},
+		#{eid}
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update">
+		UPDATE UCP_DOCTYPE SET
+		TYPE_NAME = #{typeName},
+		REMARK = #{remake},
+		PARENT_ID = #{parentId}
+		WHERE ID = #{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delById">
+	DELETE FROM UCP_DOCTYPE WHERE ID=#{ID}
+	</delete>
+
+	<!--计算相同命名重复数量-->
+	<select id="countNameRepetition" resultType="integer">
+		SELECT count(*)
+		FROM UCP_DOCTYPE a
+		WHERE
+		a.PARENT_ID= #{parentId} AND a.TYPE_NAME=#{name}
+		<if test="id!=null">
+			<![CDATA[AND a.ID <> #{id}]]>
+		</if>
+		<if test="privateFlag!=null">
+			AND a.IS_PRIVATE=#{privateFlag}
+		</if>
+		<if test="eid!=null">
+			AND a.EID=#{eid}
+		</if>
+		<if test="departmentId!=null">
+			AND a.DEPARTMENT_ID=#{departmentId}
+		</if>
+		<if test="owner!=null">
+			AND a.OWNER=#{owner}
+		</if>
+	</select>
+	
+	
+</mapper>

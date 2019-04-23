@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceRoomDao">
+
+    <sql id="columns">
+        roomId,roomName,region,regionName,location,capacity,manager,managerName,needAudit,isAvailable,remark,enterpriseCode,isDelete,createBy,createByName,createTime,updateBy,updateByName,updateTime,orgIds,orgNames,userIds,userNames
+    </sql>
+
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(roomId)">and roomId = #{roomId}</if>
+            <if test="@Ognl@isNotEmpty(roomName)">and roomName like #{roomName}</if>
+            <if test="@Ognl@isNotEmpty(region)">and region = #{region}</if>
+            <if test="@Ognl@isNotEmpty(regionName)">and regionName like #{regionName}</if>
+            <if test="@Ognl@isNotEmpty(location)">and location like #{location}</if>
+            <if test="@Ognl@isNotEmpty(capacity)">and capacity = #{capacity}</if>
+            <if test="@Ognl@isNotEmpty(manager)">and manager = #{manager}</if>
+            <if test="@Ognl@isNotEmpty(managerName)">and managerName like #{managerName}</if>
+            <if test="@Ognl@isNotEmpty(needAudit)">and needAudit = #{needAudit}</if>
+            <if test="@Ognl@isNotEmpty(isAvailable)">and isAvailable = #{isAvailable}</if>
+            <if test="@Ognl@isNotEmpty(remark)">and remark like #{remark}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">and enterpriseCode = #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)">and isDelete = #{isDelete}</if>
+            <if test="@Ognl@isNotEmpty(createBy)">and createBy = #{createBy}</if>
+            <if test="@Ognl@isNotEmpty(updateBy)">and updateBy = #{updateBy}</if>
+            <if test="@Ognl@isNotEmpty(createTime)">and createTime >= #{beginCreateTime,jdbcType="TIMESTAMP"}</if>
+            <if test="@Ognl@isNotEmpty(createTime)">and createTime <![CDATA[ <=#{endCreateTime,jdbcType=TIMESTAMP}]]></if>
+            <if test="@Ognl@isNotEmpty(updateTime)">and updateTime >= #{beginUpdateTime,jdbcType="TIMESTAMP"}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)">and updateTime <![CDATA[ <=#{endUpdateTime,jdbcType=TIMESTAMP}]]></if>
+            <if test="@Ognl@isNotEmpty(searchCondition)">and (roomName like #{searchCondition} or location like #{searchCondition} or managerName like #{searchCondition} or remark like #{searchCondition})</if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="com.suneee.eas.oa.model.conference.ConferenceRoom" useGeneratedKeys="true" keyProperty="roomId">
+        insert into oa_conference_room
+        (roomId,roomName,region,regionName,location,capacity,manager,managerName,needAudit,isAvailable,remark,enterpriseCode,isDelete,createBy,createByName,createTime,updateBy,updateByName,updateTime,orgIds,orgNames,userIds,userNames)
+        values (#{roomId,jdbcType=NUMERIC},#{roomName,jdbcType=VARCHAR},#{region,jdbcType=NUMERIC},#{regionName,jdbcType=VARCHAR},#{location,jdbcType=VARCHAR},#{capacity,jdbcType=NUMERIC},#{manager,jdbcType=CLOB},#{managerName,jdbcType=CLOB},#{needAudit,jdbcType=NUMERIC},#{isAvailable,jdbcType=NUMERIC},#{remark,jdbcType=CLOB},#{enterpriseCode,jdbcType=VARCHAR},#{isDelete,jdbcType=NUMERIC},#{createBy,jdbcType=NUMERIC},#{createByName,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateBy,jdbcType=NUMERIC},#{updateByName,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP},#{orgIds,jdbcType=CLOB},#{orgNames,jdbcType=CLOB},#{userIds,jdbcType=CLOB},#{userNames,jdbcType=CLOB})
+    </insert>
+
+    <update id="update" parameterType="com.suneee.eas.oa.model.conference.ConferenceRoom">
+        update oa_conference_room set
+        roomName = #{roomName,jdbcType=VARCHAR},
+        region = #{region,jdbcType=NUMERIC},
+        regionName = #{regionName,jdbcType=VARCHAR},
+        location = #{location,jdbcType=VARCHAR},
+        capacity = #{capacity,jdbcType=NUMERIC},
+        manager = #{manager,jdbcType=CLOB},
+        managerName = #{managerName,jdbcType=CLOB},
+        needAudit = #{needAudit,jdbcType=NUMERIC},
+        isAvailable = #{isAvailable,jdbcType=NUMERIC},
+        remark = #{remark,jdbcType=CLOB},
+        enterpriseCode = #{enterpriseCode,jdbcType=VARCHAR},
+        isDelete = #{isDelete,jdbcType=NUMERIC},
+        createBy = #{createBy,jdbcType=NUMERIC},
+        createByName = #{createByName,jdbcType=VARCHAR},
+        updateBy = #{updateBy,jdbcType=NUMERIC},
+        updateByName = #{updateByName,jdbcType=VARCHAR},
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+        orgIds = #{orgIds,jdbcType=CLOB},
+        orgNames = #{orgNames,jdbcType=CLOB},
+        userIds = #{userIds,jdbcType=CLOB},
+        userNames = #{userNames,jdbcType=CLOB}
+        where roomId = #{roomId,jdbcType=NUMERIC}
+    </update>
+
+    <select id="findById" parameterType="java.lang.Long" resultType="com.suneee.eas.oa.model.conference.ConferenceRoom">
+        select room.*, (SELECT GROUP_CONCAT(deviceName) FROM oa_conference_device device 
+        	WHERE device.roomId=room.roomId AND device.isdelete=0 and device.isAvailable=1) AS deviceNames
+        from oa_conference_room room
+        where room.roomId = #{roomId}
+    </select>
+
+    <update id="deleteById" parameterType="java.util.Map">
+        update oa_conference_room
+        set isDelete = 1, updateBy = #{updateBy}, updateByName = #{updateByName}, updateTime = #{updateTime}
+        where roomId = #{roomId}
+    </update>
+
+    <select id="listAll" resultType="com.suneee.eas.oa.model.conference.ConferenceRoom">
+        select <include refid="columns"/>
+        from oa_conference_room
+        <include refid="dynamicWhere"/>
+        and isDelete = 0
+        order by updateTime desc
+    </select>
+
+    <select id="getRoomByRegion" resultType="com.suneee.eas.oa.model.conference.ConferenceRoom">
+        select <include refid="columns"/>
+        from oa_conference_room
+        where region = #{region} and enterpriseCode = #{enterpriseCode} and isDelete = 0 and isAvailable = 1
+    </select>
+    
+    <select id="getAvailableRoom" resultType="com.suneee.eas.oa.model.conference.ConferenceRoom">
+    	SELECT cr.*, (SELECT GROUP_CONCAT(deviceName) FROM oa_conference_device device 
+    		WHERE device.roomId=cr.roomId AND device.isdelete=0 and device.isAvailable = 1) AS deviceNames
+        FROM oa_conference_room cr
+        LEFT JOIN oa_authority_info ai ON ai.authId = cr.roomId
+        WHERE region = #{region} AND enterpriseCode = #{enterpriseCode} AND isDelete = 0 and isAvailable = 1
+        AND ((ai.authType = #{authType} AND ai.ownerType='user' AND ownerId = #{userId}) OR (ai.ownerType IS NULL)
+        	<if test="orgIds != null">
+        		OR (ai.authType = #{authType} AND ai.ownerType='org' AND ownerId IN 
+        		<foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+        			#{orgId}
+        		</foreach>
+       		 	)
+        	</if>)
+    </select>
+
+    <select id="isRoomNameRepeatForAdd" resultType="java.lang.Integer">
+        select count(roomId) from oa_conference_room
+        where enterpriseCode = #{enterpriseCode} and region = #{region}
+        and roomName = #{roomName} and isDelete = 0
+    </select>
+
+    <select id="isRoomNameRepeatForUpdate" resultType="java.lang.Integer">
+        select count(roomId) from oa_conference_room
+        where enterpriseCode = #{enterpriseCode} and region = #{region}
+        and roomName = #{roomName} and roomId != #{roomId} and isDelete = 0
+    </select>
+</mapper>

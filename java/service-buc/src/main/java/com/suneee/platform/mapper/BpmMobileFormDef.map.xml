@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.form.BpmMobileFormDef">
+	<resultMap id="BpmMobileFormDef" type="com.suneee.platform.model.form.BpmMobileFormDef">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="version" column="VERSION" jdbcType="NUMERIC"/>
+		<result property="formKey" column="FORM_KEY" jdbcType="VARCHAR"/>
+		<result property="formHtml" column="FORM_HTML" jdbcType="CLOB"/>
+		<result property="tableId" column="TABLE_ID" jdbcType="NUMERIC"/>
+		<result property="tableName" column="TABLE_NAME" jdbcType="VARCHAR"/>
+		<result property="subject" column="SUBJECT" jdbcType="VARCHAR"/>
+		<result property="createBy" column="CREATE_BY" jdbcType="NUMERIC"/>
+		<result property="creator" column="CREATOR" jdbcType="VARCHAR"/>
+		<result property="createTime" column="CREATE_TIME" jdbcType="DATE"/>
+		<result property="isDefault" column="IS_DEFAULT" jdbcType="NUMERIC"/>
+		<result property="isPublished" column="IS_PUBLISHED" jdbcType="NUMERIC"/>
+		<result property="publisher" column="PUBLISHER" jdbcType="VARCHAR"/>
+		<result property="publishBy" column="PUBLISH_BY" jdbcType="NUMERIC"/>
+		<result property="publishTime" column="PUBLISH_TIME" jdbcType="DATE"/>
+		<result property="updator" column="UPDATOR" jdbcType="VARCHAR"/>
+		<result property="updateBy" column="UPDATE_BY" jdbcType="NUMERIC"/>
+		<result property="updateTime" column="UPDATE_TIME" jdbcType="DATE"/>
+		<result property="categoryId" column="CATEGORY_ID" jdbcType="NUMERIC"/>
+		<result property="versionCount" column="versionCount" jdbcType="NUMERIC"/>
+		<result property="templatesId" column="TEMPLATESID" jdbcType="VARCHAR"/>
+		<result property="categoryName" column="categoryName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="columns">
+		ID,VERSION,FORM_KEY,FORM_HTML,TABLE_ID,TABLE_NAME,SUBJECT,CREATE_BY,CREATOR,CREATE_TIME,IS_DEFAULT,IS_PUBLISHED,PUBLISHER,
+		PUBLISH_BY,PUBLISH_TIME,UPDATOR,UPDATE_BY,UPDATE_TIME,CATEGORY_ID,TEMPLATESID
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(formKey)"> AND FORM_KEY  LIKE #{formKey}  </if>
+			<if test="@Ognl@isNotEmpty(tableId)"> AND TABLE_ID  =#{tableId} </if>
+			<if test="@Ognl@isNotEmpty(tableName)"> AND TABLE_NAME  LIKE #{tableName}  </if>
+			<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(createBy)"> AND CREATE_BY  =#{createBy} </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(createTime)"> AND CREATE_TIME  =#{createTime} </if>
+			<if test="@Ognl@isNotEmpty(begincreateTime)"> AND CREATE_TIME  >=#{begincreateTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcreateTime)"> AND CREATE_TIME <![CDATA[ <=#{endcreateTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(isPublished)"> AND IS_PUBLISHED  =#{isPublished} </if>
+			<if test="@Ognl@isNotEmpty(publisher)"> AND PUBLISHER  LIKE #{publisher}  </if>
+			<if test="@Ognl@isNotEmpty(publishBy)"> AND PUBLISH_BY  =#{publishBy} </if>
+			<if test="@Ognl@isNotEmpty(publishTime)"> AND PUBLISH_TIME  =#{publishTime} </if>
+			<if test="@Ognl@isNotEmpty(beginpublishTime)"> AND PUBLISH_TIME  >=#{beginpublishTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endpublishTime)"> AND PUBLISH_TIME <![CDATA[ <=#{endpublishTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(updator)"> AND UPDATOR  LIKE #{updator}  </if>
+			<if test="@Ognl@isNotEmpty(updateBy)"> AND UPDATE_BY  =#{updateBy} </if>
+			<if test="@Ognl@isNotEmpty(updateTime)"> AND UPDATE_TIME  =#{updateTime} </if>
+			<if test="@Ognl@isNotEmpty(beginupdateTime)"> AND UPDATE_TIME  >=#{beginupdateTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endupdateTime)"> AND UPDATE_TIME <![CDATA[ <=#{endupdateTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(categoryId)"> AND CATEGORY_ID  =#{categoryId} </if>
+			<if test="@Ognl@isNotEmpty(typeIdList)">
+				AND CATEGORY_ID IN 
+				<foreach collection="typeIdList" item="typeId" open="(" separator="," close=")">
+					#{typeId}
+				</foreach>
+			</if>
+			 and 1 = 1
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.form.BpmMobileFormDef">
+		INSERT INTO BPM_MOBILE_FORM_DEF
+		(ID,VERSION,FORM_KEY,FORM_HTML,TABLE_ID,TABLE_NAME,SUBJECT,CREATE_BY,CREATOR,CREATE_TIME,IS_DEFAULT,IS_PUBLISHED,
+		PUBLISHER,PUBLISH_BY,PUBLISH_TIME,UPDATOR,UPDATE_BY,UPDATE_TIME,CATEGORY_ID,TEMPLATESID)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{version,jdbcType=NUMERIC}, #{formKey,jdbcType=VARCHAR}, #{formHtml,jdbcType=CLOB},
+		 #{tableId,jdbcType=NUMERIC}, #{tableName,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR},
+		 #{createBy,jdbcType=NUMERIC}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{isDefault,jdbcType=NUMERIC},
+		 #{isPublished,jdbcType=NUMERIC}, #{publisher,jdbcType=VARCHAR}, #{publishBy,jdbcType=NUMERIC}, #{publishTime,jdbcType=DATE},
+		 #{updator,jdbcType=VARCHAR}, #{updateBy,jdbcType=NUMERIC},
+		 #{updateTime,jdbcType=DATE}, #{categoryId,jdbcType=NUMERIC},#{templatesId,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM BPM_MOBILE_FORM_DEF 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.form.BpmMobileFormDef">
+		UPDATE BPM_MOBILE_FORM_DEF SET
+		VERSION=#{version,jdbcType=NUMERIC},
+		FORM_KEY=#{formKey,jdbcType=VARCHAR},
+		FORM_HTML=#{formHtml,jdbcType=CLOB},
+		TABLE_ID=#{tableId,jdbcType=NUMERIC},
+		TABLE_NAME=#{tableName,jdbcType=VARCHAR},
+		SUBJECT=#{subject,jdbcType=VARCHAR},
+		CREATE_BY=#{createBy,jdbcType=NUMERIC},
+		CREATOR=#{creator,jdbcType=VARCHAR},
+		CREATE_TIME=#{createTime,jdbcType=DATE},
+		IS_DEFAULT=#{isDefault,jdbcType=NUMERIC},
+		IS_PUBLISHED=#{isPublished,jdbcType=NUMERIC},
+		PUBLISHER=#{publisher,jdbcType=VARCHAR},
+		PUBLISH_BY=#{publishBy,jdbcType=NUMERIC},
+		PUBLISH_TIME=#{publishTime,jdbcType=DATE},
+		UPDATOR=#{updator,jdbcType=VARCHAR},
+		UPDATE_BY=#{updateBy,jdbcType=NUMERIC},
+		UPDATE_TIME=#{updateTime,jdbcType=DATE},
+		CATEGORY_ID=#{categoryId,jdbcType=NUMERIC},
+		TEMPLATESID=#{templatesId,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="BpmMobileFormDef">
+		SELECT <include refid="columns"/>
+		FROM BPM_MOBILE_FORM_DEF a
+		WHERE
+		ID=#{id}
+	</select>
+
+	<select id="getCountByFormKey" parameterType="java.lang.String" resultType="int">
+		SELECT count(*)
+		FROM BPM_MOBILE_FORM_DEF
+		WHERE
+		FORM_KEY=#{formKey}
+	</select>
+	
+	<select id="getDefaultByFormKey" parameterType="java.lang.String" resultMap="BpmMobileFormDef">
+		SELECT <include refid="columns"/>
+		FROM BPM_MOBILE_FORM_DEF
+		WHERE FORM_KEY=#{formKey} and IS_DEFAULT=1
+	</select>
+	
+	<select id="getAll" resultMap="BpmMobileFormDef">
+		SELECT 	ID,VERSION,FORM_KEY,TABLE_ID,TABLE_NAME,SUBJECT,CREATE_BY,CREATOR,CREATE_TIME,IS_DEFAULT,IS_PUBLISHED,PUBLISHER,PUBLISH_BY,PUBLISH_TIME,UPDATOR,UPDATE_BY,UPDATE_TIME,CATEGORY_ID
+		,(select count(*) from BPM_MOBILE_FORM_DEF where form_key = a.FORM_KEY) as versionCount, b.typename AS categoryName
+		FROM BPM_MOBILE_FORM_DEF a 
+		LEFT OUTER JOIN sys_gl_type b ON a.category_id=b.typeid 
+		<include refid="dynamicWhere" />  and IS_DEFAULT = 1
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<update id="setNotDefaultByFromKey" parameterType="java.lang.String">
+		UPDATE BPM_MOBILE_FORM_DEF SET IS_DEFAULT= 0
+		WHERE FORM_KEY =#{formKey,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="getByFormKey" parameterType="java.lang.String" resultMap="BpmMobileFormDef">
+		SELECT <include refid="columns"/>
+		FROM BPM_MOBILE_FORM_DEF
+		WHERE FORM_KEY=#{formKey}
+	</select> 
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceDeviceDao">
+
+    <sql id="columns">
+        deviceId,deviceName,deviceCode,deviceType,deviceTypeName,region,regionName,roomId,isPublic,isAvailable,remark,enterpriseCode,isDelete,createBy,createByName,createTime,updateBy,updateByName,updateTime
+    </sql>
+
+    <sql id="dynamicWhere">
+        <where>
+            <if test="@Ognl@isNotEmpty(deviceName)">and deviceName like #{deviceName}</if>
+            <if test="@Ognl@isNotEmpty(deviceCode)">and deviceCode = #{deviceCode}</if>
+            <if test="@Ognl@isNotEmpty(deviceType)">and deviceType = #{deviceType}</if>
+            <if test="@Ognl@isNotEmpty(deviceTypeName)">and deviceTypeName like #{deviceTypeName}</if>
+            <if test="@Ognl@isNotEmpty(region)">and region = #{region}</if>
+            <if test="@Ognl@isNotEmpty(regionName)">and regionName like #{regionName}</if>
+            <if test="@Ognl@isNotEmpty(roomId)">and roomId = #{roomId}</if>
+            <if test="@Ognl@isNotEmpty(isPublic)">and isPublic = #{isPublic}</if>
+            <if test="@Ognl@isNotEmpty(isAvailable)">and isAvailable = #{isAvailable}</if>
+            <if test="@Ognl@isNotEmpty(remark)">and remark like #{remark}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">and enterpriseCode = #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(isDelete)">and isDelete = #{isDelete}</if>
+            <if test="@Ognl@isNotEmpty(createBy)">and createBy = #{createBy}</if>
+            <if test="@Ognl@isNotEmpty(updateBy)">and updateBy = #{updateBy}</if>
+            <if test="@Ognl@isNotEmpty(createTime)">and createTime >= #{beginCreateTime,jdbcType=TIMESTAMP}</if>
+            <if test="@Ognl@isNotEmpty(createTime)">and createTime <![CDATA[ <=#{endCreateTime,jdbcType=TIMESTAMP}]]></if>
+            <if test="@Ognl@isNotEmpty(updateTime)">and updateTime >= #{beginUpdateTime,jdbcType=TIMESTAMP}</if>
+            <if test="@Ognl@isNotEmpty(updateTime)">and updateTime <![CDATA[ <=#{endUpdateTime,jdbcType=TIMESTAMP}]]></if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="com.suneee.eas.oa.model.conference.ConferenceDevice">
+        insert into oa_conference_device
+        (deviceId,deviceName,deviceCode,deviceType,deviceTypeName,region,regionName,roomId,isPublic,isAvailable,remark,enterpriseCode,isDelete,createBy,createByName,createTime,updateBy,updateByName,updateTime)
+        values (#{deviceId,jdbcType=NUMERIC},#{deviceName,jdbcType=VARCHAR},#{deviceCode,jdbcType=VARCHAR},#{deviceType,jdbcType=NUMERIC},#{deviceTypeName,jdbcType=VARCHAR},#{region,jdbcType=NUMERIC},#{regionName,jdbcType=VARCHAR},#{roomId,jdbcType=NUMERIC},#{isPublic,jdbcType=NUMERIC},#{isAvailable,jdbcType=NUMERIC},#{remark,jdbcType=CLOB},#{enterpriseCode,jdbcType=VARCHAR},#{isDelete,jdbcType=NUMERIC},#{createBy,jdbcType=NUMERIC},#{createByName,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateBy,jdbcType=NUMERIC},#{updateByName,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="update" parameterType="com.suneee.eas.oa.model.conference.ConferenceDevice">
+        update oa_conference_device set
+        deviceName = #{deviceName,jdbcType=VARCHAR},
+        deviceCode = #{deviceCode,jdbcType=VARCHAR},
+        deviceType = #{deviceType,jdbcType=NUMERIC},
+        deviceTypeName = #{deviceTypeName,jdbcType=VARCHAR},
+        region = #{region,jdbcType=NUMERIC},
+        regionName = #{regionName,jdbcType=VARCHAR},
+        roomId = #{roomId,jdbcType=NUMERIC},
+        isPublic = #{isPublic,jdbcType=NUMERIC},
+        isAvailable = #{isAvailable,jdbcType=NUMERIC},
+        remark = #{remark,jdbcType=CLOB},
+        enterpriseCode = #{enterpriseCode,jdbcType=VARCHAR},
+        isDelete = #{isDelete,jdbcType=NUMERIC},
+        createBy = #{createBy,jdbcType=NUMERIC},
+        createByName = #{createByName,jdbcType=VARCHAR},
+        updateBy = #{updateBy,jdbcType=NUMERIC},
+        updateByName = #{updateByName,jdbcType=VARCHAR},
+        updateTime = #{updateTime,jdbcType=TIMESTAMP}
+        where deviceId = #{deviceId,jdbcType=NUMERIC}
+    </update>
+
+    <select id="findById" parameterType="java.lang.Long" resultType="com.suneee.eas.oa.model.conference.ConferenceDevice">
+        select <include refid="columns"/>
+        from oa_conference_device where deviceId = #{deviceId}
+    </select>
+
+    <update id="deleteById">
+        update oa_conference_device
+        set isDelete = 1, updateBy = #{updateBy}, updateByName = #{updateByName}, updateTime = #{updateTime}
+        where deviceId = #{deviceId}
+    </update>
+
+    <select id="listAll" resultType="com.suneee.eas.oa.model.conference.ConferenceDevice">
+        select cd.deviceId,cd.deviceName,cd.deviceCode,cd.deviceType,cd.deviceTypeName,cd.region,cd.regionName,cd.roomId,cd.isPublic,cd.isAvailable,cd.remark,cd.enterpriseCode,cd.isDelete,cd.createBy,cd.createByName,cd.createTime,cd.updateBy,cd.updateByName,cd.updateTime,cr.roomName
+        from oa_conference_device cd
+        left join oa_conference_room cr on cd.roomId = cr.roomId
+        <where>
+            <if test="@Ognl@isNotEmpty(deviceName)">and cd.deviceName like #{deviceName}</if>
+            <if test="@Ognl@isNotEmpty(deviceCode)">and cd.deviceCode like #{deviceCode}</if>
+            <if test="@Ognl@isNotEmpty(deviceType)">and cd.deviceType = #{deviceType}</if>
+            <if test="@Ognl@isNotEmpty(region)">and cd.region = #{region}</if>
+            <if test="@Ognl@isNotEmpty(isPublic)">and cd.isPublic = #{isPublic}</if>
+            <if test="@Ognl@isNotEmpty(isAvailable)">and cd.isAvailable = #{isAvailable}</if>
+            <if test="@Ognl@isNotEmpty(roomId)">and cd.roomId = #{roomId}</if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">and cd.enterpriseCode = #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(searchCondition)">and (cd.deviceName like #{searchCondition} or cd.deviceCode like #{searchCondition})</if>
+        </where>
+        and cd.isDelete = 0
+        order by updateTime desc
+    </select>
+
+    <select id="isDeviceCodeRepeatForAdd" resultType="java.lang.Integer">
+        select count(deviceId) from oa_conference_device
+        where deviceCode = #{deviceCode}
+        and enterpriseCode = #{enterpriseCode}
+        and isDelete = 0
+    </select>
+
+    <select id="isDeviceCodeRepeatForUpdate" resultType="java.lang.Integer">
+        select count(deviceId) from oa_conference_device
+        where deviceCode = #{deviceCode}
+        and enterpriseCode = #{enterpriseCode}
+        and deviceId != #{deviceId}
+        and isDelete = 0
+    </select>
+    
+    <select id="countAvailableDeviceNumber" resultType="java.util.Map">
+    	SELECT deviceType, deviceTypeName, COUNT(deviceId) AS number 
+    	FROM oa_conference_device
+    	WHERE enterpriseCode = #{enterpriseCode}  AND region = #{region} 
+    		AND isPublic = 1 AND isAvailable = 1 AND isdelete = 0
+    	GROUP BY deviceType
+    </select>
+</mapper>

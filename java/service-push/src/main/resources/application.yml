@@ -1,0 +1,13 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+server:
+  port: 8093
+spring:
+  application:
+    name: service-push
+
+pushproperties:
+  messagesUrl: http://test.openplatform.weilian.cn/vr-push/
+

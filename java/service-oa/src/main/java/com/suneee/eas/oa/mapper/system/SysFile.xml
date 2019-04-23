@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.system.SysFileDao">
+    <select id="findById" resultType="sysFile">
+        SELECT * FROM sys_file WHERE fileId = #{id}
+    </select>
+
+    <select id="listAll" resultType="sysFile">
+        SELECT * FROM sys_file
+        <where>
+            <if test="@Ognl@isNotEmpty(parentId)">
+                AND parentId= #{parentId}
+            </if>
+            <if test="@Ognl@isNotEmpty(type)">
+                AND `type`= #{type}
+            </if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">
+                AND enterpriseCode= #{enterpriseCode}
+            </if>
+            <if test="@Ognl@isNotEmpty(dirPath)">
+                AND dirPath LIKE #{dirPath}
+            </if>
+            <if test="@Ognl@isNotEmpty(name)">
+                AND name LIKE #{name}
+            </if>
+        </where>
+        ORDER BY sn ASC
+    </select>
+
+    <insert id="save">
+        INSERT INTO sys_file(fileId,parentId,isDir,`name`,path, `type`, ext, dirPath, dirPathName, enterpriseCode, createTime, createBy,creator
+        <if test="@Ognl@isNotEmpty(sn)">
+            , sn
+        </if>
+        <if test="@Ognl@isNotEmpty(size)">
+            , size
+        </if>
+        <if test="@Ognl@isNotEmpty(contentType)">
+            , contentType
+        </if>
+        ) VALUES(#{fileId   },#{parentId},#{isDir},#{name},#{path}, #{type}, #{ext}, #{dirPath}, #{dirPathName}, #{enterpriseCode}, #{createTime}, #{createBy}, #{creator}
+        <if test="@Ognl@isNotEmpty(sn)">
+            , #{sn}
+        </if>
+        <if test="@Ognl@isNotEmpty(size)">
+            , #{size}
+        </if>
+        <if test="@Ognl@isNotEmpty(contentType)">
+            , #{contentType}
+        </if>
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_file
+        <set>
+            <if test="@Ognl@isNotEmpty(name)">
+                name=#{name},
+            </if>
+            <if test="@Ognl@isNotEmpty(path)">
+                path=#{path},
+            </if>
+            <if test="@Ognl@isNotEmpty(size)">
+                size=#{size},
+            </if>
+            <if test="@Ognl@isNotEmpty(parentId)">
+                parentId=#{parentId},
+            </if>
+            <if test="@Ognl@isNotEmpty(contentType)">
+                contentType=#{contentType},
+            </if>
+            <if test="@Ognl@isNotEmpty(ext)">
+                ext=#{ext},
+            </if>
+            <if test="@Ognl@isNotEmpty(dirPath)">
+                dirPath=#{dirPath},
+            </if>
+            <if test="@Ognl@isNotEmpty(dirPathName)">
+                dirPathName=#{dirPathName},
+            </if>
+            <if test="@Ognl@isNotEmpty(sn)">
+                sn=#{sn},
+            </if>
+            <if test="@Ognl@isNotEmpty(updateTime)">
+                updateTime=#{updateTime},
+            </if>
+            <if test="@Ognl@isNotEmpty(updateBy)">
+                updateBy=#{updateBy},
+            </if>
+        </set>
+        WHERE fileId=#{fileId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_file WHERE fileId=#{id}
+    </delete>
+    
+    <select id="getByIds" resultType="sysFile">
+    	select * from sys_file where fileId in 
+    	<foreach collection="list" item="fileId" open="(" separator="," close=")">
+    		#{fileId}
+    	</foreach>
+    </select>
+</mapper>

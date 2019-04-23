@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.AttendanceRecord">
+	<resultMap id="AttendanceRecord" type="com.suneee.kaoqin.model.kaoqin.AttendanceRecord">
+		<id property="attendanceId" column="attendance_id" jdbcType="NUMERIC"/>
+		<result property="userId" column="user_id" jdbcType="NUMERIC"/>
+		<result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+		<result property="checkFrom" column="check_from" jdbcType="NUMERIC"/>
+		<result property="badgenumber" column="badgenumber" jdbcType="VARCHAR"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="department" column="department" jdbcType="VARCHAR"/>
+		<result property="ssn" column="ssn" jdbcType="VARCHAR"/>
+		<result property="checkType" column="check_type" jdbcType="VARCHAR"/>
+		<result property="verifyCode" column="verify_code" jdbcType="NUMERIC"/>
+		<result property="sensorid" column="sensorid" jdbcType="VARCHAR"/>
+		<result property="memoinfo" column="memoinfo" jdbcType="VARCHAR"/>
+		<result property="workcode" column="workcode" jdbcType="VARCHAR"/>
+		<result property="sn" column="sn" jdbcType="VARCHAR"/>
+		<result property="userextfmt" column="userextfmt" jdbcType="NUMERIC"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		attendance_id,user_id,check_time,check_from,badgenumber,name,department,ssn,check_type,verify_code,sensorid,memoinfo,workcode,sn,userextfmt,createtime,staff_no
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(attendanceId)"> AND attendance_id  =#{attendanceId} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND user_id  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(checkTime)"> AND check_time  =#{checkTime} </if>
+			<if test="@Ognl@isNotEmpty(begincheckTime)"> AND check_time  >=#{begincheckTime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endcheckTime)"> AND check_time <![CDATA[ <=#{endcheckTime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(checkFrom)"> AND check_from  =#{checkFrom} </if>
+			<if test="@Ognl@isNotEmpty(badgenumber)"> AND badgenumber  LIKE #{badgenumber}  </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(department)"> AND department  LIKE #{department}  </if>
+			<if test="@Ognl@isNotEmpty(ssn)"> AND ssn  LIKE #{ssn}  </if>
+			<if test="@Ognl@isNotEmpty(checkType)"> AND check_type  LIKE #{checkType}  </if>
+			<if test="@Ognl@isNotEmpty(verifyCode)"> AND verify_code  =#{verifyCode} </if>
+			<if test="@Ognl@isNotEmpty(sensorid)"> AND sensorid  LIKE #{sensorid}  </if>
+			<if test="@Ognl@isNotEmpty(memoinfo)"> AND memoinfo  LIKE #{memoinfo}  </if>
+			<if test="@Ognl@isNotEmpty(workcode)"> AND workcode  LIKE #{workcode}  </if>
+			<if test="@Ognl@isNotEmpty(sn)"> AND sn  LIKE #{sn}  </if>
+			<if test="@Ognl@isNotEmpty(staffNo)"> AND staff_no  LIKE #{staffNo}  </if>
+			<if test="@Ognl@isNotEmpty(userextfmt)"> AND userextfmt  =#{userextfmt} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND createtime  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createtime  >=#{begincreatetime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createtime <![CDATA[ <=#{endcreatetime,jdbcType=TIMESTAMP}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceRecord">
+		INSERT INTO se_attendance_record
+		(attendance_id,user_id,check_time,check_from,staff_no,badgenumber,name,department,ssn,check_type,verify_code,sensorid,memoinfo,workcode,sn,userextfmt,createtime)
+		VALUES
+		(#{attendanceId,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{checkTime,jdbcType=TIMESTAMP}, #{checkFrom,jdbcType=NUMERIC}, #{staffNo,jdbcType=VARCHAR}, #{badgenumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{ssn,jdbcType=VARCHAR}, #{checkType,jdbcType=VARCHAR}, #{verifyCode,jdbcType=NUMERIC}, #{sensorid,jdbcType=VARCHAR}, #{memoinfo,jdbcType=VARCHAR}, #{workcode,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{userextfmt,jdbcType=NUMERIC}, #{createtime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<insert id="batchAdd" parameterType="java.util.List">
+		INSERT INTO se_attendance_record
+		(<include refid="columns"/>)
+		VALUES
+		<foreach collection="list" item="record" separator=",">
+		(
+			#{record.attendanceId, jdbcType=NUMERIC}, #{record.userId, jdbcType=NUMERIC}, 
+			#{record.checkTime, jdbcType=TIMESTAMP}, #{record.checkFrom, jdbcType=NUMERIC}, 
+			#{record.badgenumber, jdbcType=VARCHAR}, #{record.name, jdbcType=VARCHAR}, 
+			#{record.department, jdbcType=VARCHAR}, #{record.ssn, jdbcType=VARCHAR}, 
+			#{record.checkType, jdbcType=VARCHAR}, #{record.verifyCode, jdbcType=NUMERIC}, 
+			#{record.sensorid, jdbcType=VARCHAR}, #{record.memoinfo, jdbcType=VARCHAR}, 
+			#{record.workcode, jdbcType=VARCHAR}, #{record.sn, jdbcType=VARCHAR}, 
+			#{record.userextfmt, jdbcType=NUMERIC}, #{record.createtime, jdbcType=TIMESTAMP},
+			#{record.staffNo, jdbcType=VARCHAR}
+		)
+		</foreach>
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_attendance_record 
+		WHERE
+		attendance_id=#{attendanceId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceRecord">
+		UPDATE se_attendance_record SET
+		user_id=#{userId,jdbcType=NUMERIC},
+		check_time=#{checkTime,jdbcType=TIMESTAMP},
+		check_from=#{checkFrom,jdbcType=NUMERIC},
+		staff_no=#{staffNo,jdbcType=VARCHAR},
+		badgenumber=#{badgenumber,jdbcType=VARCHAR},
+		name=#{name,jdbcType=VARCHAR},
+		department=#{department,jdbcType=VARCHAR},
+		ssn=#{ssn,jdbcType=VARCHAR},
+		check_type=#{checkType,jdbcType=VARCHAR},
+		verify_code=#{verifyCode,jdbcType=NUMERIC},
+		sensorid=#{sensorid,jdbcType=VARCHAR},
+		memoinfo=#{memoinfo,jdbcType=VARCHAR},
+		workcode=#{workcode,jdbcType=VARCHAR},
+		sn=#{sn,jdbcType=VARCHAR},
+		userextfmt=#{userextfmt,jdbcType=NUMERIC}
+		WHERE
+		attendance_id=#{attendanceId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AttendanceRecord">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_record
+		WHERE
+		attendance_id=#{attendanceId}
+	</select>
+	
+	<select id="getAll" resultMap="AttendanceRecord">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_record   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by attendance_id  desc
+		</if>
+	</select>
+	
+	<select id="getMaxSyncCheckTime" resultType="java.util.Date">
+		SELECT max(check_time)
+		FROM se_attendance_record   
+		WHERE check_from = 1
+	</select>
+	
+	<select id="isAttendanceExist" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(0)
+		FROM se_attendance_record
+		WHERE badgenumber = #{badgenumber}
+		AND check_time = #{checkTime}
+	</select>
+	
+	<select id="getRecordList" resultMap="AttendanceRecord">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_record   
+		WHERE 1=1
+		<if test="@Ognl@isNotEmpty(userId)"> AND user_id=#{userId,jdbcType=NUMERIC} </if>
+		AND check_time  >=#{startTime,jdbcType=TIMESTAMP}
+		AND check_time &lt;=#{endTime,jdbcType=TIMESTAMP}
+		AND attendance_id not in (
+			SELECT record_id FROM se_attendance_result 
+			WHERE record_id IS NOT NULL)
+		ORDER BY check_time
+	</select>
+	
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.car.CarMaintenanceDao">
+
+	<sql id="queryColumns">
+		maintId, mai.carId, respId, respName, maintDate, backDate, maintPlace,nextMaintMileage,nextMaintDate, charge, mai.type,maintItem,mai.remarks,mai.enterpriseCode, mai.isDelete ,plateNum ,name as carName
+	</sql>
+
+	<sql id="insertColumns">
+	maintId, carId, respId, respName, maintDate, backDate, maintPlace,nextMaintMileage,nextMaintDate, charge, type,maintItem,remarks,enterpriseCode, isDelete,createBy,createTime,updateBy,updateTime
+	</sql>
+
+	<sql id="tableName">
+		oa_car_maintenance
+	</sql>
+
+	<sql id="selectSql">
+		 mai LEFT JOIN oa_car_info car on mai.carId=car.carId
+	</sql>
+	
+	<sql id="dynamicCondition">
+		<where>
+			mai.isDelete = 0
+			<if test="@Ognl@isNotEmpty(maintId)"> AND maintId=#{maintId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(carId)"> AND mai.carId=#{carId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(maintPlace)"> AND maintPlace LIKE #{maintPlace,jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(lowCharge)"> AND charge>=#{lowCharge,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(greateCharge)"> AND charge <![CDATA[ <=#{greateCharge,jdbcType=NUMERIC}]]></if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type = #{type,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(respId)"> AND respId =#{respId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(respName)"> AND respName LIKE #{respName,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(maintItem)"> AND maintItem LIKE #{maintItem,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND car.name LIKE #{name,jdbcType=VARCHAR}  </if>
+			<if test="@Ognl@isNotEmpty(plateNum)"> AND car.plateNum LIKE #{plateNum,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND mai.enterpriseCode = #{enterpriseCode,jdbcType=VARCHAR}  </if>
+			<if test="@Ognl@isNotEmpty(beginMaintDate)">and maintDate >= #{beginMaintDate,jdbcType=DATE}</if>
+			<if test="@Ognl@isNotEmpty(endMaintDate)">and maintDate <![CDATA[ <=#{endMaintDate,jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(beginBackDate)">and backDate >= #{beginBackDate,jdbcType=DATE}</if>
+			<if test="@Ognl@isNotEmpty(endBackDate)">and backDate <![CDATA[ <=#{endBackDate,jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(searchCondition)">and (car.name  like #{searchCondition} or car.plateNum like #{searchCondition})</if>
+		</where>
+	</sql>
+	<insert id="save" >
+		insert into <include refid="tableName"/>(
+			<include refid="insertColumns"/>
+		)values(
+			#{maintId, jdbcType=NUMERIC}, #{carId, jdbcType=NUMERIC},#{respId, jdbcType=NUMERIC},#{respName, jdbcType=VARCHAR},
+			#{maintDate, jdbcType=DATE},#{backDate, jdbcType=DATE},#{maintPlace, jdbcType=VARCHAR},#{nextMaintMileage, jdbcType=VARCHAR},#{nextMaintDate, jdbcType=DATE},#{charge, jdbcType=NUMERIC},
+			#{type, jdbcType=NUMERIC},#{maintItem, jdbcType=VARCHAR},#{remarks, jdbcType=VARCHAR},#{enterpriseCode, jdbcType=VARCHAR},0,
+			#{createBy, jdbcType=NUMERIC},#{createTime, jdbcType=TIMESTAMP},#{updateBy, jdbcType=NUMERIC},#{updateTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<update id="update">
+        update <include refid="tableName"/>
+		<set>
+			<if test="@Ognl@isNotEmpty(carId)">carId = #{carId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(maintDate)">maintDate = #{maintDate,jdbcType=DATE},</if>
+			<if test="@Ognl@isNotEmpty(backDate)">backDate = #{backDate,jdbcType=DATE},</if>
+			<if test="@Ognl@isNotEmpty(respId)">respId = #{respId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(respName)">respName = #{respName,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(maintPlace)">maintPlace = #{maintPlace,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(charge)">charge = #{charge,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(nextMaintMileage)">nextMaintMileage = #{nextMaintMileage,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(nextMaintDate)">nextMaintDate = #{nextMaintDate,jdbcType=DATE},</if>
+			<if test="@Ognl@isNotEmpty(type)">type = #{type,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(maintItem)">maintItem = #{maintItem,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(remarks)">remarks = #{remarks,jdbcType=CLOB},</if>
+			<if test="@Ognl@isNotEmpty(isDelete)">isDelete = #{isDelete,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateBy)">updateBy = #{updateBy,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateTime)">updateTime = #{updateTime,jdbcType=TIMESTAMP}</if>
+		</set>
+        where maintId = #{maintId,jdbcType=NUMERIC}
+	</update>
+	
+	<select id="findById" parameterType="java.lang.Long" resultType="carMaintenance">
+		SELECT <include refid="queryColumns"/>
+		FROM <include refid="tableName"/> <include refid="selectSql"/>
+		WHERE mai.maintId = #{maintId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultType="carMaintenance">
+		select <include refid="queryColumns"/>
+		from <include refid="tableName"/> <include refid="selectSql"/>
+		<include refid="dynamicCondition"/>
+	</select>
+
+	<update id="deleteById">
+		update <include refid="tableName"/>
+		set isDelete = 1, updateBy = #{updateBy}, updateTime = #{updateTime}
+		where maintId = #{maintId}
+	</update>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.Resources">
+	<select id="getByAliasForCheck" parameterType="java.util.Map" resultMap="Resources">
+		SELECT <include refid="columns"/> 
+		FROM SYS_RES WHERE systemId=#{systemId} AND alias=#{alias}
+		<if test="@Ognl@isNotEmpty(resId)">
+			AND resId != #{resId}
+		</if>
+	</select>
+	
+	<update id="updDisplay" parameterType="java.util.Map">
+		UPDATE sys_res SET isdisplayinmenu = #{isDisplayInMenu, jdbcType=NUMERIC}
+		WHERE resId = #{resId}
+	</update>
+</mapper>

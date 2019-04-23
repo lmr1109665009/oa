@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.mh.model.customColumn.CustomColumn">
+	<resultMap id="CustomColumn" type="com.suneee.ucp.mh.model.customColumn.CustomColumn">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="sn" column="sn" jdbcType="TINYINT"/>
+		<result property="tabName" column="tab_name" jdbcType="VARCHAR"/>
+		<result property="data" column="data" jdbcType="VARCHAR"/>
+		<result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+		<result property="type" column="type" jdbcType="VARCHAR"/>
+		<result property="columnId" column="column_id" jdbcType="VARCHAR"/>
+		<result property="columnType" column="column_type" jdbcType="VARCHAR"/>
+
+	</resultMap>
+
+	<sql id="columns">
+		id,column_id,`sn`,tab_name,data,is_delete,type,column_type
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null ">
+				AND id=#{id}
+			</if>
+
+			<if test="columnId != null">
+				AND column_id=#{columnId}
+			</if>
+            <if test="sn != null">
+                AND `sn` = #{sn}
+            </if>
+			<if test="tabName != null">
+				AND tab_name = #{tabName}
+			</if>
+			<if test="isDelete != null">
+				AND is_delete = #{isDelete}
+			</if>
+		</where>
+	</sql>
+
+    <insert id="add">
+		INSERT INTO sys_custom_column
+			(id,
+			column_id
+			<if test="sn != null">
+				,`sn`
+			</if>
+			<if test="tabName != null">
+				,tab_name
+			</if>
+			<if test="data != null">
+				,data
+			</if>
+		<if test="isDelete != null">
+			,is_delete
+		</if>
+		<if test="type != null">
+			,type
+		</if>
+		<if test="columnType != null">
+			,column_type
+		</if>
+			)
+		VALUES
+			(
+			#{id}, #{columnId}
+			<if test="sn != null">
+				,#{sn}
+			</if>
+			<if test="tabName != null">
+				,#{tabName}
+			</if>
+			<if test="data != null">
+				,#{data}
+			</if>
+		<if test="isDelete != null">
+			,#{isDelete}
+		</if>
+		<if test="type != null">
+			,#{type}
+		</if>
+		<if test="columnType != null">
+			,#{columnType}
+		</if>
+			)
+	</insert>
+
+	<select id="getAll" resultMap="CustomColumn">
+		SELECT <include refid="columns"/>
+		FROM sys_custom_column
+		<!-- where d.eid=#{eid}  -->
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY sn
+		</if>
+	</select>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="CustomColumn">
+		SELECT <include refid="columns"/>
+		FROM sys_custom_column
+		WHERE id = #{id}
+	</select>
+
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM
+			sys_custom_column
+		WHERE
+			id = #{id}
+	</delete>
+
+	<select id="getCustomTab"  resultMap="CustomColumn">
+		SELECT
+			<include refid="columns"/>
+		FROM
+			sys_custom_column
+		WHERE
+			is_delete = 0
+		AND
+			column_id=#{columnId}
+		ORDER BY `sn`
+	</select>
+
+	<insert id="saveCustomTab" parameterType="com.suneee.ucp.mh.model.customColumn.CustomColumnVO">
+		  INSERT INTO
+		sys_custom_column(column_id, `sn`, tab_name, data,create_by,is_delete,type,column_type)
+		  VALUES
+		  	<foreach collection="customTabList" item="item" separator=",">
+				(
+				#{id},
+				#{item.sn},
+				#{item.tabName},
+				#{item.data},
+				#{owner},
+				0,
+				#{item.type},
+				#{columnType}
+				)
+			</foreach>
+	</insert>
+
+	<delete id="deleteCustomTab">
+		DELETE FROM
+			sys_custom_column
+		WHERE
+			column_id = #{columnId}
+	</delete>
+
+	<!--<update id="deleteCustomTabByUserId">-->
+		<!--UPDATE-->
+		<!--sys_custom_column-->
+		<!--SET-->
+		<!--is_delete = 1,-->
+		<!--updatetime=#{updatetime},-->
+		<!--update_by=#{updateBy}-->
+		<!--WHERE-->
+		<!--user_id = #{userId}-->
+	<!--</update>-->
+
+	<!--<update id="deleteCustomTabByUserIds">-->
+		<!--UPDATE-->
+		<!--sys_custom_column-->
+		<!--SET-->
+		<!--is_delete = 1,-->
+		<!--updatetime=#{updatetime},-->
+		<!--update_by=#{updateBy}-->
+		<!--WHERE-->
+			<!--user_id IN-->
+			<!--<foreach collection="list" item="userId" open="(" close=")" separator=",">-->
+				<!--#{userId}-->
+			<!--</foreach>-->
+	<!--</update>-->
+
+</mapper>

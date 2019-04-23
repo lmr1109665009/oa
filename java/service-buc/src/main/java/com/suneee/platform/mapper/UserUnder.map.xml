@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.UserUnder">
+	<resultMap id="UserUnder" type="com.suneee.platform.model.system.UserUnder">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="userid" column="USERID" jdbcType="NUMERIC"/>
+		<result property="underuserid" column="UNDERUSERID" jdbcType="NUMERIC"/>
+		<result property="underusername" column="UNDERUSERNAME" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		ID,USERID,UNDERUSERID,UNDERUSERNAME
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(userid)"> AND USERID  =#{userid} </if>
+			<if test="@Ognl@isNotEmpty(underuserid)"> AND UNDERUSERID  =#{underuserid} </if>
+			<if test="@Ognl@isNotEmpty(underusername)"> AND UNDERUSERNAME  LIKE #{underusername}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.UserUnder">
+		INSERT INTO SYS_USER_UNDER
+		(ID,USERID,UNDERUSERID,UNDERUSERNAME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userid,jdbcType=NUMERIC}, #{underuserid,jdbcType=NUMERIC}, #{underusername,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_USER_UNDER 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<delete id="delByUpUserId" parameterType="java.lang.Long">
+		DELETE FROM SYS_USER_UNDER 
+		WHERE
+		USERID=#{userId}
+	</delete>
+	
+	<delete id="delByUpAndDown" parameterType="java.lang.Long">
+		DELETE FROM SYS_USER_UNDER 
+		WHERE
+		USERID=#{upUserId} and UNDERUSERID=#{downUserId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.UserUnder">
+		UPDATE SYS_USER_UNDER SET
+		USERID=#{userid,jdbcType=NUMERIC} , 
+		UNDERUSERID=#{underuserid,jdbcType=NUMERIC} , 
+		UNDERUSERNAME=#{underusername,jdbcType=VARCHAR} 
+		WHERE
+		ID=#{id}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="UserUnder">
+		SELECT <include refid="columns"/>
+		FROM SYS_USER_UNDER
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getMyUnderUser" parameterType="java.lang.Long" resultMap="UserUnder">
+		SELECT a.ID,a.USERID,a.UNDERUSERID,b.fullName UNDERUSERNAME
+		FROM SYS_USER_UNDER a,SYS_USER b where a.UNDERUSERID=b.userId
+		and a.USERID=#{userId}
+	</select>
+	
+	<select id="getMyLeader" resultMap="UserUnder">
+		SELECT a.* ,b.fullName leaderName
+		FROM SYS_USER_UNDER a,SYS_USER b WHERE a.userId=b.userId and UNDERUSERID=#{userId} 
+	</select>
+	
+	<select id="getAll" resultMap="UserUnder">
+		SELECT <include refid="columns"/>
+		FROM SYS_USER_UNDER   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	<select id="isExistUser" parameterType="com.suneee.platform.model.system.UserUnder" resultType="int">
+		SELECT count(*)
+		FROM SYS_USER_UNDER a where a.UNDERUSERID=#{underuserid}
+		and a.USERID=#{userid}
+	</select>
+	
+	
+	<delete id="delByUnderUserId" parameterType="java.lang.Long">
+		DELETE FROM SYS_USER_UNDER 
+		WHERE
+		UNDERUSERID=#{underuserid,jdbcType=NUMERIC} 
+	</delete>
+	
+	<sql id="user">
+		u.userId, u.fullname, u.alias_name AS aliasName, u.account, u.mobile, u.email, u.sex, u.phone, u.staff_no AS staffNo, 
+		u.identification, u.uc_userid AS ucUserid, u.login_account AS loginAccount, u.entryDate, u.userStatus, u.fromType, 
+		u.pwdUpdTime, u.attend_no AS attendNo, u.work_date AS workDate, u.region, u.createtime, u.updatetime
+	</sql>
+	<select id="getLeaderByUcUserid" resultType="java.util.Map">
+		SELECT <include refid="user"/>
+		FROM sys_user_under under
+		LEFT JOIN sys_user u ON u.userid=under.userid
+		LEFT JOIN sys_user un ON un.userid=under.underuserid
+		WHERE un.uc_userid = #{ucUserid} AND u.status=1 AND un.status=1
+	</select>
+	
+	<select id="getUnderUserByUcUserid" resultType="java.util.Map">
+		SELECT <include refid="user"/>
+		FROM sys_user_under under
+		LEFT JOIN sys_user u ON u.userid=under.underuserid
+		LEFT JOIN sys_user leader ON leader.userid=under.userid
+		WHERE leader.uc_userid = #{ucUserid} AND u.status=1 AND leader.status=1
+	</select>
+	
+	<select id="getUnderUser" resultType="java.util.Map">
+		SELECT <include refid="user"/>, under.id
+		FROM sys_user_under under
+		LEFT JOIN sys_user u ON u.userid=under.underuserid
+		
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			LEFT JOIN ucp_user_enterprise ue ON ue.userid=u.userid
+		</if>
+		WHERE under.userid=#{userId} 
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			AND ue.enterprisecode=#{enterpriseCode}
+			AND ue.isdelete=0
+		</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (u.fullname LIKE #{searchCondition} 
+				OR u.alias_name LIKE #{searchCondition} 
+				OR u.staff_no LIKE #{searchCondition})
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY CONVERT( a.${orderField} USING gbk ) COLLATE gbk_chinese_ci ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY under.id desc
+		</if>
+	</select>
+</mapper>

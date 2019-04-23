@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.car.CarInsuranceDao">
+
+	<sql id="queryColumns">
+		insurId, ins.carId, insurNum, insurDate, expireDate, charge, insurComp, respId, respName, ins.remarks,ins.enterpriseCode, ins.isDelete ,plateNum ,name as carName
+	</sql>
+
+	<sql id="insertColumns">
+		insurId, carId, insurNum, insurDate, expireDate, charge, insurComp, respId, respName, remarks,enterpriseCode, isDelete,createBy,createTime,updateBy,updateTime
+	</sql>
+
+	<sql id="tableName">
+		oa_car_insurance
+	</sql>
+
+	<sql id="selectSql">
+		 ins LEFT JOIN oa_car_info car on ins.carId=car.carId
+	</sql>
+	
+	<sql id="dynamicCondition">
+		<where>
+			ins.isDelete = 0
+			<if test="@Ognl@isNotEmpty(insurId)"> AND insurId=#{insurId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(carId)"> AND car.carId=#{carId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(insurNum)"> AND ins.insurNum LIKE #{insurNum,jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(lowCharge)"> AND ins.charge>=#{lowCharge,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(greateCharge)"> AND ins.charge <![CDATA[ <=#{greateCharge,jdbcType=NUMERIC}]]></if>
+			<if test="@Ognl@isNotEmpty(insurComp)"> AND ins.insurComp LIKE #{insurComp,jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(respId)"> AND ins.respId =#{respId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(respName)"> AND ins.respName LIKE {respName,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(plateNum)"> AND car.plateNum LIKE #{plateNum,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND car.name LIKE #{name,jdbcType=VARCHAR}  </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND ins.enterpriseCode = #{enterpriseCode}  </if>
+			<if test="@Ognl@isNotEmpty(beginInsurDate)">and ins.insurDate >= #{beginInsurDate,jdbcType=DATE}</if>
+			<if test="@Ognl@isNotEmpty(endInsurDate)">and ins.insurDate <![CDATA[ <=#{endInsurDate,jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(beginExpireDate)">and ins.expireDate >= #{beginExpireDate,jdbcType=DATE}</if>
+			<if test="@Ognl@isNotEmpty(endExpireDate)">and ins.expireDate <![CDATA[ <=#{endExpireDate,jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(searchCondition)">and (car.name  like #{searchCondition} or car.plateNum like #{searchCondition})</if>
+		</where>
+	</sql>
+	<insert id="save" >
+		insert into <include refid="tableName"/>(
+			<include refid="insertColumns"/>
+		)values(
+			#{insurId, jdbcType=NUMERIC}, #{carId, jdbcType=NUMERIC}, #{insurNum, jdbcType=VARCHAR},
+			#{insurDate, jdbcType=DATE},#{expireDate, jdbcType=DATE}, #{charge,  jdbcType=NUMERIC},
+			#{insurComp, jdbcType=VARCHAR},#{respId, jdbcType=NUMERIC},#{respName, jdbcType=VARCHAR},
+			#{remarks, jdbcType=VARCHAR},#{enterpriseCode, jdbcType=VARCHAR},0,
+			#{createBy, jdbcType=NUMERIC},#{createTime, jdbcType=TIMESTAMP},#{updateBy, jdbcType=NUMERIC},#{updateTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<update id="update">
+        update <include refid="tableName"/>
+		<set>
+			<if test="@Ognl@isNotEmpty(carId)">carId = #{carId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(insurNum)">insurNum = #{insurNum,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(insurDate)">insurDate = #{insurDate,jdbcType=DATE},</if>
+			<if test="@Ognl@isNotEmpty(expireDate)">expireDate = #{expireDate,jdbcType=DATE},</if>
+			<if test="@Ognl@isNotEmpty(charge)">charge = #{charge,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(insurComp)">insurComp = #{insurComp,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(respId)">respId = #{respId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(respName)">respName = #{respName,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(remarks)">remarks = #{remarks,jdbcType=CLOB},</if>
+			<if test="@Ognl@isNotEmpty(isDelete)">isDelete = #{isDelete,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateBy)">updateBy = #{updateBy,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateTime)">updateTime = #{updateTime,jdbcType=TIMESTAMP}</if>
+		</set>
+        where insurId = #{insurId,jdbcType=NUMERIC}
+	</update>
+	
+	<select id="findById" parameterType="java.lang.Long" resultType="carInsurance">
+		SELECT ins.insurId, ins.carId, ins.insurNum, ins.insurDate, ins.expireDate, ins.charge, ins.insurComp,
+		ins.respId, ins.respName, ins.remarks,ins.enterpriseCode, ins.isDelete ,car.plateNum ,car.name as carName
+		FROM <include refid="tableName"/> <include refid="selectSql"/>
+		WHERE ins.insurId = #{insurId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultType="carInsurance">
+		select ins.insurId, ins.carId, ins.insurNum, ins.insurDate, ins.expireDate, ins.charge, ins.insurComp,
+		ins.respId, ins.respName, ins.remarks,ins.enterpriseCode, ins.isDelete ,car.plateNum ,car.name as carName
+		from <include refid="tableName"/> <include refid="selectSql"/>
+		<include refid="dynamicCondition"/>
+	</select>
+
+	<select id="isInsurNumRepeatForAdd" resultType="java.lang.Integer">
+        select count(insurId) from <include refid="tableName"/>
+        where insurNum = #{insurNum}
+        and isDelete = 0
+    </select>
+
+	<select id="isInsurNumRepeatForUpdate" resultType="java.lang.Integer">
+        select count(insurId) from <include refid="tableName"/>
+        where insurNum = #{insurNum}
+        and insurId != #{insurId}
+        and isDelete = 0
+    </select>
+
+	<update id="deleteById">
+		update <include refid="tableName"/>
+		set isDelete = 1, updateBy = #{updateBy}, updateTime = #{updateTime}
+		where insurId = #{insurId}
+	</update>
+</mapper>

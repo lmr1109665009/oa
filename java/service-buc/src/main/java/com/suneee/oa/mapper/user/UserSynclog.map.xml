@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.oa.model.user.UserSynclog">
+	<resultMap type="com.suneee.oa.model.user.UserSynclog" id="UserSynclog">
+		<id property="logId" column="logid" jdbcType="NUMERIC"/>
+		<result property="userId" column="userid" jdbcType="NUMERIC"/>
+		<result property="fullname" column="fullname" jdbcType="VARCHAR" />
+		<result property="opType" column="optype" jdbcType="NUMERIC"/>
+		<result property="errorInfo" column="errorinfo" jdbcType="VARCHAR"/>
+		<result property="note" column="note" jdbcType="VARCHAR"/>
+		<result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="createby" jdbcType="NUMERIC"/>
+		<result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="updateBy" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		log.logId, log.userId, log.opType, log.errorInfo, log.note, log.createtime, log.createBy, log.updatetime, log.updateBy
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<if test="@Ognl@isNotEmpty(opType)"> AND log.opType=#{opType}</if>
+		<if test="@Ognl@isNotEmpty(account)"> AND user.account LIKE #{account}</if>
+		<if test="@Ognl@isNotEmpty(fullname)"> AND user.fullname LIKE #{fullname}</if>
+		<if test="@Ognl@isNotEmpty(aliasName)"> AND user.alias_name LIKE #{aliasName}</if>
+		<if test="@Ognl@isNotEmpty(mobile)"> AND user.mobile LIKE #{mobile}</if>
+		<if test="@Ognl@isNotEmpty(email)"> AND user.email LIKE #{email}</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">
+			AND (user.fullname LIKE #{searchCondition} 
+				OR user.account LIKE #{searchCondition} 
+				OR user.alias_name LIKE #{searchCondition})
+		</if> 
+		<if test="@Ognl@isNotEmpty(beginopTime)"> 
+			AND (log.createtime >= #{beginopTime} OR log.updatetime >= #{beginopTime})
+		</if>
+		<if test="@Ognl@isNotEmpty(endopTime)">
+			<![CDATA[ AND (log.createtime <= #{endopTime} OR log.updatetime <= #{endopTime})]]>
+		</if>
+	</sql>
+	<insert id="add" parameterType="com.suneee.oa.model.user.UserSynclog">
+		INSERT INTO ucp_user_synclog 
+		(logid, userid, optype, errorinfo, note, createtime, createby,updatetime,updateby)
+		VALUES(
+			#{logId, jdbcType=NUMERIC}, #{userId, jdbcType=NUMERIC}, #{opType, jdbcType=NUMERIC}, #{errorInfo, jdbcType=VARCHAR},
+			#{note, jdbcType=VARCHAR}, #{createtime, jdbcType=TIMESTAMP}, #{createBy, jdbcType=NUMERIC},
+			#{updatetime, jdbcType=TIMESTAMP}, #{updateBy, jdbcType=NUMERIC}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ucp_user_synclog SET
+			optype = #{opType, jdbcType=NUMERIC},
+			errorinfo = #{errorInfo, jdbcType=VARCHAR},
+			note = #{note, jdbcType=VARCHAR},
+			updatetime = #{updatetime, jdbcType=TIMESTAMP},
+			updateBy = #{updateBy, jdbcType=NUMERIC}
+		WHERE logid = #{logId}	
+	</update>
+	
+	<delete id="delById">
+		DELETE FROM ucp_user_synclog WHERE logid = #{logId}
+	</delete>
+	
+	<delete id="delByUserId">
+		DELETE FROM ucp_user_synclog WHERE userid = #{userId}
+	</delete>
+	
+	<select id="getAll" resultMap="UserSynclog">
+		SELECT <include refid="columns" />, user.fullname
+		FROM ucp_user_synclog log
+		LEFT JOIN sys_user user ON user.userid=log.userid
+		<where>
+			<include refid="dynamicWhere"/>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY log.logid DESC
+		</if>
+	</select>
+	
+	<select id="getList" resultType="java.util.Map">
+		SELECT <include refid="columns" />, user.fullname, user.account, user.alias_name AS aliasName, user.mobile, user.email
+		FROM ucp_user_synclog log
+		LEFT JOIN sys_user user ON user.userid=log.userid
+		<if test="@Ognl@isNotEmpty(enterpriseCode)">
+			LEFT JOIN ucp_user_enterprise ue ON ue.userid=log.userid
+		</if>
+		<where>
+			<include refid="dynamicWhere"/>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> 
+				AND ue.enterprisecode=#{enterpriseCode}
+				AND ue.isdelete=0
+			</if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY updatetime DESC
+		</if>
+	</select>
+	
+	<select id="getByUserId" resultMap="UserSynclog">
+		SELECT <include refid="columns" />
+		FROM ucp_user_synclog log
+		WHERE userId = #{userId}
+	</select>
+	
+	<select id="getByLogId" resultType="java.util.Map">
+		SELECT <include refid="columns"/>,user.fullname, user.account, user.alias_name AS aliasName, user.mobile, 
+			user.email, user.status, user.sex
+		FROM ucp_user_synclog log
+		LEFT JOIN sys_user user ON log.userid=user.userid
+		WHERE logid=#{logId}
+	</select>
+</mapper>

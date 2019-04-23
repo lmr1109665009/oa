@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.system.SysTypeDao">
+    <select id="findById" resultType="sysType">
+        SELECT * FROM sys_type WHERE typeId = #{id}
+    </select>
+
+    <select id="listAll" resultType="sysType">
+        SELECT * FROM sys_type
+        <where>
+            <if test="@Ognl@isNotEmpty(parentId)">
+                AND parentId= #{parentId}
+            </if>
+            <if test="@Ognl@isNotEmpty(catKey)">
+                AND catKey= #{catKey}
+            </if>
+            <if test="@Ognl@isNotEmpty(enterpriseCode)">
+                AND enterpriseCode= #{enterpriseCode}
+            </if>
+            <if test="@Ognl@isNotEmpty(nodePath)">
+                AND nodePath LIKE #{nodePath}
+            </if>
+            <if test="@Ognl@isNotEmpty(name)">
+                AND name LIKE #{name}
+            </if>
+        </where>
+        ORDER BY sn ASC
+    </select>
+
+    <select id="countAll" resultType="integer">
+        SELECT COUNT(*) FROM sys_type WHERE parentId= #{parentId} AND catKey= #{catKey} AND enterpriseCode= #{enterpriseCode}
+        <if test="@Ognl@isNotEmpty(name)">
+            AND name= #{name}
+        </if>
+        <if test="@Ognl@isNotEmpty(nodePath)">
+            AND nodePath LIKE #{nodePath}
+        </if>
+        <if test="@Ognl@isNotEmpty(notSelf)">
+            AND typeId != #{notSelf}
+        </if>
+    </select>
+
+    <insert id="save">
+        INSERT INTO sys_type(typeId,name,catKey, nodePath, depth, parentId, userId, enterpriseCode, createTime, createBy
+        <if test="@Ognl@isNotEmpty(sn)">
+            , sn
+        </if>
+        ) VALUES(#{typeId},#{name},#{catKey}, #{nodePath}, #{depth}, #{parentId}, #{userId}, #{enterpriseCode}, #{createTime}, #{createBy}
+        <if test="@Ognl@isNotEmpty(sn)">
+            , #{sn}
+        </if>
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE sys_type
+        <set>
+            <if test="@Ognl@isNotEmpty(name)">
+                name=#{name},
+            </if>
+            <if test="@Ognl@isNotEmpty(nodePath)">
+                nodePath=#{nodePath},
+            </if>
+            <if test="@Ognl@isNotEmpty(depth)">
+                depth=#{depth},
+            </if>
+            <if test="@Ognl@isNotEmpty(parentId)">
+                parentId=#{parentId},
+            </if>
+            <if test="@Ognl@isNotEmpty(sn)">
+                sn=#{sn},
+            </if>
+            <if test="@Ognl@isNotEmpty(updateTime)">
+                updateTime=#{updateTime},
+            </if>
+            <if test="@Ognl@isNotEmpty(updateBy)">
+                updateBy=#{updateBy},
+            </if>
+        </set>
+        WHERE typeId=#{typeId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_type WHERE typeId=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.car.CarPeccancyDao">
+
+	<sql id="queryColumns">
+		peccId, pec.carId, peccTime, peccPlace, peccAction, subScore, fine, driverId, driverName,isAccident,pec.remarks,pec.enterpriseCode, pec.isDelete ,plateNum ,name as carName
+	</sql>
+
+	<sql id="insertColumns">
+		peccId, carId, peccTime, peccPlace, peccAction, subScore, fine, driverId, driverName,isAccident,remarks,enterpriseCode,isDelete,createBy,createTime,updateBy,updateTime
+	</sql>
+
+	<sql id="tableName">
+		oa_car_peccancy
+	</sql>
+
+	<sql id="selectSql">
+		 pec LEFT JOIN oa_car_info car on pec.carId=car.carId
+	</sql>
+	
+	<sql id="dynamicCondition">
+		<where>
+			pec.isDelete = 0
+			<if test="@Ognl@isNotEmpty(peccId)"> AND peccId=#{peccId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(carId)"> AND pec.carId=#{carId,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(subScore)"> AND subScore=#{subScore,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(lowSubScore)"> AND subScore>=#{lowSubScore,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(greateSubScore)"> AND subScore <![CDATA[ <=#{greateSubScore,jdbcType=NUMERIC}]]></if>
+			<if test="@Ognl@isNotEmpty(peccPlace)"> AND peccPlace LIKE #{peccPlace,jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(lowFine)"> AND fine>=#{lowFine,jdbcType=NUMERIC}</if>
+			<if test="@Ognl@isNotEmpty(greateFine)"> AND fine <![CDATA[ <=#{greateFine,jdbcType=NUMERIC}]]></if>
+			<if test="@Ognl@isNotEmpty(peccAction)"> AND peccAction LIKE #{peccAction,jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(driverId)"> AND driverId =#{driverId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(driverName)"> AND driverName LIKE #{driverName,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isAccident)"> AND isAccident = #{isAccident,jdbcType=BOOLEAN} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND car.name LIKE #{name,jdbcType=VARCHAR}  </if>
+			<if test="@Ognl@isNotEmpty(plateNum)"> AND car.plateNum LIKE #{plateNum,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND pec.enterpriseCode = #{enterpriseCode,jdbcType=VARCHAR}  </if>
+			<if test="@Ognl@isNotEmpty(beginPeccTime)">and peccTime >= #{beginPeccTime,jdbcType=TIMESTAMP}</if>
+			<if test="@Ognl@isNotEmpty(endPeccTime)">and peccTime <![CDATA[ <=#{endPeccTime,jdbcType=TIMESTAMP}]]></if>
+			<if test="@Ognl@isNotEmpty(searchCondition)">and (car.name  like #{searchCondition} or car.plateNum like #{searchCondition})</if>
+		</where>
+	</sql>
+	<insert id="save" >
+		insert into <include refid="tableName"/>(
+			<include refid="insertColumns"/>
+		)values(
+			#{peccId, jdbcType=NUMERIC}, #{carId, jdbcType=NUMERIC},
+			#{peccTime, jdbcType=TIMESTAMP},#{peccPlace, jdbcType=VARCHAR},#{peccAction, jdbcType=VARCHAR},
+			#{subScore, jdbcType=NUMERIC},#{fine, jdbcType=NUMERIC},#{driverId, jdbcType=NUMERIC},#{driverName, jdbcType=VARCHAR},
+			#{isAccident, jdbcType=BOOLEAN},#{remarks, jdbcType=VARCHAR},#{enterpriseCode, jdbcType=VARCHAR},0,
+			#{createBy, jdbcType=NUMERIC},#{createTime, jdbcType=TIMESTAMP},#{updateBy, jdbcType=NUMERIC},#{updateTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<update id="update">
+        update <include refid="tableName"/>
+		<set>
+			<if test="@Ognl@isNotEmpty(carId)">carId = #{carId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(peccTime)">peccTime = #{peccTime,jdbcType=TIMESTAMP},</if>
+			<if test="@Ognl@isNotEmpty(peccPlace)">peccPlace = #{peccPlace,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(peccAction)">peccAction = #{peccAction,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(subScore)">subScore = #{subScore,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(fine)">fine = #{fine,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(driverId)">driverId = #{driverId,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(driverName)">driverName = #{driverName,jdbcType=VARCHAR},</if>
+			<if test="@Ognl@isNotEmpty(isAccident)">isAccident = #{isAccident,jdbcType=BOOLEAN},</if>
+			<if test="@Ognl@isNotEmpty(remarks)">remarks = #{remarks,jdbcType=CLOB},</if>
+			<if test="@Ognl@isNotEmpty(isDelete)">isDelete = #{isDelete,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateBy)">updateBy = #{updateBy,jdbcType=NUMERIC},</if>
+			<if test="@Ognl@isNotEmpty(updateTime)">updateTime = #{updateTime,jdbcType=TIMESTAMP}</if>
+		</set>
+        where peccId = #{peccId,jdbcType=NUMERIC}
+	</update>
+	
+	<select id="findById" parameterType="java.lang.Long" resultType="carPeccancy">
+		SELECT <include refid="queryColumns"/>
+		FROM <include refid="tableName"/> <include refid="selectSql"/>
+		WHERE pec.peccId = #{peccId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultType="carPeccancy">
+		select <include refid="queryColumns"/>
+		from <include refid="tableName"/> <include refid="selectSql"/>
+		<include refid="dynamicCondition"/>
+	</select>
+
+	<update id="deleteById">
+		update <include refid="tableName"/>
+		set isDelete = 1, updateBy = #{updateBy}, updateTime = #{updateTime}
+		where peccId = #{peccId}
+	</update>
+</mapper>

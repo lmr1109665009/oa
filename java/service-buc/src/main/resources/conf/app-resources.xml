@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	   default-autowire="byName" default-lazy-init="false">
+		
+	<!-- 国际化资源 去掉后，保存操作会出错valid is not defined-->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" scope="prototype">
+		<property name="basenames">
+			<list>
+				<!--<value>classpath:resource/errors</value> -->
+				<value>classpath:resource/form</value>
+				<value>classpath:resource/message</value>
+				<value>classpath:resource/mobile</value>
+			</list>
+        </property>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+        <property name="cacheSeconds" value="0"></property>
+        <property name="defaultEncoding" value="UTF-8"></property>
+    </bean> 
+
+    <bean id="localeResolver"
+	    class="org.springframework.web.servlet.i18n.SessionLocaleResolver">  
+	</bean>
+    <!--加载配置文件-->
+	<bean id="configproperties" 
+         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+          <property name="location" value="classpath:/conf/app.properties"/>
+    </bean>
+     <bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+         <property name="properties" ref="configproperties"/>
+    </bean>
+	<!--加载properties配置文件-->
+	<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:conf/filestore.properties</value>
+				<value>classpath:conf/document.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--对数据库操作都从这里取jdbcTemplate-->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+  	<!-- 单独给序号使用的，指定了系统的默认数据源。 -->
+  	<bean id="jdbcTemplateSn" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+	
+	<bean id="logAspect" class="com.suneee.platform.aop.LogAspect"/>
+	<bean id="sysUrlPermissionFilter" class="com.suneee.platform.web.filter.SysUrlPermissionFilter"/>
+	<bean id="bpmAspect" class="com.suneee.platform.service.bpm.BpmAspect"/>
+
+	<aop:config proxy-target-class="true">
+		<!--  -->
+		<aop:aspect ref="logAspect" >
+			<aop:pointcut expression="execution(* com.suneee.platform.controller..*.*(..))" id="logPointcut"/>
+			<aop:pointcut expression="execution(* com.suneee..*.controller..*.*(..))" id="suneeeLogPointcut"/>
+			<aop:around pointcut-ref="logPointcut" method="doAudit"/>
+			<aop:around pointcut-ref="suneeeLogPointcut" method="doAudit"/>
+		</aop:aspect>
+		
+		<aop:aspect ref="bpmAspect" order="100">
+			<aop:pointcut expression="execution(* com.suneee.platform.service..*.*(..))" id="pointCutBpm"/>
+			<aop:after method="doAfter" pointcut-ref="pointCutBpm" />
+		</aop:aspect> 
+		
+		<aop:aspect ref="sysUrlPermissionFilter">
+			<aop:pointcut expression="execution(* com.suneee.platform.controller..*.*(..))
+									&amp;&amp; !execution(* com.suneee.platform.controller.console.*.*(..))" id="urlPointcut"/>
+			<aop:before pointcut-ref="urlPointcut" method="doHandler"/>
+			<aop:pointcut expression="execution(* com.suneee.platform.controller.system.SysUrlPermissionController.save(..)) || execution(* com.suneee.platform.controller.system.SysUrlPermissionController.del(..))" id="modifyUrlPointcut"/>
+			<aop:after-returning pointcut-ref="modifyUrlPointcut" method="initMap"/>
+		</aop:aspect>
+	</aop:config>
+
+	
+	<!-- 文件模版引擎配置 -->
+	<bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+	    <property name="templateLoaderPath" value="classpath:template/" />
+	    <property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
+	
+	<bean id="templateLoader" class="freemarker.cache.StringTemplateLoader"></bean>
+	<!-- freemaker引擎 -->
+	<bean id="freemarkEngine" class="com.suneee.core.engine.FreemarkEngine">
+		<property name="configuration" ref="freemarkerConfiguration"/>
+	</bean>
+	
+	<bean id="mailSeting" class="com.hotent.core.mail.model.MailSeting">
+		<property name="sendHost" value="${mail.host}"/>
+		<property name="sendPort" value="${mail.port}"/>
+		<property name="SSL" value="${mail.ssl}"/>
+		<property name="protocal" value="smtp"/>
+		<property name="validate" value="true"/>
+		<property name="nickName" value="${mail.nickName}"/>
+		<property name="mailAddress" value="${mail.username}"/>
+		<property name="password" value="${mail.password}"/>
+	</bean>
+	
+	<bean id="mailUtil" class="com.hotent.core.mail.MailUtil">
+		<constructor-arg ref="mailSeting"></constructor-arg>
+	</bean>
+	
+	
+	<!-- QUARTZ 2.0配置的问题 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+		lazy-init="false" destroy-method="destroy">
+		<property name="autoStartup" value="false" />
+		<property name="waitForJobsToCompleteOnShutdown" value="false" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="overwriteExistingJobs" value="true" />
+		<property name="startupDelay" value="60"></property>
+		<property name="jobFactory">  
+            <bean class="org.quartz.simpl.SimpleJobFactory"></bean>  
+        </property>  
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.scheduler.instanceName">ClusteredScheduler</prop>
+				<prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+				<prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+				
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				<prop key="org.quartz.threadPool.threadPriority">5</prop>
+				
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<prop key="org.quartz.jobStore.driverDelegateClass">${quartz.jdbcjobstore}</prop>
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+				<prop key="org.quartz.jobStore.useProperties">false</prop>
+				<prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
+				
+				<prop key="org.quartz.jobStore.isClustered">true</prop>
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+				
+				<prop key="org.quartz.scheduler.classLoadHelper.class">org.quartz.simpl.CascadingClassLoadHelper</prop> 
+				<prop key="org.quartz.jobStore.lockHandler.class">org.quartz.impl.jdbcjobstore.UpdateLockRowSemaphore</prop> 
+				<prop key="org.quartz.jobStore.lockHandler.updateLockRowSQL">UPDATE QRTZ_LOCKS SET LOCK_NAME = LOCK_NAME WHERE LOCK_NAME = ?</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- activity directory 活动目录配置-->
+	<bean id="ldapSource" class="org.springframework.ldap.core.support.LdapContextSource">
+		<property name="url" value="${ldapUrl}" />
+		<property name="base" value="${ldapBase}" />
+		<property name="userDn" value="${ldapUserDn}" />
+		<property name="password" value="${ldapPassword}" />
+		<property name="pooled" value="${ldapPooled}"></property>
+	</bean>
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<property name="ContextSource" ref="ldapSource"></property>
+		<property name="ignorePartialResultException" value="true"/>
+	</bean>
+
+	<!--动态数据源缓存器
+	<bean id="dynamicDataSourceCache" class="com.suneee.core.db.DynamicDataSourceCache"/>
+	-->
+	<!--高级查询缓存器-->
+	<bean id="searchCache" class="com.suneee.core.web.query.scan.SearchCache">
+		<property name="basePackage" >
+			<list>
+				<value>classpath*:com/suneee/**/model/**/*.class</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 异步线程池 -->
+    <bean id="threadPool"
+        class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="5" />
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="10" />
+        <!-- 队列最大长度 >=mainExecutor.maxSize -->
+        <property name="queueCapacity" value="25" />
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="300" />
+        <!-- 线程池对拒绝任务(无线程可用)的处理策略 ThreadPoolExecutor.CallerRunsPolicy策略 ,调用者的线程会执行该任务,如果执行器已关闭,则丢弃.  -->
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+    </bean>
+</beans>

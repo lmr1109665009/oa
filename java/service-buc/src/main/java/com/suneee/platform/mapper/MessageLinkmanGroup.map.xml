@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.platform.model.system.MessageLinkmanGroup">
+	<resultMap id="MessageLinkmanGroup" type="com.suneee.platform.model.system.MessageLinkmanGroup">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="groupName" column="GROUP_NAME" jdbcType="VARCHAR"/>
+		<result property="userIds" column="USER_IDS" jdbcType="VARCHAR"/>
+		<result property="users" column="USERS" jdbcType="VARCHAR"/>
+		<result property="creatorId" column="CREATOR_ID" jdbcType="NUMERIC"/>
+		<result property="createTime" column="CREATE_TIME" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		ID,GROUP_NAME,USER_IDS,USERS,CREATOR_ID,CREATE_TIME
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<if test="@Ognl@isNotEmpty(id)"> AND ID  =#{id} </if>
+		<if test="@Ognl@isNotEmpty(groupName)"> AND GROUP_NAME  LIKE #{groupName}  </if>
+		<if test="@Ognl@isNotEmpty(userIds)"> AND USER_IDS  LIKE #{userIds}  </if>
+		<if test="@Ognl@isNotEmpty(users)"> AND USERS  LIKE #{users}  </if>
+		<if test="@Ognl@isNotEmpty(createTime)"> AND CREATE_TIME  =#{createTime} </if>
+		<if test="@Ognl@isNotEmpty(begincreateTime)"> AND CREATE_TIME  >=#{begincreateTime,jdbcType=DATE} </if>
+		<if test="@Ognl@isNotEmpty(endcreateTime)"> AND CREATE_TIME <![CDATA[ <=#{endcreateTime,jdbcType=DATE}]]> </if>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.platform.model.system.MessageLinkmanGroup">
+		INSERT INTO SYS_MSG_LINKMAN_GROUP
+		(ID,GROUP_NAME,USER_IDS,USERS,CREATOR_ID,CREATE_TIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{groupName,jdbcType=VARCHAR}, #{userIds,jdbcType=VARCHAR}, #{users,jdbcType=VARCHAR}, #{creatorId,jdbcType=NUMERIC}, #{createTime,jdbcType=DATE})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM SYS_MSG_LINKMAN_GROUP 
+		WHERE
+		ID=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.platform.model.system.MessageLinkmanGroup">
+		UPDATE SYS_MSG_LINKMAN_GROUP SET
+		GROUP_NAME=#{groupName,jdbcType=VARCHAR},
+		USER_IDS=#{userIds,jdbcType=VARCHAR},
+		USERS=#{users,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="MessageLinkmanGroup">
+		SELECT <include refid="columns"/>
+		FROM SYS_MSG_LINKMAN_GROUP
+		WHERE
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="MessageLinkmanGroup">
+		SELECT <include refid="columns"/>
+		FROM SYS_MSG_LINKMAN_GROUP   
+		WHERE CREATOR_ID  =#{creatorId}
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by ID  desc
+		</if>
+	</select>
+	
+	
+</mapper>

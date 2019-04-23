@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.kaoqin.model.kaoqin.AttendanceRelation">
+	<resultMap id="AttendanceRelation" type="com.suneee.kaoqin.model.kaoqin.AttendanceRelation">
+		<id property="id" column="id_" jdbcType="NUMERIC"/>
+		<result property="userId" column="user_id" jdbcType="NUMERIC"/>
+		<result property="badgenumber" column="badgenumber" jdbcType="VARCHAR"/>
+		<result property="cardNo" column="card_no" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+
+	<sql id="columns">
+		id_,user_id,badgenumber,card_no
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id_  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND user_id  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(badgenumber)"> AND badgenumber  LIKE #{badgenumber}  </if>
+			<if test="@Ognl@isNotEmpty(cardNo)"> AND card_no  LIKE #{cardNo}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceRelation">
+		INSERT INTO se_attendance_relation
+		(id_,user_id,badgenumber,card_no)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{badgenumber,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM se_attendance_relation 
+		WHERE
+		id_=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.kaoqin.model.kaoqin.AttendanceRelation">
+		UPDATE se_attendance_relation SET
+		user_id=#{userId,jdbcType=NUMERIC},
+		badgenumber=#{badgenumber,jdbcType=VARCHAR},
+		card_no=#{cardNo,jdbcType=VARCHAR}
+		WHERE
+		id_=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AttendanceRelation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_relation
+		WHERE
+		id_=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="AttendanceRelation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_relation   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id_  desc
+		</if>
+	</select>
+		    
+	<select id="getByBadgenumber" parameterType="java.lang.String" resultMap="AttendanceRelation">
+		SELECT <include refid="columns"/>
+		FROM se_attendance_relation
+		WHERE
+		badgenumber=#{badgenumber,jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

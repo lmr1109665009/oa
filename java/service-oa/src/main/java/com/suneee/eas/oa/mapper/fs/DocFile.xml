@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.fs.DocFileDao">
+	<sql id="docFileColumns">
+		a.ID as 'id',
+		a.NAME as 'name',
+		a.PARENT_ID as 'parentId',
+		b.NAME as 'parentName',
+		a.TYPES as 'types',
+		a.SIZE as 'size',
+		a.PATH as 'path',
+		a.UPTIME as
+		'upTime',
+		a.UPER as 'uper',
+		a.UPERNAME as
+		'uperName',
+		a.ADESCRIBE as 'describe',
+		a.RANK as 'rank',
+		a.DOWNNUMBER as
+		'downNumber',
+		a.IS_PRIVATE as 'isPrivate',
+		a.OWNER as 'owner',
+		a.department_id as 'departmentId',
+		a.FILE_SAVE_ID as 'fileSaveId',	
+		a.IS_DOCTYPE as 'isDocType',
+		a.CLASSIFY as 'classify',
+		a.BUCKET as 'bucket'
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(classify)"> AND a.CLASSIFY=#{classify}</if>
+			<if test="@Ognl@isNotEmpty(keyWord)">
+				<if test="@Ognl@isNotEmpty(startFromMobile)">
+					AND (a.NAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%') )
+				</if>
+				<if test="@Ognl@isEmpty(startFromMobile)">
+					AND (a.NAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%') OR a.UPERNAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%'))
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(allparentIds)"> AND a.PARENT_ID IN (${allParentIds})</if>
+			<if test="@Ognl@isNotEmpty(uper)"> AND a.UPER =#{uper} </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.eid =#{eid} </if>		
+			<if test="@Ognl@isNotEmpty(privateFlag) and privateFlag==0"> AND b.IS_PRIVATE =0 </if>
+			<if test="@Ognl@isNotEmpty(bDate) and @Ognl@isNotEmpty(eDate)"> AND a.UPTIME BETWEEN #{bDate} and #{eDate} </if>
+			<if test="@Ognl@isNotEmpty(departmentId)"> AND a.department_id =#{departmentId}  </if>
+			<if test="@Ognl@isNotEmpty(id)"> AND a.PARENT_ID =#{id} </if>
+			<if test="@Ognl@isNotEmpty(isDocType)"> AND a.IS_DOCTYPE =#{isDocType} </if>	
+		</where>
+	</sql>
+
+	<sql id="sqlJoin">
+		LEFT JOIN UCP_DOCFILE b on a.PARENT_ID = b.ID
+	</sql>
+
+	<!-- 查询 -->
+<!--
+	<select id="getAll" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.${orderField} ${orderSeq}
+		</if>
+		
+	</select>
+	-->
+	<!-- 排序查询 -->
+	  
+	<select id="getAll" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		<include refid="dynamicWhere" />
+		
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by a.IS_DOCTYPE DESC,a.${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by a.IS_DOCTYPE DESC,a.UPTIME DESC
+		</if>
+		
+	</select>
+	
+	
+	
+	<select id="getByIds" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE a.ID IN 
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="findById" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE
+		a.ID = #{id}
+	</select>
+	
+	<select id="queryFileById" parameterType="DocFile" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE
+		a.FILE_SAVE_ID = #{fileSaveId}
+		and a.UPER = #{uper}
+	</select>
+
+	<select id="getByParentId" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE
+		a.PARENT_ID = #{id}
+	</select>
+	
+	<select id="getRoot" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE
+		a.PARENT_ID = #{root} AND a.IS_DOCTYPE= 1
+	</select>
+<!-- 	新增 -->
+	<insert id="save" parameterType="DocFile">
+		INSERT INTO UCP_DOCFILE 
+		(ID ,
+		NAME,
+		PARENT_ID,
+		TYPES,
+		SIZE,
+		PATH,
+		UPTIME,
+		UPER,
+		UPERNAME,
+		ADESCRIBE,
+		RANK,
+		DOWNNUMBER,
+		FILE_SAVE_ID,
+		EID,
+		IS_PRIVATE,
+		OWNER,
+		DEPARTMENT_ID,
+		IS_DOCTYPE,
+		CLASSIFY,
+		BUCKET
+		) VALUES
+		(
+		#{id},
+		#{name},
+		#{parentId},
+		#{types},
+		#{size},
+		#{path},
+		#{upTime},
+		#{uper},
+		#{uperName},
+		#{describe},
+		#{rank},
+		#{downNumber},
+		#{fileSaveId},
+		#{eid},
+		#{isPrivate},
+		#{owner},
+		#{departmentId},
+		#{isDocType},
+		#{classify},
+		#{bucket}
+		)
+	</insert>
+
+<!-- 	修改 -->
+	<update id="update">
+		UPDATE UCP_DOCFILE
+		<trim prefix="SET" suffixOverrides=",">
+		<if test="name!=null">
+			NAME =#{name},
+		</if>
+		<if test="parentId!=null">
+			PARENT_ID =#{parentId},
+		</if>
+		<if test="types!=null">
+			TYPES =#{types},
+		</if>
+		<if test="describe!=null">
+			ADESCRIBE=#{describe},
+		</if>
+		<if test="size!=null">
+			SIZE = #{size}
+		</if>
+		</trim>
+		WHERE
+		ID = #{id}
+	</update>
+	<select id="getDocByParentIdAndDepartmentIdAndEid" parameterType="DocFile" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		,(SELECT COUNT(*) FROM ucp_docfile b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM (select * from UCP_FILE where PARENT_ID=2 and EID=#{eid}) a
+		<where>		
+		<if test="@Ognl@isNotEmpty(departmentId)">and a.department_id = #{departmentId} or a.department_id is null or a.department_id = ''</if>
+		<if test="@Ognl@isEmpty(departmentId)">and a.department_id is null or a.department_id = ''</if>
+		</where>
+			order by a.ID ASC
+			
+	</select>
+	
+	<select id="getDocByParentIdAndEid" parameterType="DocFile" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		,(SELECT COUNT(*) FROM ucp_docfile b WHERE b.PARENT_ID=a.ID) isLeaf
+		FROM UCP_DOCFILE a where a.PARENT_ID = #{parentId} 
+		AND a.EID=#{eid}
+		<if test="@Ognl@isNotEmpty(eid)">and a.eid=#{eid}</if>
+			order by a.ID ASC
+			
+	</select>
+	
+<!-- 	计算相同命名重复数量 -->
+	<select id="countNameRepetition" resultType="integer">
+		SELECT count(*)
+		FROM UCP_DOCFILE a
+		<where>
+			a.IS_DOCTYPE = #{isDocType} AND a.NAME=#{name} AND a.PARENT_ID = #{parentId}
+			<if test="@Ognl@isNotEmpty(classify)"> AND a.CLASSIFY=#{classify}</if>
+			<if test="@Ognl@isNotEmpty(keyWord)"> AND (a.NAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%') OR a.UPERNAME LIKE CONCAT(CONCAT('%',#{keyWord}),'%'))</if>
+			<if test="@Ognl@isNotEmpty(allparentIds)"> AND a.PARENT_ID IN (${allParentIds})</if>
+			<if test="@Ognl@isNotEmpty(uper)"> AND a.UPER =#{uper} </if>
+			<if test="@Ognl@isNotEmpty(eid)"> AND a.eid =#{eid} </if>
+			<if test="@Ognl@isNotEmpty(privateFlag) and privateFlag==0"> AND b.IS_PRIVATE =0 </if>
+			<if test="@Ognl@isNotEmpty(bDate) and @Ognl@isNotEmpty(eDate)"> AND a.UPTIME BETWEEN #{bDate} and #{eDate} </if>
+			<if test="@Ognl@isNotEmpty(departmentId)"> AND a.department_id =#{departmentId}  </if>
+			<if test="@Ognl@isNotEmpty(id)"> AND a.PARENT_ID =#{id} </if>
+			<if test="@Ognl@isNotEmpty(isDocType)"> AND a.IS_DOCTYPE =#{isDocType} </if>
+		</where>
+
+	</select>
+	
+
+	<update id="updateParentId">
+		UPDATE UCP_DOCFILE  SET
+		PARENT_ID = #{id},
+		CLASSIFY=#{classify},
+		EID=#{eid},
+		UPER=#{uper},
+		DEPARTMENT_ID = #{depmentId}
+		WHERE
+		ID  IN
+		<foreach item="item" index="index" collection="docFileIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	
+	</update>
+	<!-- 批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM UCP_DOCFILE WHERE ID IN
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<update id="updateDownNumber">
+		UPDATE UCP_DOCFILE  SET
+		DOWNNUMBER = DOWNNUMBER+1
+		WHERE
+		ID = #{id}
+	</update>
+	<select id="findSame" resultType="DocFile">
+		SELECT
+		<include refid="docFileColumns" />
+		FROM UCP_DOCFILE a
+		<include refid="sqlJoin" />
+		WHERE a.PATH=#{path} AND a.SIZE=#{size}
+	</select>
+	
+	<delete id="deleteById">
+		DELETE FROM UCP_DOCFILE WHERE ID = #{id}
+	</delete>
+	<delete id="deleteByParentId">
+		DELETE FROM UCP_DOCFILE WHERE PARENT_ID = #{id}
+	</delete>
+
+	<select id="getNamesByIds" resultType="java.lang.String">
+		SELECT NAME
+		FROM UCP_DOCFILE
+		WHERE
+		ID IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

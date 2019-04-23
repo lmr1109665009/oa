@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.eas.oa.dao.conference.ConferenceReserveDao">
+	<resultMap id="ConferenceReserve" type="com.suneee.eas.oa.model.conference.ConferenceReserve">
+		<id column="conferenceId" property="conferenceId" jdbcType="NUMERIC"/>
+		<result column="roomId" property="roomId" jdbcType="NUMERIC" />
+        <result column="roomName" property="roomName" jdbcType="VARCHAR" />
+        <result column="region" property="region" jdbcType="NUMERIC" />
+        <result column="regionName" property="regionName" jdbcType="VARCHAR" />
+		<result column="beginTime" property="beginTime" jdbcType="TIMESTAMP" />
+		<result column="endTime" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="theme" property="theme" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="recorder" property="recorder" jdbcType="NUMERIC" />
+		<result column="recorderName" property="recorderName" jdbcType="VARCHAR" />
+		<result column="organizer" property="organizer" jdbcType="NUMERIC" />
+		<result column="organizerName" property="organizerName" jdbcType="VARCHAR" />
+		<result column="informType" property="informType" jdbcType="VARCHAR" />
+		<result column="auditInformType" property="auditInformType" jdbcType="VARCHAR" />
+		<result column="attachmentIds" property="attachmentIds" jdbcType="VARCHAR" />
+		<result column="attachmentNames" property="attachmentNames" jdbcType="VARCHAR" />
+		<result column="cycType" property="cycType" jdbcType="NUMERIC" />
+		<result column="cycNo" property="cycNo" jdbcType="NUMERIC" />
+		<result column="auditStatus" property="auditStatus" jdbcType="NUMERIC" />
+		<result column="noteStatus" property="noteStatus" jdbcType="NUMERIC" />
+		<result column="enterpriseCode" property="enterpriseCode" jdbcType="VARCHAR" />
+		<result column="createBy" property="createBy" jdbcType="NUMERIC" />
+		<result column="createByName" property="createByName" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateBy" property="updateBy" jdbcType="NUMERIC" />
+		<result column="updateByName" property="updateByName" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="isDelete" property="isDelete" jdbcType="NUMERIC" />
+		<result column="auditId" property="auditId" jdbcType="NUMERIC" />
+	</resultMap>
+	<sql id="tableName">oa_conference_reserve</sql>
+	
+	<sql id="dbColumn">
+		conferenceId, roomId, region, beginTime, endTime, theme, description, recorder, recorderName, organizer, organizerName, 
+		informType, auditInformType, attachmentIds, attachmentNames, cycType, cycNo, auditStatus, noteStatus, enterpriseCode, 
+		createBy, createByName, createTime, updateBy, updateByName, updateTime, isDelete
+	</sql>
+
+	<sql id="aliasColumn">
+		cr.conferenceId, cr.roomId, cr.region, cr.beginTime, cr.endTime, cr.theme, cr.description, cr.recorder, cr.recorderName, cr.organizer, cr.organizerName,
+		cr.informType, cr.auditInformType, cr.attachmentIds, cr.attachmentNames, cr.cycType, cr.cycNo, cr.auditStatus, cr.noteStatus, cr.enterpriseCode,
+		cr.createBy, cr.createByName, cr.createTime, cr.updateBy, cr.updateByName, cr.updateTime, cr.isDelete
+	</sql>
+
+	<sql id="queryCondition">
+		<if test="@Ognl@isNotEmpty(theme)"> and cr.theme like #{theme}</if>
+		<if test="@Ognl@isNotEmpty(roomId)"> and cr.roomId = #{roomId} </if>
+        <if test="@Ognl@isNotEmpty(region)"> and cr.region = #{region} </if>
+		<if test="@Ognl@isNotEmpty(organizerName)"> and cr.organizerName like #{organizerName}</if>
+		<if test="@Ognl@isNotEmpty(beginTime)"> and cr.beginTime <![CDATA[ >= #{beginTime,jdbcType=TIMESTAMP}]]></if>
+		<if test="@Ognl@isNotEmpty(endTime)"> and cr.endTime <![CDATA[ <=#{endTime,jdbcType=TIMESTAMP}]]></if>
+		<if test="@Ognl@isNotEmpty(auditStatus)"> and cr.auditStatus = #{auditStatus}</if>
+		<if test="@Ognl@isNotEmpty(searchCondition)">and (cr.theme like #{searchCondition} or cro.roomName like #{searchCondition} or cr.organizerName like #{searchCondition})</if>
+		<if test="conStatus == 0"> and cr.beginTime > #{currentDate,jdbcType=TIMESTAMP}</if>
+		<if test="conStatus == 1"> and cr.beginTime <![CDATA[ <=#{currentDate,jdbcType=TIMESTAMP}]]> and cr.endTime <![CDATA[ >=#{currentDate,jdbcType=TIMESTAMP}]]></if>
+		<if test="conStatus == 2"> and  cr.endTime <![CDATA[ <#{currentDate,jdbcType=TIMESTAMP}]]></if>
+	</sql>
+	
+	<insert id="save" parameterType="com.suneee.eas.oa.model.conference.ConferenceReserve">
+		INSERT INTO <include refid="tableName"/>(
+			conferenceId, roomId, region, beginTime, endTime, theme, description, recorder, recorderName, organizer, organizerName, 
+			informType, auditInformType, attachmentIds, attachmentNames, cycType, cycNo, auditStatus, noteStatus, enterpriseCode, 
+			createBy, createByName, createTime, isDelete, updateBy, updateByName, updateTime
+		)VALUES (
+			#{conferenceId, jdbcType=NUMERIC}, #{roomId, jdbcType=NUMERIC}, #{region, jdbcType=NUMERIC}, 
+			#{beginTime, jdbcType=TIMESTAMP}, #{endTime, jdbcType=TIMESTAMP}, #{theme, jdbcType=VARCHAR}, 
+			#{description, jdbcType=VARCHAR}, #{recorder, jdbcType=NUMERIC}, #{recorderName, jdbcType=VARCHAR}, 
+			#{organizer, jdbcType=NUMERIC},  #{organizerName, jdbcType=VARCHAR}, #{informType, jdbcType=VARCHAR}, 
+			#{auditInformType, jdbcType=VARCHAR}, #{attachmentIds, jdbcType=VARCHAR}, #{attachmentNames, jdbcType=VARCHAR}, 
+			#{cycType, jdbcType=NUMERIC}, #{cycNo, jdbcType=NUMERIC}, #{auditStatus, jdbcType=NUMERIC}, 
+			#{noteStatus, jdbcType=NUMERIC}, #{enterpriseCode, jdbcType=VARCHAR}, #{createBy, jdbcType=NUMERIC}, 
+			#{createByName, jdbcType=VARCHAR}, #{createTime, jdbcType=TIMESTAMP}, #{isDelete, jdbcType=NUMERIC},
+			#{updateBy, jdbcType=NUMERIC}, #{updateByName, jdbcType=VARCHAR}, #{updateTime, jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.suneee.eas.oa.model.conference.ConferenceReserve">
+		UPDATE <include refid="tableName"/> SET
+			beginTime =  #{beginTime, jdbcType=TIMESTAMP},
+			endTime = #{endTime, jdbcType=TIMESTAMP},
+			theme = #{theme, jdbcType=VARCHAR},
+			description = #{description, jdbcType=VARCHAR},
+			recorder = #{recorder, jdbcType=NUMERIC},
+			recorderName = #{recorderName, jdbcType=VARCHAR}, 
+			organizer = #{organizer, jdbcType=NUMERIC},
+			organizerName = #{organizerName, jdbcType=VARCHAR}, 
+			informType = #{informType, jdbcType=VARCHAR},
+			auditInformType = #{auditInformType, jdbcType=VARCHAR}, 
+			attachmentIds = #{attachmentIds, jdbcType=VARCHAR}, 
+			attachmentNames = #{attachmentNames, jdbcType=VARCHAR},
+			auditStatus = #{auditStatus, jdbcType=NUMERIC}, 
+			noteStatus = #{noteStatus, jdbcType=NUMERIC},
+			updateBy = #{updateBy, jdbcType=NUMERIC}, 
+			updateByName = #{updateByName, jdbcType=VARCHAR}, 
+			updateTime = #{updateTime, jdbcType=TIMESTAMP}
+		WHERE conferenceId = #{conferenceId}
+	</update>
+	
+	<update id="updateNoteStatus" parameterType="java.util.Map">
+		UPDATE <include refid="tableName"/> SET
+			noteStatus =  #{noteStatus, jdbcType=NUMERIC}
+		WHERE conferenceId = #{conferenceId}
+	</update>
+	
+	<update id="updateAuditStatus" parameterType="java.util.Map">
+		UPDATE <include refid="tableName"/> SET
+			auditStatus =  #{auditStatus, jdbcType=NUMERIC}
+		WHERE conferenceId = #{conferenceId}
+	</update>
+	
+	<update id="updateEndTime" parameterType="java.util.Map">
+		UPDATE <include refid="tableName"/> SET
+			endTime =  #{endTime, jdbcType=TIMESTAMP},
+			updateBy = #{updateBy, jdbcType=NUMERIC},
+			updateTime = #{updateTime, jdbcType=TIMESTAMP}
+		WHERE conferenceId = #{conferenceId}
+	</update>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		DELETE FROM  <include refid="tableName"/> 
+		WHERE conferenceId = #{conferenceId}
+	</delete>
+	
+	<select id="findById" parameterType="java.lang.Long" resultMap="ConferenceReserve">
+		SELECT reserve.*, room.roomName, room.regionName 
+		FROM <include refid="tableName"/> reserve
+		LEFT JOIN oa_conference_room room ON room.roomId=reserve.roomId
+		WHERE conferenceId = #{conferenceId}
+	</select>
+	
+	<select id="listAll" parameterType="java.util.Map" resultMap="ConferenceReserve">
+		SELECT <include refid="dbColumn"/>
+		FROM <include refid="tableName"/>
+		<where>
+			<if test="@Ognl@isNotEmpty(organizer)"> AND organizer = #{organizer} </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND enterpriseCode = #{enterpriseCode}</if>
+			<if test="@Ognl@isNotEmpty(beginTime) &amp;&amp; @Ognl@isNotEmpty(endTime)">
+				<![CDATA[ AND beginTime < #{endTime} AND endTime > #{beginTime} AND auditStatus NOT IN (1, 5, 6)]]>
+			</if>
+			<if test="@Ognl@isNotEmpty(roomId)"> AND roomId = #{roomId}</if>
+			<if test="@Ognl@isNotEmpty(conferenceId)"> AND conferenceId != #{conferenceId}</if>
+		</where>
+	</select>
+
+	<select id="myPageList" parameterType="java.util.Map" resultMap="ConferenceReserve">
+		SELECT <include refid="aliasColumn"/>,cro.roomName,cro.regionName as regionName,(select count(receipt.receiptId) from oa_conference_receipt receipt
+		where receipt.conferenceId=cr.conferenceId and receipt.userId=#{userId} group by conferenceId) AS isReceipt
+		FROM oa_conference_reserve cr
+		left join oa_conference_reserve_participant crp on cr.conferenceId = crp.conferenceId
+        left join oa_conference_room cro on cr.roomId = cro.roomId
+		where cr.enterpriseCode = #{enterpriseCode} and cr.auditStatus != 5
+		and crp.userId = #{userId} and crp.type =1 and cr.isDelete = 0
+		<include refid="queryCondition"/>
+		<if test="@Ognl@isNotEmpty(readyOpenTime) and hasOpen == 0">
+			 and cr.beginTime > #{readyOpenTime,jdbcType=TIMESTAMP}
+			order by cr.beginTime asc
+        </if>
+        <if test="@Ognl@isNotEmpty(hasOpenTime) and hasOpen == 1">
+             and cr.beginTime <![CDATA[ <=#{hasOpenTime,jdbcType=TIMESTAMP}]]>
+            order by cr.endTime desc
+        </if>
+		<if test="hasOpen == 2">
+			order by cr.beginTime asc
+		</if>
+	</select>
+
+    <select id="listAllConRes" parameterType="java.util.Map" resultMap="ConferenceReserve">
+        SELECT <include refid="aliasColumn"/>,cro.roomName,cro.regionName as regionName
+		FROM oa_conference_reserve cr
+		left join oa_conference_room cro on cr.roomId = cro.roomId
+        <where>
+			cr.isDelete = 0 and cr.auditStatus != 5
+            <if test="@Ognl@isNotEmpty(enterpriseCode)"> AND cr.enterpriseCode = #{enterpriseCode}</if>
+            <if test="@Ognl@isNotEmpty(roomId)"> AND cr.roomId = #{roomId}</if>
+            <if test="@Ognl@isNotEmpty(startTime) and @Ognl@isNotEmpty(endTime)">
+                and cr.beginTime <![CDATA[ >= #{startTime,jdbcType=TIMESTAMP}]]>
+                and cr.beginTime <![CDATA[ <= #{endTime,jdbcType=TIMESTAMP}]]>
+            </if>
+        </where>
+        order by cr.beginTime asc
+    </select>
+
+    <select id="myReserve" parameterType="java.util.Map" resultMap="ConferenceReserve">
+        SELECT <include refid="aliasColumn"/>,cro.roomName,cro.regionName as regionName
+        FROM oa_conference_reserve cr
+        left join oa_conference_room cro on cr.roomId = cro.roomId
+        where cr.createBy = #{userId} and cr.enterpriseCode = #{enterpriseCode} and cr.isDelete = 0
+		<include refid="queryCondition"/>
+        order by cr.createTime desc
+    </select>
+
+	<select id="myApproveConference" resultMap="ConferenceReserve">
+		SELECT <include refid="aliasColumn"/>,cro.roomName,ca.auditId,cro.regionName as regionName
+		from oa_conference_reserve cr
+		left join oa_conference_room cro on cr.roomId = cro.roomId
+		left join oa_conference_audit ca on cr.conferenceId=ca.targetId and ca.targetType = 'conference'
+		where cr.enterpriseCode = #{enterpriseCode}
+		and ca.auditor = #{userId}
+		<if test="status == 2">
+			and ca.auditStatus = 2
+		</if>
+		<if test="status == 4">
+			and ca.auditStatus in (4,5)
+		</if>
+		<include refid="queryCondition"/>
+		order by cr.beginTime desc
+	</select>
+
+	<select id="pageListAll" parameterType="java.util.Map" resultMap="ConferenceReserve">
+		SELECT <include refid="aliasColumn"/>,cro.roomName,cro.regionName as regionName
+		from oa_conference_reserve cr
+		left join oa_conference_room cro on cr.roomId = cro.roomId
+        where cr.enterpriseCode = #{enterpriseCode} and cr.isDelete = 0
+        <if test="@Ognl@isNotEmpty(auditStatus)"> and cr.auditStatus = #{auditStatus}</if>
+        <if test="@Ognl@isNotEmpty(theme)"> and cr.theme like #{theme}</if>
+        <if test="@Ognl@isNotEmpty(roomId)"> and cr.roomId = #{roomId} </if>
+        <if test="@Ognl@isNotEmpty(region)"> and cr.region = #{region} </if>
+        <if test="@Ognl@isNotEmpty(organizerName)"> and cr.organizerName like #{organizerName}</if>
+        <if test="@Ognl@isNotEmpty(createByName)"> and cr.createByName like #{createByName}</if>
+        <if test="@Ognl@isNotEmpty(beginTime)"> and cr.beginTime <![CDATA[ >= #{beginTime,jdbcType=TIMESTAMP}]]></if>
+        <if test="@Ognl@isNotEmpty(endTime)"> and cr.endTime <![CDATA[ <=#{endTime,jdbcType=TIMESTAMP}]]></if>
+        <if test="@Ognl@isNotEmpty(auditStatus)"> and cr.auditStatus = #{auditStatus}</if>
+        <if test="@Ognl@isNotEmpty(noteStatus)"> and cr.noteStatus = #{noteStatus}</if>
+        <if test="@Ognl@isNotEmpty(recorderName)"> and cr.recorderName like #{recorderName}</if>
+        <if test="@Ognl@isNotEmpty(searchCondition)"> and (cr.theme like #{searchCondition} or cro.roomName like #{searchCondition} or cr.createByName like #{searchCondition} or cr.organizerName like #{searchCondition} or cr.recorderName like #{searchCondition})</if>
+        order by beginTime desc
+	</select>
+</mapper>

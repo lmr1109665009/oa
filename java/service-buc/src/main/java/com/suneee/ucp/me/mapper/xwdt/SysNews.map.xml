@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suneee.ucp.me.model.SysNews">
+	<resultMap id="SysNews" type="com.suneee.ucp.me.model.SysNews">
+		<id property="id" column="ID" jdbcType="NUMERIC"/>
+		<result property="subject" column="SUBJECT" jdbcType="VARCHAR"/>
+<!-- 		<result property="columnid" column="COLUMNID" jdbcType="NUMERIC"/>-->		
+		<result property="content" column="CONTENT" jdbcType="CLOB"/>
+		<result property="contentTxt" column="CONTENTTXT" jdbcType="CLOB"/>
+		<result property="creatorId" column="CREATORID" jdbcType="NUMERIC"/>
+		<result property="creator" column="CREATOR" jdbcType="VARCHAR"/>
+		<result property="createTime" column="CREATETIME" jdbcType="TIMESTAMP"/>
+<!-- 		<result property="attachment" column="ATTACHMENT" jdbcType="VARCHAR"/>
+		<result property="status" column="status" jdbcType="NUMERIC"/>
+		<result property="hasRead" column="hasRead" jdbcType="NUMERIC"/>
+		<result property="columnname" column="COLUMNNAME" jdbcType="VARCHAR"/>
+		<result property="tenantid" column="TENANTID" jdbcType="NUMERIC"/> -->
+		<result property="imgUrl" column="IMGURL" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+
+	<sql id="columns">
+		ID,SUBJECT,CONTENT,CREATORID,CREATOR,CREATETIME,IMGURL
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(createTime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.SysNews">
+		INSERT INTO sys_news
+		(ID,SUBJECT,CONTENT,CONTENTTXT,CREATORID,CREATOR,CREATETIME,IMGURL)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{subject,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, #{contentTxt,jdbcType=CLOB}, #{creatorId,jdbcType=NUMERIC}, #{creator,jdbcType=VARCHAR}, NOW(), #{imgUrl,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_news 
+		WHERE
+		ID=#{id}
+	</delete>
+<!-- 	<delete id="delByColumnId" parameterType="java.lang.Long">
+		DELETE FROM sys_news 
+		WHERE
+		COLUMNID=#{columnId}
+	</delete> -->
+	
+	<update id="update" parameterType="com.suneee.ucp.me.model.SysNews">
+		UPDATE sys_news SET
+		SUBJECT=#{subject,jdbcType=VARCHAR},
+		CONTENT=#{content,jdbcType=CLOB},
+		CONTENTTXT=#{contentTxt,jdbcType=CLOB},
+		CREATORID=#{creatorId,jdbcType=NUMERIC},
+		CREATOR=#{creator,jdbcType=VARCHAR},
+		CREATETIME=NOW(),
+		IMGURL=#{imgUrl,jdbcType=VARCHAR}
+		WHERE
+		ID=#{id}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysNews">
+		SELECT ID,SUBJECT,CONTENT,CREATORID,CREATOR,CREATETIME,IMGURL,CONTENTTXT
+		FROM sys_news 
+    	WHERE 
+		ID=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysNews">
+		SELECT ID,SUBJECT,CREATORID,CREATOR,CREATETIME,CONTENTTXT,IMGURL
+		FROM sys_news
+		<where>
+			<if test="@Ognl@isNotEmpty(subject)"> AND SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(createTime)"> AND CREATETIME  =#{createTime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME desc
+		</if>
+	</select>
+	
+<!-- 	<select id="getAllByAlias" resultMap="SysNews">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,BC.NAME COLUMNNAME,BC.TENANTID,(case when c.id is NULL then 0 else 1 end) hasRead
+		FROM sys_news B
+    	INNER JOIN sys_news_COLUMN BC ON B.COLUMNID = BC.ID AND BC.STATUS = 1
+    	left join sys_read_record c on c.objectId = b.id and c.userid = #{userId}
+    	<where>
+    		BC.ALIAS = #{alias}
+			<if test="@Ognl@isNotEmpty(subject)"> AND B.SUBJECT  LIKE #{subject}  </if>
+			<if test="@Ognl@isNotEmpty(creator)"> AND B.CREATOR  LIKE #{creator}  </if>
+			<if test="@Ognl@isNotEmpty(columnid)"> AND B.COLUMNID  = #{columnid}  </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND B.CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND B.CREATETIME  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND B.CREATETIME <![CDATA[ <=#{endcreatetime}]]> </if>
+			 AND B.status = 1
+		</where>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by B.CREATETIME desc
+		</if>
+	</select> -->
+	
+<!-- 	<update id="updateStatus">
+		UPDATE sys_news SET
+		status =#{status,jdbcType=NUMERIC}
+		WHERE
+		ID=#{id}
+	</update> -->
+	
+	<select id="getTopNews"  resultMap="SysNews">
+		SELECT ID,SUBJECT,CREATOR,CREATETIME,CONTENTTXT,IMGURL
+		FROM sys_news  order by CREATETIME desc LIMIT 0,${_parameter}
+	</select>	
+	<select id="getNewsById"  resultMap="SysNews">
+		SELECT ID,SUBJECT,CONTENT,CREATORID,CREATOR,CREATETIME,IMGURL,CONTENTTXT
+		FROM sys_news  WHERE ID=#{id}
+	</select>
+
+	
+<!-- 	<select id="getByColumnId" resultMap="SysNews">
+		SELECT B.ID,B.SUBJECT,B.COLUMNID,B.CREATORID,B.CREATOR,B.CREATETIME,B.ATTACHMENT,(case when c.id is NULL then 0 else 1 end) hasRead
+		FROM sys_news B
+    	left join sys_read_record c on c.objectId = b.id and c.userid = #{userId} 
+    	where  B.COLUMNID  = #{columnid} 
+		order by B.CREATETIME desc
+	</select> -->
+	
+
+</mapper>

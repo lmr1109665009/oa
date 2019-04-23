@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.suneee.ucp.me.model.conference.ConferenceInfo">
+	<resultMap id="ConferenceInfo" type="com.suneee.ucp.me.model.conference.ConferenceInfo">
+		<id property="conferenceId" column="conference_id" jdbcType="NUMERIC"/>
+		<result property="roomId" column="room_id" jdbcType="NUMERIC"/>
+		<result property="roomName" column="room_name" jdbcType="VARCHAR"/>
+		<result property="convokeDate" column="convoke_date" jdbcType="DATE"/>
+		<result property="convokeDateText" column="convoke_date_text" jdbcType="VARCHAR" />
+		<result property="beginTime" column="begin_time" jdbcType="VARCHAR"/>
+		<result property="endTime" column="end_time" jdbcType="VARCHAR"/>
+		<result property="theme" column="theme" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="CLOB"/>
+		<result property="devices" column="devices" jdbcType="CLOB"/>
+		<result property="participants" column="participants" jdbcType="CLOB"/>
+		<result property="createtime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="createBy" column="create_by" jdbcType="NUMERIC"/>
+		<result property="createByName" column="create_by_name" jdbcType="VARCHAR"/>
+		<result property="updatetime" column="update_time" jdbcType="TIMESTAMP"/>
+		<result property="updateBy" column="update_by" jdbcType="NUMERIC"/>
+		<result property="conferencePlace" column="conferencePlace" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		ci.conference_id, ci.room_id,ci.status, ci.convoke_date, ci.begin_time, ci.end_time, ci.theme, ci.description, ci.devices,
+		ci.participants, ci.create_time, ci.create_by, ci.update_time, ci.update_by
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(conferenceId)"> AND ci.conference_id = #{conferenceId} </if>
+			<if test="@Ognl@isNotEmpty(roomId)"> AND ci.room_id = #{roomId} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND ci.status = #{status} </if>
+			<if test="@Ognl@isNotEmpty(convokeDate)"> AND ci.convoke_date = #{convokeDate} </if>
+			<if test="@Ognl@isNotEmpty(beginConvokeDate)"> AND ci.convoke_date >= #{beginConvokeDate, jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endConvokeDate)"> AND ci.convoke_date <![CDATA[ <= #{endConvokeDate, jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(createBy)"> AND ci.create_by = #{createBy} </if>
+			<if test="@Ognl@isNotEmpty(beginBeginTime)"> AND ci.begin_time &lt; #{beginBeginTime, jdbcType=VARCHAR}</if>
+			<if test="@Ognl@isNotEmpty(endEndTime)">AND ci.end_time <![CDATA[ > #{endEndTime, jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(region)"> AND cr.region = #{region}</if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.suneee.ucp.me.model.conference.ConferenceInfo" useGeneratedKeys="true" keyProperty="conferenceId">
+		INSERT INTO ucp_conference_info
+		(conference_id,room_id,convoke_date,begin_time,end_time,theme,description,devices,participants,
+		create_time,create_by,update_time,update_by)
+		VALUES
+		(#{conferenceId,jdbcType=NUMERIC}, #{roomId,jdbcType=NUMERIC}, #{convokeDate,jdbcType=DATE}, 
+		#{beginTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, #{theme,jdbcType=VARCHAR}, 
+		#{description,jdbcType=CLOB}, #{devices,jdbcType=CLOB}, #{participants,jdbcType=CLOB}, 
+		#{createtime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=NUMERIC}, #{updatetime,jdbcType=TIMESTAMP}, 
+		#{updateBy,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM ucp_conference_info 
+		WHERE conference_id = #{conferenceId}
+	</delete>
+	
+	<update id="update" parameterType="com.suneee.ucp.me.model.conference.ConferenceInfo">
+		UPDATE ucp_conference_info 
+		SET
+			room_id = #{roomId,jdbcType=NUMERIC},
+			status = #{status,jdbcType=NUMERIC},
+			convoke_date = #{convokeDate,jdbcType=DATE},
+			begin_time = #{beginTime,jdbcType=VARCHAR},
+			end_time = #{endTime,jdbcType=VARCHAR},
+			theme = #{theme,jdbcType=VARCHAR},
+			description = #{description,jdbcType=CLOB},
+			devices = #{devices,jdbcType=CLOB},
+			participants = #{participants,jdbcType=CLOB},
+			update_time = #{updateTime,jdbcType=TIMESTAMP},
+			update_by = #{updateBy,jdbcType=NUMERIC}
+		WHERE conference_id = #{conferenceId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ConferenceInfo">
+		SELECT 
+			<include refid="columns"/>,
+			u.fullname as create_by_name,
+			cr.room_name,
+			DATE_FORMAT(convoke_date, "%Y/%m/%d") AS convoke_date_text
+		FROM ucp_conference_info ci
+		LEFT JOIN sys_user u ON u.userid = ci.create_by
+		LEFT JOIN ucp_conference_room cr ON cr.room_id = ci.room_id
+		WHERE ci.conference_id = #{conferenceId}
+	</select>
+	
+	<select id="getAll" resultMap="ConferenceInfo">
+		SELECT 
+			<include refid="columns"/>,
+			u.fullname as create_by_name,
+			cr.room_name,
+			DATE_FORMAT(convoke_date, "%Y/%m/%d") AS convoke_date_text
+		FROM ucp_conference_info ci
+		LEFT JOIN sys_user u ON u.userid = ci.create_by
+		LEFT JOIN ucp_conference_room cr ON cr.room_id = ci.room_id
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+			ORDER BY ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			ORDER BY conference_id  desc
+		</if>
+	</select>
+
+	<select id="getAllAboutCurUser" resultMap="ConferenceInfo">
+		SELECT
+		<include refid="columns"/>,
+		u.fullname AS create_by_name,
+		cr.room_name,
+		DATE_FORMAT(convoke_date, "%Y/%m/%d") AS convoke_date_text,dic.ITEMNAME as conferencePlace
+		FROM ucp_conference_info ci
+		LEFT JOIN sys_user u ON u.userid = ci.create_by
+		LEFT JOIN ucp_conference_room cr ON cr.room_id = ci.room_id
+		LEFT JOIN sys_dic dic ON cr.region = dic.DICID
+
+		<where>
+			<if test="@Ognl@isNotEmpty(currentDate)"> AND ci.convoke_date = #{currentDate} </if>
+			<if test="@Ognl@isNotEmpty(currentUserId)"> AND ci.participants like  CONCAT('%',#{currentUserId},'%') </if>
+			<if test="@Ognl@isNotEmpty(enterpriseCode)"> AND cr.enterprise_code=#{enterpriseCode} </if>
+		</where>
+		ORDER BY ci.convoke_date DESC,ci.begin_time DESC
+	</select>
+
+	<select id="isReverse" parameterType="Map" resultMap="ConferenceInfo">
+		SELECT <include refid="columns"/>
+		FROM ucp_conference_info ci
+		WHERE room_id=#{roomId} AND convoke_date=#{convokeDate, jdbcType=DATE}
+		<![CDATA[  
+		AND begin_time < #{endTime}
+		]]>
+		AND end_time > #{beginTime}
+	</select>
+</mapper>
