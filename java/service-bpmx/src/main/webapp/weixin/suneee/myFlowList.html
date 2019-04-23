@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="full-screen" content="yes">
+  <meta name="x5-fullscreen" content="true">
+  <script type="text/javascript" src="../assets/js/importJs.js"></script>
+  <script type="text/javascript">
+	importJs(["/weixin/assets/js/searchFlows.js"]);	
+   </script>
+   <script type="text/x-handlebars-template" id="tpi-list-search">
+  {{#each this}}
+  <a class='opacity' href="../bpm/startFlow.html?defId={{defId}}&flowKey={{flowKey}}&actDefId={{actDefId}}&subject={{subject}}">{{{subject}}}</a>
+  {{/each}}
+	</script>
+  <link rel="stylesheet" type="text/css" href="../assets/css/suneee/phone.css" />
+  <link rel="stylesheet" type="text/css" href="../../styles/suneee/phone.css" />
+<style type="text/css">
+body,html{height:100%;overflow:hidden}
+    .opacity{
+        -webkit-animation: opacity 0.3s linear;
+        animation: opacity 0.3s linear;
+    }
+    @-webkit-keyframes opacity {
+        0% {
+            opacity:0;
+        }
+        100% {
+            opacity:1;
+        }
+    }
+    @keyframes opacity {
+        0% {
+            opacity:0;
+        }
+        100% {
+            opacity:1;
+        }
+    }
+</style>
+</head>
+
+<script type="text/javascript">
+var typeId = request.QueryString("typeId") == null ? '' : request.QueryString("typeId");
+var typeName = decodeURI(request.QueryString("typeName") == null ? '' : request.QueryString("typeName"));
+///platform/bpm/bpmDefinition/myAllListFront.ht 
+
+function flowListALL(){
+	    var url = __ctx + "/platform/system/globalType/getByParentId.ht?parentId=3&catKey=FLOW_TYPE";
+	    $.ajax({
+	      type: "get",
+	      async: false,
+	      url: url,
+	      dataType: "json",
+	     success: function(data){
+	    	 //console.log(data);
+	    	   var htmlMidALL = '<ul class="nav-listul">';
+	   			for (var j = 0; j < data.length; j++) {
+	   				htmlMidALL += "<li typeAId="+ data[j].typeId+" typeAName="+ data[j].typeName+"><a><span>" +data[j].typeName +"</span></a></li>";
+	   			} 
+	   			$('.content-divHD').append(htmlMidALL+'</ul>');
+	   			loadTypeAndFlow(typeId||data[0].typeId,typeName||data[0].typeName);
+	      },
+	      error: function(){
+	        console.log("error:"+data);
+	      }
+	    });
+	  }
+function getsubMenuName(obj){
+	 var res = [];
+	 var json = {};
+	 for(var i = 0; i < obj.length; i++){
+	  if(!json[obj[i]]){
+	   res.push(obj[i]);
+	   json[obj[i]] = 1;
+	  }
+	 }
+	 return res;
+}
+function loadTypeAndFlow(typeId,typeName) {
+	var url = __ctx + "/platform/bpm/bpmDefinition/myListFront.ht";	
+	$.post(url,{"typeId":typeId}, function(flowList){
+		
+		var htmlMid = "";
+		var typeNames = [];
+		//flowList = flowList.results;
+		if (undefined != flowList && flowList != null && flowList.length > 0) {
+		for (var j = 0; j < flowList.length; j++) {
+			typeNames.push(flowList[j].typeName);
+		}
+		
+		typeNames = getsubMenuName(typeNames);
+		//console.log(typeNames+","+flowList.length);
+		for (var k = 0; k < typeNames.length; k++) {
+			htmlMid += "<div class=\"header-submenu\"><div class=\"header-list\">"+typeNames[k]+ "</div><ul class=\"item-ul\">";
+		for (var j = 0; j < flowList.length; j++) {
+			    if(typeNames[k] == flowList[j].typeName){
+			    	htmlMid += '<li class=item-li><a href="../bpm/startFlow.html?defId=' + flowList[j].defId + '&flowKey=' + flowList[j].defKey + '&actDefId=' + flowList[j].actDefId + '&subject=' + flowList[j].subject+ '"><span>' +flowList[j].subject +'</span></a></li>';
+		} }
+		htmlMid += "</ul></div>"
+		}
+		$(".content-divBD").html(htmlMid);
+		}
+		else {
+		$('.content-divBD').html("<center>暂无流程</center>");
+		}
+        		
+	});
+	}
+
+$(function() { 	
+	var windowBurger=window.localStorage.getItem('burger');
+	if(windowBurger=='black'){
+	$('.burger').removeClass("burger").addClass("burger-arr");
+	$('.burger-arr').attr('onclick',"history.back();");
+	}
+	$('.burger-arr').click(function(){
+		window.localStorage.setItem('Number',"1");
+		var obj = {}; 
+		obj.firstPage = true;
+		window.parent.postMessage(obj,'*');
+		})
+		
+	flowListALL();
+    $(".nav-listul li").each(function(){
+ 		if ($(this).attr('typeaid') === typeId) {
+ 			$(this).addClass("active")
+ 			  }
+    	  });
+	$(".nav-listul li").click(function(){
+			if($(this).hasClass("active")){}
+			else{
+			$(".nav-listul li").removeClass("active");
+			$(this).addClass("active");
+			}
+			var typeaid = $(this).attr('typeaid');
+			var typeAName = $(this).attr('typeAName');
+			loadTypeAndFlow(typeaid,typeAName)
+
+		});
+});
+
+</script>
+ <body class="am-with-fixed-header" id="myflowlist">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+    <div class="burger-arr" onclick="history.back();"><i></i><i></i><i></i></div>
+	<h1 class="am-header-title"><span>新建流程</span></h1>	 
+	<div id="lcListInput" class="searchData"></div>
+	</header>   
+	<div class="wrapper-div">
+    <div id="content-div" class="content-div">
+     <div class="content-divHD"> </div>
+     <div class="content-divBD"> </div>       
+    </div>
+    </div>
+</body>
+</html>

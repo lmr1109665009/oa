@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="startFlow">
+<head>
+<meta charset="UTF-8">
+<title>日程</title>
+<script src="../assets/js/importJs.js"></script>	
+<script type="text/javascript">
+importCss(["/weixin/assets/css/sea.css",'/weixin/assets/js/calendarsea/calendar.css','/weixin/assets/css/mobiscroll.custom-2.5.2.min.css']);
+importJs(['/weixin/assets/js/mobiscroll.custom-2.5.2.min.js',"/weixin/assets/js/calendarsea/js/calendar.js","/weixin/assets/js/schedule.js"]);
+</script>    
+</head>
+<body>
+<div class="main_page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger-arr" onclick="history.back();"><i></i><i></i><i></i></div>
+ <h1 class="am-header-title"><span id="lc-title">日程</span></h1>
+ <div id="addSchedule" class="addSchedule" onclick="addLayer();"></div>
+</header>
+<div class="h60"></div> 
+<div class="mainBox">
+<div id="content-div" class="content-div">
+<div id="demo">
+  <div id="ca"></div>
+</div>
+<div class="info-div">
+	<!-- <div class="info-div-list"><span class="info-time">全天</span><span class="info-nr">T行ddffrr政班T行ddffrr政班T行ddffrr政班T行ddffrr政班</span>
+</div> -->
+</div>
+
+<div class="wrapperbox" id="addScheduleBox" style="display: ;">
+<form class="am-form am-form-horizontal"  role="form" id="Form" >
+	<header data-am-widget="header" class="am-header am-header-default am-header-fixed am-no-layout">
+		<div class="burger-arr" onclick="closeLayer();"><i></i><i></i><i></i></div>
+		<h1 class="am-header-title">
+				<span>新增日程</span>
+		</h1>	
+		<button type="button" class="btn-danger" id="del" onclick="delData()">删 除</button>
+	</header>
+	<div class="h60"></div>
+	<div class="mroom-wrap">
+		<div class="contentDiv">
+		<div class="am-h20"></div>
+		
+          <input name="id" id="id" type="hidden" value="">
+          <input name="allDay" id="allDay" type="hidden" value="">
+		  <div class="am-form-group">
+		    <label for="doc-ipt-them" class="am-u-sm-3 am-form-label am-right">日程内容：</label>
+		    <div class="am-u-sm-9">
+		    <input  class="am-radius" type="text" id="content" name="title" autocomplete="off" placeholder="请输入日程内容" data-required="true" data-descriptions="content" maxlength="50">
+		    </div>
+		  </div>
+		  
+		  	<div class="am-form-group">
+		    <label for="doc-ipt-them" class="am-u-sm-3 am-form-label am-right">开始时间：</label>
+		    <div class="am-u-sm-9">
+		    <div class="am-form-icon am-form-feedback am-form-date-icon">
+		    <input type="text"  class="am-radius" id="startTime" placeholder="请输入开始时间"
+			      data-role="datebox" maxlength="50"><input id="startTime1" type="hidden" name="startTime" />
+			   </div></div>
+		  </div>
+		  
+		  <div class="am-form-group">
+		    <label for="doc-ipt-them" class="am-u-sm-3 am-form-label am-right">结束时间 ：</label>
+		    <div class="am-u-sm-9">
+		    <div class="am-form-icon am-form-feedback am-form-date-icon">
+		    <input type="text"  class="am-radius" id="endTime" placeholder="请输入结束时间"
+			      data-role="datebox" maxlength="50"><input id="endTime1" type="hidden" name="endTime" />
+		   </div></div>
+		  </div>
+		  
+		  
+		  <div class="am-form-group">
+		    <label for="doc-ipt-them" class="am-u-sm-3 am-form-label am-right">&nbsp;</label>
+		    <div class="am-u-sm-9">
+
+		    <div class="am-checkbox-inline">
+             <input id="allDayChk" type="checkbox" name="allDayChk"> 
+             <label for="allDayChk">全天</label>
+		    </div>
+		  </div>
+		   </div>
+                 
+		  
+		
+		</div>
+	</div>
+	<div class="am-with-fixed-navbar"></div>
+	<div class="bigButtonBox">	    
+	<button type="button" class="bigButton" onclick="initForm()">提 交</button>
+	<!-- <button type="button" class="layui-btn layui-btn-primary" onclick="resetData()">重 置</button> -->
+	</div> 
+	</form>
+	</div>
+    
+</div>
+<!--/mainBox--->
+<!--<div class="h60"></div> 
+<footer>
+    <article class="footerBar">
+    <a class="tab_1 cur" id="tab_1" href="schedule.html">日程</a>
+    <a class="tab_2" id="tab_2" href="workflow.html">工作流</a>
+    <a class="tab_3" id="tab_3" href="fileCabinet.html">文件柜</a>
+    <a class="tab_4" id="tab_4" href="my.html">我的</a>
+    </article>
+    </footer><!--/主页面层--->
+    </div>
+</body>
+</html>

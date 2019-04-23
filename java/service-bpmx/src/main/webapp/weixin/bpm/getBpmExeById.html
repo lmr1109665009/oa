@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+<meta charset="UTF-8">
+<title>流程实例信息</title>
+<script src="../assets/js/importJs.js"></script>
+
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css",
+           "/weixin/assets/css/mobiscroll.custom-2.5.2.min.css",
+           "/weixin/assets/css/form.css",
+           "/weixin/assets/css/formValid.css"]);
+
+importJs(["/weixin/assets/js/angular.min.js",
+          "/weixin/assets/js/BaseService.js",
+          "/weixin/assets/js/zh_CN.js",
+          "/weixin/assets/js/CustomValid.js",
+          "/weixin/assets/js/mobiscroll.custom-2.5.2.min.js",
+          "/js/hotent/platform/form/rule.js",
+          "/weixin/assets/js/jquery.qtip.js",
+          "/weixin/assets/js/ztree/js/jquery.ztree.core-3.5.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js",
+          "/weixin/assets/js/dialog/Dialogs.js",
+          "/weixin/assets/js/formDirective.js",
+          "/weixin/assets/js/bpm/FlowService.js",
+          "/weixin/assets/js/bpm/FormService.js",
+          "/weixin/assets/js/bpm/processDetailController.js",
+          "/weixin/assets/editor/ueditor.config.js",
+          "/weixin/assets/editor/ueditor.all.min.js"]);
+$(function() {
+    var flowType = request.QueryString("subject");
+    if(flowType){$("#lc-title").html(decodeURI(flowType));}
+})
+          
+
+</script>
+<style type="text/css">
+.am-form-group span{
+border:none;
+}
+</style>
+</head>
+<body ng-controller="ctrl">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="am-header-left am-header-nav">
+		<!--<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>-->
+		<div class="burger-arr"  onclick="history.back();"><i></i><i></i><i></i></div>
+	</div>
+
+	
+	<h1 class="am-header-title">
+			<a href="#" class="" id="columnTitle" >流程实例信息</a>
+	</h1>
+	
+	<div class="am-header-right am-header-nav">
+          <a href="../index.html" class=""  title="返回主页" >
+                <i class="am-header-icon fa fa-home" ></i>
+          </a>
+    </div>
+</header>
+
+<div id="formHtml" ht-bind-html="formHtml"></div>
+
+<div  id="myTable" style="display:none;">
+<table class="am-table am-table-bordered">
+	<tr>
+	  <th align="right">发送提醒消息:</th>
+	  <td align="left">
+	  	<span ng-repeat="item in informTypes" >
+				<input type="checkbox" name="informType"   value="${item.key}" />${item.value}
+		</span>
+	  </td>
+	</tr>
+	<tr>
+		<th  align="right">取消原因:</th>
+		<td align="left"><textarea name="txtCause"></textarea></td>
+	</tr>
+</table>
+</div>
+<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default am-navbar-footer">
+	<ul class="am-navbar-nav am-cf am-avg-sm-4">
+		<!--<li ng-if="status==0">-->
+			<!--<a href="#" class="" ng-click="cancel()"> -->
+				<!--<i class="am-icon fa fa-minus-square" ></i> -->
+			 	<!--<span class="am-navbar-label">取消</span>-->
+			<!--</a>-->
+		<!--</li>-->
+	
+		<li class="am-avg-sm-li-one">
+			<!--<a href="#" class="am-btn am-btn-secondary am-radius" ng-click="showOpinion()"> -->
+				<!--<i class="am-icon fa fa-save" ></i> -->
+			 	<!--<span class="am-navbar-label">审批历史</span>-->
+			<!--</a>-->
+			<button type="button" class="am-btn am-btn-secondary am-radius"  ng-click="showOpinion()">审批历史</button>
+		</li>
+		<!--<li>-->
+			<!--<a href="#" class=""  ng-click="showFlowPic()"> -->
+				<!--<i class="am-icon fa fa-picture-o" ></i> -->
+			 	<!--<span class="am-navbar-label">流程图</span>-->
+			<!--</a>-->
+		<!--</li>-->
+	</ul>
+</div>
+</body>
+</html>

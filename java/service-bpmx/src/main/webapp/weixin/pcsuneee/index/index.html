@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<title></title>
+<script src="../assets/js/indexImportJs_i.js?v=55"></script>
+</head>
+<body class="panel_wapper_body">
+<!-- <header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger"><i></i><i></i><i></i></div>	
+	<h1 class="am-header-title"><span>转子链</span></h1>	
+</header> -->
+<div class="panelWapperBox scrollbarbox"> 
+<div class="panel_wapper">
+
+<div class="panel panel_left">
+<div class="panel_box">
+<div class="panel_head tit"><span class="tita tit1 cur">待我审批</span><span class="tita tit2">我的申请</span><span class="tita tit3">我已审批</span><span class="tita tit4">我的办结</span>
+<span class="arrow_right update" id="titaUpdate"><i></i></span><span class="arrow_right" id="flowTo"><i></i></span></div>
+<div class="panel_body"> 
+<div class="panel_ul1"></div>
+<div class="panel_ul2 dsn"></div>
+<div class="panel_ul3 dsn"></div>
+<div class="panel_ul4 dsn"></div></div></div>
+</div>
+
+<!-- 日程 -->
+<div class="panel panel_right" id="calendar_box" >
+<div class="panel_box" id="calendar_box" >
+<div class="widget-calendar" id="calendar" >    
+</div></div>
+</div>
+ </div>
+ 
+ 
+<div class="panel_wapper">
+<!-- 文件 -->
+<div class="panel panel_left2">
+<div class="panel_box">
+<!-- <div class="panel_head"><span  class="icon_meeting icon_news">通知公告</span> -->
+<div class="panel_head tit"><span class="titanew titnew2 cur">公共文件</span><span class="titanew titnew3">部门文件</span><span class="titanew titnew1">个人文件</span>
+<span class="arrow_right update" id="newsUpdate"><i></i></span><span class="arrow_right" id="fileTo"><i></i></span></div>
+<ul class="panel_body" id="file_ul"></ul>
+</div>
+</div>
+
+<!-- 会议 -->
+<div class="panel panel_right2">
+<div class="panel_box">
+<div class="panel_head"><span class="icon_meeting">会议信息</span><span class="arrow_right update" id="meetingUpdate"><i></i></span><span class="arrow_right" id="meetingTo"><i></i></span></div>
+<ul class="panel_body meetingRecord" id="meeting_ul"></ul>
+</div>
+</div>
+
+<!-- 未读消息 -->
+<div class="panel panel_right2">
+<div class="panel_box">
+<div class="panel_head"><span class="icon_meeting unread">最新消息</span><span class="arrow_right update" id="msgUpdate"><i></i></span></div>
+<ul class="panel_body msgRecord" id="msg_ul">
+	<!-- <li>归档提醒：测试状态-发文流程-超级管理员-2017-11-24 10:34:41已归档，请查阅。</li>
+	<li>归档提醒：测试状态-发文流程-超级管理员-2017-11-24 10:34:41已归档，请查阅。</li>
+	<li>归档提醒：测试状态-发文流程-超级管理员-2017-11-24 10:34:41已归档，请查阅。</li> -->
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+<!-- -richeng弹出层 -->   
+<!-- style="display: none;" -->
+<div class="layer-hidden-line" style="display: none;">
+        <form role="form" class="layui-form" id="Form" >
+            <input name="id" id="id" type="hidden" value="">
+                <input name="allDay" id="allDay" type="hidden" value="">
+	            <div class="layui-form-item">
+			    <label class="layui-form-label">日程内容 </label>
+			    <div class="layui-input-block">
+			      <textarea type="text" id="content" name="title"  autocomplete="off" data-required="true" data-descriptions="content" maxlength="50" class="layui-input">请输入日程内容</textarea>
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">开始时间 </label>
+			    <div class="layui-input-inline">
+			      <input type="text" readonly="readonly"  name="start" datefmt="yyyy-MM-dd HH:mm:ss" class="layui-input date-text" id="startTime"
+                            placeholder="请输入开始时间" data-required="true" data-descriptions="startTime" maxlength="50">
+                            <input id="startTime1" type="hidden" name="startTime">
+			    </div>
+			  </div>
+			  
+			  
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">结束时间 </label>
+			    <div class="layui-input-inline">
+			      <input type="text" readonly="readonly"  name="end" datefmt="yyyy-MM-dd HH:mm:ss" class="layui-input  date-text" id="endTime"
+                            placeholder="请输入结束时间" maxlength="50">
+                            <input id="endTime1" type="hidden" name="endTime"> 
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item layui-form-item-no">
+			    <label class="layui-form-label">&nbsp;</label>
+			    <div class="layui-input-block">
+			      <!-- <input type="checkbox" name="like1[write]" lay-skin="primary" title="全天" checked=""><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>全天</span><i class="layui-icon"></i></div>
+			     -->
+			     <label> 
+                 <input type="checkbox"  id="allDayChk" name="allDayChk"> 
+                 <span class="text">全天</span>
+                 </label>
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item  layui-form-item-center">
+			    <div class="layui-input-block">		    
+			      <button class="layui-btn" type="submit">提 交</button>
+			      <button type="button" class="layui-btn layui-btn-primary" onclick="resetData()">重 置</button>
+                  <button type="button" class="layui-btn layui-btn-danger" id="del" onclick="delData()">删 除</button>
+			    </div>
+			  </div>
+        </form>
+    </div>
+ <!-- -richeng弹出层 -->       
+</body>
+</html>

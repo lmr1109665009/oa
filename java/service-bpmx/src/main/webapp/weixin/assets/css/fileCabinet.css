@@ -1,0 +1,173 @@
+.tabframe_title,.tabframe_title ul{
+    width:100%;
+    overflow: hidden;
+}
+.tabframe_title ul{
+    border-bottom:1px solid #dcdcdc; 
+}
+.tabframe_title ul li{
+    float: left;
+    width:33.3%;
+    text-align: center;
+    padding: 6px 0;
+    /* border-bottom:1px solid #dcdcdc;  */
+}
+.tabframe_title ul li a i{
+    display: inline-block;
+    float: right;
+    height:30px;
+    border-right:1px solid #dcdcdc; 
+}
+.tabframe_title ul li a{
+    color:#484848;
+    font-size:16px;
+}
+
+li.active{
+    border-bottom:2px solid #00ace5; 
+}
+li.active a span{
+    color:#00ace5;
+}
+
+.files,.files ul,.files ul li{
+    width:100%;
+}
+.files ul li{
+    padding: 2px 0;
+}
+.files ul li .content,.files ul li .edit{
+    border-bottom: 1px solid #ccc;
+}
+.files ul li span{
+    width:20%;
+    padding: 0 10px;
+    text-align: center;
+}
+.files ul li span img{
+    width:25px;
+    height:25px;
+    vertical-align:top;
+    margin-top: 10px;
+}
+.files ul li .name{
+    display: inline-block;
+    width:85%;
+    position: relative;
+    padding: 0px 0px 3px 8px;
+    text-align: left;
+    font-size:14px;
+    color:#37474F;
+}
+.files ul li .name .dateTime{
+    font-size:14px;
+    color:#A4AAB0;
+    width:80%;
+}
+.files ul li .name .tilte{
+    padding-top: 3px;
+    width:80%;
+}
+.files ul li .name i{
+    position: absolute;
+    right:10px;
+    bottom: 20px;
+    background-image: url("sea/arrow_g_r.png");
+    background-position: center center;
+    display: inline-block;
+    content:"";
+    background-size:cover;
+    width:16px;
+    height:16px;
+}
+.files ul li .edit{
+    background: #e5e5e5;
+    display: none;
+}
+.files ul li .edit,.files ul li .edit ul{
+    width:100%;
+    overflow: hidden;
+}
+.files ul li .edit li{
+    float: left;
+    width:33.3%;
+    text-align: center;
+    font-size:12px;
+    color:#666;
+}
+.files ul li .edit li img{
+    width:15px;
+    height:15px;
+    padding-bottom:3px; 
+}
+.files ul li .edit li a.downloadF{
+	width:100%;
+	display:inline-block;
+	text-align:center;
+}
+.files ul li .edit li a.downloadF div {
+	 color:#A4AAB0; 
+}
+.files ul li .name i.rotate{
+	transform:rotate(90deg);
+	-ms-transform:rotate(90deg); 	/* IE 9 */
+	-moz-transform:rotate(90deg); 	/* Firefox */
+	-webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+	-o-transform:rotate(90deg); 
+}
+
+#fContent_mobile .oneList{
+    width:100%;
+    border-bottom:1px solid #EAEAEA;
+    position: relative;
+    display: inline-block;
+}
+#fContent_mobile .oneList .oneList-left{
+    width:60%;
+    box-sizing: border-box;
+}
+#fContent_mobile .oneList .oneList-right{
+    width:40%;
+    box-sizing: border-box;
+}
+#fContent_mobile .oneList .oneList-left {
+    padding-left:20px;
+}
+#fContent_mobile .oneList .docName {
+    color:#37474F;
+    font-size:14px;
+    padding:5px 0;
+}
+#fContent_mobile .oneList .createTime,#fContent_mobile .oneList .creator {
+    color:#A4AAB0;
+    font-size:14px;
+}
+#fContent_mobile .oneList .creator {
+    position:absolute;
+    top:50%;
+    margin-top:-10px;
+    right:20px;
+}
+
+#fContent_mobile a.operate img{
+    width: 15px;
+    height: 15px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+.Breadcrumb ul {
+    height: 50px;
+    line-height: 50px;
+    border-bottom:1px solid #e6e6e6;
+    display:none;
+}
+.Breadcrumb ul li {
+    float:left;
+    cursor: pointer;
+}
+
+.searchList{width:100%;}
+.searchList div{width:100%;display:inline-block;padding: 5px 50px 5px 10px;border-bottom: 1px solid #eaeaea; height: 55px;}
+.searchList div input{float: left;width: 100%;padding: 0 30px 0 31px; display: block;height: 30px;border: 0 none;margin-top: 7px;background-repeat: no-repeat;background-size: auto 20px; background-position: center left;-webkit-appearance: none;font-size: 14px;background-image: url(sea/icon_search.png);background-color: #f5f5f5;color: #333;}
+.searchList span{position: absolute;top: 0;right: 0; width: 50px;height: 44px;}
+.searchList span i{border-left: 1px solid #eaeaea;margin-top: 12px; height: 30px;overflow: hidden;line-height: 30px;font-size: 14px;display: block;text-align: center;color: #666;}

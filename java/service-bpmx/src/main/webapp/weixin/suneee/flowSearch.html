@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>搜索</title>
+<script src="../assets/js/importJs.js"></script>	
+<link rel="stylesheet" type="text/css" href="../assets/css/suneee/phone.css" />
+<style type="text/css">
+body{
+	background-color:#F3F3F3;
+}
+
+.content-div{
+	margin-top: 5px;
+}
+
+.item-li:nth-child(n){
+	position:relative;
+	padding-left:100px;
+	padding-top:5px;
+	padding-right:10px;
+	background-color: #F3F3F3;
+	height: 50px;
+	line-height:40px;
+}
+
+span{
+	position:absolute;
+	left:0;
+	margin-left:10px;
+	display:inline-block;
+	width:80px;
+	text-align: right;
+}
+.text-field{
+	float: left;
+	padding-left:10px;
+	padding-right:10px;
+	height:40px;
+	border-radius:3px;
+	border-style: none;
+	width:100%;
+}
+
+.bottom-div{
+	position:absolute;
+	text-align: center;
+	bottom:0;
+	left:0;
+	right:0;
+	height:60px;
+}
+
+.search-btn{
+	background-color:#00A8F6;
+	width:50%;
+	height:40px;
+	border: none;
+	top:0;
+	border-radius:3px;
+	color: white;
+}
+</style>
+</head>
+<body class="am-with-fixed-header">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="am-header-left am-header-nav">
+		<a onclick="history.back();" class=""> <i
+			class="am-icon-chevron-left"></i> 返回
+		</a>
+	</div>	
+	<h1 class="am-header-title">
+		<a href="#" class="" id="columnTitle" >搜索</a>
+	</h1>	
+</header>
+
+<div class="content-div">
+	<form>
+		<ul>
+			<li class="item-li"><span>流程名称：</span><input class="text-field" type="text" placeholder="年假申请"></li>
+			<li class="item-li"><span>标题：</span><input class="text-field" type="text" placeholder="回老家办理登记"></li>
+			<li class="item-li"><span>创建时间：</span><input class="text-field" type="date"></li>
+			<li class="item-li"><span>工单号：</span><input class="text-field" type="text" placeholder="856412"></li>
+			<li class="item-li"><span>创建人：</span><input class="text-field" type="text" placeholder="言信"></li>
+		</ul>		
+	</form>
+	
+	<div class="bottom-div">
+		<button class="search-btn">搜索</button>
+	</div>
+</div>
+</body>
+</html>

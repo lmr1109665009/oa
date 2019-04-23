@@ -1,0 +1,60 @@
+*{margin:0;padding:0}
+.cyel{color:#ff871d}
+.bgray{background-color:#f6f6f6}
+.head-div{width:100%;height:50px;border-bottom:1px solid #d3d3d3;text-align:center;line-height:50px}
+.head-h{margin-top:0;font-weight:400;font-size:30px}
+.back-button{position:absolute;top:20px;left:0;width:5pc;border-style:none;background-color:transparent;font-size:1pc}
+.content-div{margin-top:0;width:100%}
+a{text-decoration:none}
+li,ol,ul{margin:0;padding:0;list-style:none}
+#demo{margin-top:0;width:100%}
+#dt{margin:30px auto;padding:0 6px;width:200px;height:28px;outline:0;border:1px solid #ccc}
+.info-div{padding:0 10px;height:40px;background-color:#eaeaea;color:#666;font-size:14px;line-height:40px}
+.info-label{float:left;display:inline-block;margin-left:0;font-weight:400}
+.info-time{float:left;margin-left:10px;width:60px}
+.info-state{margin-left:0}
+.info-span2{float:right;margin-right:0;font-weight:400}
+.chart-div{position:relative;clear:both;padding-left:40px;height:84px;border-bottom:1px solid #e5e5e5;line-height:40px}
+.chart-div:last-child{border-bottom:0}
+.state-div{overflow:hidden;margin-bottom:0;height:42px;font-size:14px;line-height:42px}
+.chart-div .chart-i{position:absolute;top:10px;left:10px;display:inline-block;width:30px;height:5pc;background:url(shangban.png) no-repeat;background-size:20px auto}
+html{font-size:10px;-webkit-tap-highlight-color:transparent}
+body{position:relative;background:#fff;color:#333;font-weight:400;font-size:1.6rem;font-family:Segoe UI,Lucida Grande,Helvetica,Arial,Microsoft YaHei,FreeSans,Arimo,Droid Sans,wenquanyi micro hei,Hiragino Sans GB,Hiragino Sans GB W3,FontAwesome,sans-serif;line-height:1.6}
+body,button,input,select,textarea{text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-moz-font-feature-settings:"liga","kern"}
+
+@media only screen and (max-width:640px){body{word-wrap:break-word;-webkit-hyphens:auto;-ms-hyphens:auto;-moz-hyphens:auto;hyphens:auto}
+}
+
+a{color:#666}
+a:focus,a:hover{color:#0ba9f9}
+a:focus{outline:thin dotted;outline:1px auto -webkit-focus-ring-color;outline-offset:-2px}
+.content-divHD{line-height:0}
+
+.header-list{float:left;padding-top:5px;width:100%;border-top:1px solid #eaeaea;background:#fff;color:#989da1;vertical-align:middle;text-indent:10px;font-size:14px;line-height:30px}
+.item-ul{float:left;display:inline-block;margin-top:0;padding:0;width:100%;font-size:1pc}
+.item-li:nth-child(n){position:relative;height:44px;border-bottom:1px solid #f2f4f4;background-color:#fff;color:#797b7b;list-style:none;text-align:center;line-height:44px}
+.list-a{display:block;padding-left:20px;text-align:left;text-decoration:none}
+.narrow-i{position:absolute;top:0;right:0;width:40px;height:44px;background:url(narrow.png) center;background-size:10px auto;background-repeat:no-repeat}
+
+.nav-listul{padding:5px;width:100%;border-bottom:1px solid #e5e5e5;background:#fff;list-style:none}
+.nav-listul,.nav-listul li{display:inline-block;font-size:14px}
+.nav-listul li{float:left;padding:4px;width:25%;border-bottom:0;background:0 0;line-height:26px;overflow: hidden}
+
+@media (max-width:321px){.nav-listul li{padding:4px;width:33.3%}
+.nav-listul li a{height:30px;line-height:30px}
+}
+
+.nav-listul :after,.nav-listul :before{box-sizing:border-box}
+.nav-listul li a span{display:inline;padding-left:0}
+.nav-listul li a{display:block;padding:0 10px;height:34px;min-width:50px;border:1px solid #f5f5f5;border-radius:5px;background:#f5f5f5;color:#666;text-align:center;font-weight:400;line-height:34px}
+.nav-listul li a:focus,.nav-listul li a:hover,.nav-listul li.active a,.nav-listul li.active a:hover{border:1px solid #00ace6;background:#fff;color:#00ace6}
+.header-submenu{display:inline-block;padding-top:10px;width:100%;background:#f3f3f3;float: left;}
+.item-ul{display:block;padding:0;font-size:16px;position:relative;padding:0 5px 5px 5px;background:#fff}
+.item-ul .item-li{width:50%;height:38px;list-style:none;background-color:#fff;text-align:center;color:#797b7b;float:left;line-height:38px;overflow:hidden;font-size:14px;display:table;overflow:hidden;border:0;padding:5px 0}
+.item-li a{padding:0 5px}
+.item-li a:hover span{color:#00ace6;background:#beecfb}
+.item-li a span{text-align:center;height:38px;line-height:38px;font-weight:400;display:block;color:#666;border-radius:5px;background:#f5f5f5}
+.item-ul .item-li a{position:relative;display:table-cell;vertical-align:middle}
+#myflowlist .wrapper-div{overflow:hidden;
+overflow-y:auto;-lh-property:0;height:100%;position:relative;top:0;width:100%;bottom:0;left:0;right:0;}
+#myflowlist .content-div{overflow:hidden;height:auto;padding-top: 0px;}

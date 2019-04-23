@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+importCss([
+    "/weixin/assets/css/mroom.css"]);
+   
+var conferenceId = request.QueryString("conferenceId"); 
+function getData(){
+	var $tpl = $('#mroomDetail');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl); 
+	var url=__ctx+"/me/conference/conferenceInfo/get.ht?conferenceId="+ conferenceId;
+	$.get(url,function(result){
+		if(result.status==0){
+		var html = template(result.data);
+		$(".mroom-detail").html(html);
+		}
+		else {
+			//console.log(result.message); 
+			Alert("提示信息",result.message);
+		}
+	})	
+}
+
+
+
+function salert(title,txt,id,conferenceId){
+
+	var div = ['<div class="am-modal am-modal-prompt" style="margin-top:-67px;" tabindex="-1" id="salert'+id+'">',
+            	  '<div class="am-modal-dialog">',
+            	    '<div class="am-modal-hd" id="confirmDialog_Title">',
+            	    title,
+            	    '</div>',
+            	    '<div class="am-modal-bd" name="divConfirm" >',
+            	    '<div id="confirmDialog_Content">',
+            	    txt,
+            	    '</div>',
+            	    '</div>',
+            	    '<div class="am-modal-footer">',
+            	      '<span class="am-modal-btn" id="cancel">取消</span>',
+            	      '<span class="am-modal-btn" id="confirm">确认</span>',
+            	    '</div>',
+            	  '</div>',
+            	'</div>']; 
+	var html= div.join("");
+	
+	var dialogObj=$("#salert"+id+"");
+	if(dialogObj.length>0){
+		dialogObj.remove();
+	}
+	var body=$("body");
+	body.append(html);
+	
+	$("#salert"+id+"").addClass("am-modal-active").css('display','block');
+	$('#mask').css('display','block');
+	
+	
+	$("#salert"+id+" #cancel").on("click", function(){ 
+		salertHide(id);
+         });
+	$("#salert"+id+" #confirm").on("click", function(){ 
+		delDataS(conferenceId);salertHide(id);
+         });
+}
+function salertHide(id){
+	$("#salert"+id+" ,.sweet-overlay").remove();
+	$('#mask').css('display','none');
+}
+
+function delData(){
+	salert("提示信息",'确认删除吗？','3');
+	event.stopPropagation();
+}
+function delDataS(){
+	var url=__ctx+"/me/conference/conferenceInfo/del.ht?conferenceId="+ conferenceId;
+	$.get(url,function(result){
+		if(result.status==0){
+			Alert("提示信息",result.message);
+			//toast('top-right','success',JSON.stringify(result.message),'success');
+        	setTimeout(function(){location.href="mRoomList.html?sessionId="+sessionId+"";},500);  
+		}
+		else {
+			//toast('top-right','error',JSON.stringify(result.message),'error');
+			Alert("提示信息",result.message);
+		}
+	})	
+}
+$(function() {
+	getData();
+})	
+</script>
+<script type="text/x-handlebars-template" id="mroomDetail">
+     <div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">会议室名称：</div>
+		  <div class="am-u-sm-8">{{roomName}}</div>
+	  </div>
+
+	<div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">会议主题：</div>
+		  <div class="am-u-sm-8">{{theme}}</div>
+	  </div>
+
+	 <div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">会议室时间：</div>
+		  <div class="am-u-sm-8">{{convokeDateText}} {{beginTime}}至{{endTime}}</div>
+	 </div>
+
+<div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">会议设备：</div>
+		  <div class="am-u-sm-8">{{devicesText}}</div>
+	 </div>
+	 <div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">参会人员：</div>
+		  <div class="am-u-sm-8">{{participantsText}}</div>
+	 </div>
+	 <div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">会议描述：</div>
+		  <div class="am-u-sm-8">{{description}}</div>
+	 </div>
+</script>    
+<title>会议室申请详情</title>
+</head>
+<body>
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">	
+  <div class="burger-arr"  onclick="history.back();"><i></i><i></i><i></i></div>	
+  <h1 class="am-header-title am-header-no-type"><span>会议室预定详情</span></h1>		
+</header>
+	<div class="contentDiv content-div">
+   <div class="am-h10"></div>
+   <div class="mroom-detail">
+
+   </div>
+	<div class="bigButtonBox am-text-center">
+    <input type="submit" class="bigButton red" value="删除" onClick="delData()" /> 
+    </div>
+ <div id="mask"></div>   
+<div class="am-with-fixed-navbar"></div>
+
+    </div>
+</body>
+</html>

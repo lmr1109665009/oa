@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="msapplication-TileColor" content="#fff">
+<title>企业流程</title>
+<link rel="stylesheet" href="assets/css/startFrame.css">
+<script src="assets/js/jquery.min.js"></script>
+<script src="../assets/js/headers.js"></script>	
+
+<script type="text/javascript">
+var typeId = request.QueryString("typeId") == null ? '' : request.QueryString("typeId");
+var typeName = request.QueryString("typeName") == null ? '' : request.QueryString("typeName");
+
+// 去后台获取二级菜单去重
+function getsubMenuName(obj){
+	 var res = [];
+	 var json = {};
+	 for(var i = 0; i < obj.length; i++){
+	  if(!json[obj[i]]){
+	   res.push(obj[i]);
+	   json[obj[i]] = 1;
+	  }
+	 }
+	 return res;
+}
+
+function flowListFlow(id) {
+	var flowListUrl = __ctx + "/platform/bpm/bpmDefinition/myListFront.ht";
+	$.post(flowListUrl,{"typeId":id}, function(flowList){
+		    
+			var htmlMid = "";
+			var typeNames = [];
+			//flowList = flowList.results;
+			for (var j = 0; j < flowList.length; j++) {
+				typeNames.push(flowList[j].typeName);
+			}
+			var iPad = navigator.userAgent.indexOf('iPad') > -1; //是否iPad
+			var iVersion= window.sessionStorage.getItem("version");//获取缓存浏览器version
+			typeNames = getsubMenuName(typeNames);
+			//console.log(typeNames+","+flowList.length);
+			for (var k = 0; k < typeNames.length; k++) {
+				htmlMid += "<li class='dataList'><span class='typeName'>"+typeNames[k]+"</span><ul class='flowList'>";
+			for (var j = 0; j < flowList.length; j++) {
+				    if(typeNames[k] == flowList[j].typeName){
+				    	if(iPad||iVersion == 'iPad'){
+				    		htmlMid += "<li><a href= " + __ctx + "/platform/bpm/task/startFlowForm.ht?defId=" 
+							+ flowList[j].defId  + "&flowKey=" + flowList[j].defKey 
+							+"' class=\"open-contents\"><span>" +flowList[j].subject +"</span></a></li>";
+                            //+ "&subject=" + flowList[j].subject+"' class=\"open-contents\"><span>" +flowList[j].subject +"</span></a></li>";
+				    	}
+				    	else{
+				    	htmlMid += "<li><a href= " + __ctx + "/platform/bpm/task/startFlowForm.ht?defId=" 
+							+ flowList[j].defId  + "&flowKey=" + flowList[j].defKey 
+							+"'  target=\" _blank\" class=\"open-content\"><span>" +flowList[j].subject +"</span></a></li>";
+                           // + "&subject=" + flowList[j].subject+"'  target=\" _blank\" class=\"open-content\"><span>" +flowList[j].subject +"</span></a></li>";
+				    	}} }
+			htmlMid += "</ul></li>"
+			}
+			$("#flowListul").html(htmlMid);
+			
+			$('.open-contents').on('click', function (e) {
+				e.preventDefault();
+				//window.open($(this).attr('href'), "_top")
+				//alert($(this).attr('href'))
+				window.top.location.href  = $(this).attr('href');
+				
+			});
+			/* if(i==0){
+			$('.submenu:first').addClass('on');
+			$('#frame').attr('src', $('.open-content:first').attr('href'));	
+			}
+			$('.open-content').on('click', function (e) {
+				  var href = $(this).attr('href');
+				  $('.submenu').removeClass('on');
+				  $(this).parent().parent().parent().addClass('on');
+				  $('#frame').attr('src', href);
+				  $('.open-content').parent().removeClass('active');
+				  $(this).parent().addClass('active');
+				}); */	
+		});
+	
+}
+function loadTypeAndFlow() {
+	var url = __ctx + "/platform/system/globalType/getByParentId.ht";	
+	$.post(url,{"parentId":3,"catKey":"FLOW_TYPE"},function(data){
+		var html = "";
+		//console.log(data);
+		if (undefined != data && data != null && data.length > 0) {
+		for (var i = 0; i < data.length; i++) {
+				if(i==0){
+					var htmlBegin = '<li class="submenu open" typeId="'+ data[i].typeId+'"><div class="dropdown-toggle"><span>'+ data[i].typeName + '</span></div>';	
+				}else{
+					var htmlBegin = '<li class="submenu" typeId="'+ data[i].typeId+'"><div class="dropdown-toggle"><span>'+ data[i].typeName + '</span></div>';
+				}
+				var htmlEnd = "</li>";
+				html += (htmlBegin+htmlEnd);	
+		}
+		$('#content-div').html(html);
+		//初始化
+		flowListFlow($("#content-div .submenu:first").attr("typeId"));
+		/* for (var ele = 0; ele < $('.submenu').length; ele++) { 
+			flowListFlow($('.submenu').eq(ele).find("ul"),$('li.submenu').eq(ele).attr('typeId'),ele);
+		} */
+		}
+		else {
+			
+			//flowListFlow($('#content-div').addClass("nav-listul nav-listulcl"),typeId,0);
+			
+		}
+		
+		//var content = $('#content-div').html();
+		
+	});
+}
+		
+		
+		
+        		
+	
+$(function() { 	
+	loadTypeAndFlow();
+	$('.page-container .content').height($(window).height()-45-56);
+	$("#content-div").on("click","li.submenu",function(){
+        $(this).addClass("open");
+        $(this).siblings().removeClass("open");
+        flowListFlow($(this).attr("typeId"));
+	});
+});
+
+$(window).resize(function(){
+	$('.page-container .content').height($(window).height()-45-56);
+});
+</script>
+</head>
+<body class="global-font-family">
+    <div id="rocket-chat" class="menu-nav">
+        <div class="main-content">
+            <section class="page-container page-home page-static">
+               <!--  <header class="fixed-title">
+                    <h2>
+                        <span class="list-title"></span>
+                    </h2>
+                </header> -->
+                <!-- <iframe id="frame" class="content" frameborder="0" name="frame">
+
+                </iframe> -->
+                <!-- <div class="loading-animation">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div> -->
+                <ul id="flowListul"></ul>
+            </section>
+        </div>
+        <aside class="side-nav">
+            <div class="rooms-list">
+                <div class="wrapper">
+                <ul class="nav nav-list" id="content-div">
+                 </ul>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

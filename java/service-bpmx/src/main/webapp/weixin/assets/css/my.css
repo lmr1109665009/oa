@@ -1,0 +1,122 @@
+/* 个人信息 */
+.my{
+	width:100%;
+}
+.my .avatar{
+	width:100%;
+	background-image:url(sea/my.jpg);
+	text-align: center;
+}
+.my .avatar img{
+	width:80px;
+	height:80px;
+	border-radius: 50%;
+	margin-top: 10px;
+}
+.my .avatar .name{
+	margin: 10px auto 0 auto ;
+	font-size:18px;
+	color:#fff;
+	position:relative;
+	padding-bottom: 10px;
+}
+.my .avatar .name i{
+	display: inline-block;
+	content:"";
+	background-image: url("sea/arrow_w_r.png");
+	background-position: center center;
+	position: absolute;
+	color:#fff;
+	bottom: 16px;
+	width:15px;
+	height:15px;
+	background-size: cover;
+}
+
+.my .org{
+    width:100%;
+    text-align: center;
+    overflow: hidden;
+}
+.my .org .container{
+    float: left;
+    width:33.3%;
+    position: relative;
+}
+.my .org .container .content{
+    font-size: 16px;
+    padding-top: 6px;
+    text-align: center;
+    color:#37474F;
+}
+.my .org .container .title{
+    font-size: 14px;
+    padding-top: 4px;
+    padding-bottom: 5px;
+    text-align: center;
+    color:#A4AAB0;
+}
+.my .org .container i{
+    display: inline-block;
+    position: absolute;
+    right:0;
+    bottom:18px;
+    height:30px;
+    border-right:1px solid #dcdcdc; 
+}
+.my .org .container:last-child i{
+    border-right:0; 
+}
+.bg{
+    background: #dedede;
+    height:12px;
+}
+.workflow,.workflow ul,.workflow ul li,.workflow ul li a{
+    width:100%;
+}
+.workflow ul{border-bottom: 1px solid #ccc;}
+.workflow ul li{
+    padding: 8px 0 0 42px;
+    position: relative;
+}
+.workflow ul li a span{
+    width: 25px;
+    padding: 0 8px;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    top: 6px;
+}
+
+.workflow ul li a span img{
+    width:25px;
+    height:25px;
+}
+.workflow ul li a .name{
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    padding: 0px 0px 8px 8px;
+    text-align: left;
+    font-size:15px;
+    color:#37474F;
+   border-bottom: 1px solid #ccc; 
+}
+.workflow ul li:last-child a .name{ border-bottom: 0;}
+
+.workflow ul li a .name i{
+    position: absolute;
+    right: 10px;
+    bottom: 13px;
+    background-image: url("sea/arrow_g_r.png");
+    background-position: center center;
+    display: inline-block;
+    content:"";
+    background-size:cover;
+    width:15px;
+    height:15px;
+}
+.tab_jb,.tab_xc,.tab_jx,.tab_ht {overflow-y:scroll;filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter: grayscale(100%);background: #eaeaea;}
+
+/* 搜索置灰 */
+.searchData{filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter: grayscale(100%);}

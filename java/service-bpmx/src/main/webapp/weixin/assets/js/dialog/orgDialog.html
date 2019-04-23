@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="orgDialog">
+<head>
+<meta charset="UTF-8">
+<title>test</title>
+<script src="../importJs.js"></script>
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css"]);
+
+importJs(["/weixin/assets/js/angular.min.js",
+          "/weixin/assets/js/ztree/js/jquery.ztree.all-3.5.min.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js",
+          "/weixin/assets/js/BaseService.js",
+          "/weixin/assets/js/dialog/orgDialogController.js"]);
+
+</script>
+
+<style type="text/css">
+	.am-popup-inner {padding-top: 0px; }
+</style>
+</head>
+<body ng-controller="OrgDialogController">
+	<div class="am-topbar-fixed-top am-form">
+  		<div id="dropdown" class="am-dropdown am-u-sm-3 m-u-md-3"  data-am-dropdown="{justify: '.am-topbar-fixed-top'}">
+		  	<button class="am-btn am-btn-success am-dropdown-toggle am-btn-sm">已选(${returnData.length}) <span class="am-icon-caret-down"></span></button>
+		  	<div class="am-dropdown-content">
+			  	<div>
+					<span ng-repeat="org in returnData">
+					<button style="margin: 4px" class="am-btn am-btn-secondary  fa-remove" title="移除该项" ng-click="unChoiceOne($index)">${org.orgName}</button>
+					</span>
+				</div>
+			</div>
+	  	</div>
+    	<div class="am-input-group am-input-group-sm  am-u-sm-9 m-u-md-9">
+			<select ng-model="pageParam.org_dimId" ng-change="loadOrgTree('orgTree')" ng-options="(dim.demId) as dim.demName for dim in dimensionList"
+ 			  ht-select-ajax="{url:'/weixin/orgDialog/getDimList.ht',field:'dimensionList'}">
+ 		   </select>
+		</div>
+  </div>
+		
+  <div class="am-popup-inner">
+    <div class="am-tabs-bd">
+        <!-- 树 --> 
+        <div class="am-u-sm-12">
+	        <div class="am-g">
+	        	<ul id="orgTree" class="ztree" style="width:100%;overflow:auto;"></ul>
+	        </div>
+        </div>
+      
+		<!-- 已经选择组织 -->
+		<hr data-am-widget="divider" style="" class="am-divider am-divider-dashed" />
+		<div>
+			<span ng-repeat="org in returnData">
+			<button style="margin: 4px" class="am-btn am-btn-secondary  fa-remove" title="移除该项" ng-click="unChoiceOne($index)">${org.orgName}</button>
+			</span>
+		</div>
+  	</div>
+</div>
+<div class="am-modal-footer am-topbar-fixed-bottom">
+	<div class="am-g">
+		  <div class="am-u-sm-9 am-u-sm-centered" style="text-align: center;">
+		   <button type="button" class="am-btn  am-radius am-btn-danger" ng-click="closeDialog()">取消</button>
+    		<button type="button" class="am-btn  am-radius am-btn-warning" ng-click="cleanSelect()">清除</button>
+    		<button type="button" class="am-btn  am-radius am-btn-primary" ng-click="dialogOk()">确定</button>　
+    	  </div>
+	</div>
+</div>
+</body>
+</html>
+
+

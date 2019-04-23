@@ -1,0 +1,19 @@
+<span>
+	<div ng-if="permission=='w' || permission=='b'">
+		<div class="am-u-sm-12 am-u-md-12">
+			<span class="am-u-sm-6 m-u-md-4" ng-repeat="item in names">
+				 <button style="margin: 4px" class="am-btn am-btn-secondary" ng-click="selectedOnClick($index)">${item}</button>
+				 <a class="btn btn-xs  fa-remove"  title="移除该项" ng-click="remove($index)"></a>
+			</span>
+			<a class="btn btn-sm btn-primary fa-search" ng-click="showDialog()">选择</a>
+		</div>
+	</div>
+	<div ng-if="permission=='r'" class="am-u-sm-12 am-u-md-12" >
+		<span ng-repeat="item in names" class="am-u-sm-6 m-u-md-4" >
+			<button style="margin: 4px" class="am-btn am-btn-secondary" ng-click="selectedOnClick($index)">${item}</button>
+		</span>
+	</div>
+</span>
+	
+
+

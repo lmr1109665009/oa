@@ -1,0 +1,152 @@
+{
+		    "taskId": "123",
+		    "buttons": [
+		        {
+		            "text": "同意",
+		            "type": "agree"
+		        },
+		        {
+		            "text": "反对",
+		            "type": "oppose"
+		        },
+		        {
+		            "text": "退回",
+		            "type": "oppose"
+		        }
+		    ],
+		    "form": {
+		        "main": [
+		            {
+		                "comment": "姓名",
+		                "name": "sqr",
+		                "permission": "w",
+		                "validate":"{required:true}",
+		                "ctlType": "selector",
+		                "json": {"type":"user","single":true}
+		            },{
+		                        "name": "leixing",
+		                        "ctlType": "ht-dic",
+		                        "dictype":"rjgs",
+		                        "comment": "数据字典",
+		                        "permission": "w"
+		                    
+		            },{
+		                "comment": "爱好",
+		                "validate":"{required:true,minlength:2}",
+		                "name": "hobby",
+		                "permission": "w",
+		                "ctlType": "checkbox",
+		                "json": "[{val:1,text:'篮球'},{val:2,text:'乒乓球'},{val:3,text:'足球'}]"
+		            },
+		            {
+		                "comment": "地址",
+		                "validate":"{required:true,minlength:3}",
+		                "name": "address",
+		                "permission": "w",
+		                "ctlType": "",
+		                "json": {}
+		            },
+		            {
+		                "comment": "年龄",
+		                "name": "age",
+		                "permission": "w",
+		                "ctlType": "",
+		                "json": {}
+		            },
+		             {
+                        "name": "memo",
+                        "validate":"{required:true,minlength:3}",
+                        "ctlType": "textarea",
+                        "comment": "备注",
+                        "permission": "w"
+                    },
+		             {
+                        "name": "color",
+                        "ctlType": "select",
+                        "validate":"{required:true,minlength:3}",
+                        "comment": "喜好颜色",
+                        "permission": "w",
+                        "json": "[{val:1,text:'红色'},{val:2,text:'绿色'},{val:3,text:'蓝色'}]"
+                    },
+		             {
+                        "name": "manyidu",
+                        "ctlType": "radio",
+                        "validate":"{required:true}",
+                        "comment": "满意度",
+                        "permission": "w",
+                        "json": "[{val:1,text:'不满意'},{val:2,text:'一般般'},{val:3,text:'满意'},{val:4,text:'非常满意'}]"
+                    },
+                    {
+                        "name": "birthday",
+                        "ctlType": "date",
+                        "validate":"{required:true}",
+                        "comment": "出生日期",
+                        "permission": "w",
+                        "json": "{format:'yyyy-mm-dd'}"
+                    }
+                    
+		        ],
+		        "sub": [
+		            {
+		                "tableName": "customer",
+		                "comment": "客户管理",
+		                "persmssion": "add,require,del",
+		                "metaData": [
+		                    {
+		                        "name": "name",
+		                        "ctlType": "selector",
+		                        "comment": "名字",
+		                        "permission": "w"
+		                    },
+		                    {
+		                        "name": "sex",
+		                        "ctlType": "",
+		                        "comment": "性别",
+		                        "permission": "w"
+		                    }
+		                    ,{
+		                        "name": "phone",
+		                        "ctlType": "",
+		                        "comment": "电话",
+		                        "permission": "w"
+		                    },{
+		                        "name": "email",
+		                        "ctlType": "",
+		                        "comment": "邮件",
+		                        "permission": "w"
+		                    },
+		                    {
+		                        "name": "address",
+		                        "ctlType": "",
+		                        "comment": "地址",
+		                        "permission": "w"
+		                    },{
+		                        "name": "leixing",
+		                        "ctlType": "ht-dic",
+		                        "dictype":"rjgs",
+		                        "comment": "数据字典",
+		                        "permission": "w"
+		                    }
+		                ]
+		               ,"row":{"name":"","sex":"男","phone":"","email":"","address":""}
+		            }
+		        ]
+		    },
+		    "data": {
+		        "main": {
+		             "sqr": "",
+		             "sqrID": "",
+		              "hobby": "",
+		              "address": "",
+		              "age": "",
+		              "memo":"",
+		              "color":"",
+		              "manyidu":"",
+		              "birthday":"",
+		              "leixing":""
+		        },
+		        "sub": {
+		        	"customer":[]
+		        }
+		    }
+		}

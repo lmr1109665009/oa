@@ -1,0 +1,338 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="format-detection" content="telephone=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>个人考勤</title>
+<script src="../assets/js/importJs.js"></script>	
+<link rel="stylesheet" type="text/css" href="../assets/css/suneee/phone.css" />
+<link rel="stylesheet" href="calendar/calendar.css">
+<style>
+
+.sign-a{
+	display: inline-block;
+	margin-left: 10px;
+	width: 80px;
+	line-height:30px;
+	text-align: center;
+	height:30px;
+	background-color: #F6F6F6;
+	border:1px solid #83D0F8;
+	color: #5EC2F8;
+	border-radius:5px;
+}
+
+</style>
+</head>
+<body class="am-with-fixed-header bgray">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+<div class="burger"><i></i><i></i><i></i></div>
+    <h1 class="am-header-title"><span>个人考勤</span></h1>	
+</header>
+<div id="content-div" class="content-div">
+<div id="demo">
+  <div id="ca"></div>
+</div>
+<div class="info-div">
+	<span id="info-label" class="info-label"></span><span id="info-span2" class="info-span2">排班：T行政班</span>
+</div>
+
+<!-- <div class="chart-div"><i class="chart-i"></i>
+	<div class="state-div">
+		<span class="info-time">09:06</span><span class="info-state">正常打卡</span>
+	</div>
+	<div class="state-div">
+		<span class="info-time">11:57</span><span class="info-state cyel">早退3分钟</span>
+	</div>
+</div>
+<div class="chart-div"><i class="chart-i"></i>
+	<div class="state-div">
+		<span class="info-time">13:00</span><span class="info-state">正常打卡</span>
+	</div>
+	<div class="state-div">
+		<span class="info-time">无</span><span class="info-state cyel">缺卡</span>
+	</div>
+</div>  -->
+</div>
+<script src="calendar/js/jquery.js"></script> 
+<script src="calendar/js/calendar.js"></script> 
+<script>
+    $(function() {
+    	$('#ca').calendar({
+            data: [
+    			{
+    			  date: '2015/12/24',
+    			  value: 'Christmas Eve'
+    			},
+    			{
+    			  date: '2015/12/25',
+    			  value: 'Merry Christmas'
+    			},
+    			{
+    			  date: '2016/01/01',
+    			  value: 'Happy New Year'
+    			}
+    		],
+            onSelected: function (view, date, data) {
+                /* var selectedDate = date.Format("yyyy-MM-dd"); */
+                /* getData(date.Format("yyyy-MM-dd")); */
+            },
+            onMonthChanged: function(){
+            	$('.days li div').css("visibility","hidden");
+            	getAbnormalDay();
+            }
+        });
+
+/*         $('#dd').calendar({
+            trigger: '#dt',
+            zIndex: 999,
+    		format: 'yyyy-mm-dd',
+            onSelected: function (view, date, data) {
+                console.log('event: onSelected')
+            },
+            onClose: function (view, date, data) {
+                console.log('event: onClose')
+                console.log('view:' + view)
+                console.log('date:' + date)
+                console.log('data:' + (data || 'None'));
+            }
+        }); */
+        getNowData();
+    	getAbnormalDay();
+    	//setAbnormalState();
+	    $(document).on("click",".days li", function(){    
+	    	 if($(this).hasClass("now")){
+	    		 $(".days li").removeClass('activea');
+	    		$(this).addClass("activea");
+	    		$(".days .now>i").css({"background":"#0ba9f9","border":"1px solid #0ba9f9","color":"#fff"});
+	    		getSomeDayData(); 
+	    	}else{
+	    		if ($(this).hasClass("new") || $(this).hasClass("old")){
+	    			
+	    		}else{
+			    	$(".days li").removeClass('activea');
+					$(".days .now>i").css({"background":"#f6f6f6","border":"1px solid #0ba9f9","color":"#333"});
+					$(this).addClass("activea");
+					getSomeDayData(); 
+	    		}
+			}	  	 
+		})
+	})
+	var GY={
+	goGY: function(n,year,month){	
+		  	var dayArr=[];
+		  	if(n==-1){	
+			if(parseInt(month)==1||month=="01"||month=="1"){
+			  		year = (parseInt(year)-1) + "";
+			  		month="12"
+			  	}
+			else { month=(parseInt(month)-1)+ "";};
+			
+			if (parseInt(month) < 10) {
+				month = "0" + month;
+			}
+			for(var i=23;i<32;i++){
+				var day = year+'-'+month+'-'+i;
+				 //console.log("month:",month);
+			     dayArr.push(day);
+			   }
+		  	}
+		  	if(n==0){
+		  		if (parseInt(month) < 10) {
+					month = "0" + month;
+				}
+				for(var i=1;i<32;i++){
+					if (parseInt(i) < 10) {
+						i = "0" + i;
+					}
+					var day = year+'-'+month+'-'+i;
+				    dayArr.push(day);
+				   }
+			  	}
+			 else if(n==1){
+				 if(parseInt(month)==12||month=="12"||month=="12"){
+				  		year = (parseInt(year)+1) + "";
+				  		month="1"
+				  	}
+				 else month=(parseInt(month)+1)+ "";
+				 
+				 if (parseInt(month) < 10) {
+						month = "0" + month;
+					}
+				 for(var i=1;i<7;i++){
+						var day = year+'-'+month+'-0'+i;
+					     dayArr.push(day);
+					   }
+			 }
+		     return dayArr;
+		   	}
+    }
+  ///集合取交集  
+    Array.intersect = function () {  
+        var result = new Array();  
+        var obj = {};  
+        for (var i = 0; i < arguments.length; i++) {  
+            for (var j = 0; j < arguments[i].length; j++) {  
+                var str = arguments[i][j];  
+                if (!obj[str]) {  
+                    obj[str] = 1;  
+                }  
+                else {  
+                    obj[str]++;  
+                    if (obj[str] == arguments.length)  
+                    {  
+                        result.push(str);  
+                    }  
+                }//end else  
+            }//end for j  
+        }//end for i  
+        return result;  
+    }  
+	//根据异常日期打点
+	function setAbnormalState(day){
+    	var items = $('.days li');
+    	var dayall = day;
+    	//var dayall=["2017-07-25","2017-07-31", "2017-08-12","2017-08-22", "2017-09-01"];
+    	//console.log(dayall);
+    	if( dayall && typeof(dayall)!="undefined"){
+		    var year = $('.calendar-display').text();
+		  	year = year.substr(0,4);
+		  	var month = $('.m').text();
+		  	month = month.replace("月","");
+			var shangDate = Array.intersect(dayall,GY.goGY(-1,year,month));
+			var dangDate = Array.intersect(dayall,GY.goGY(0,year,month));
+			var xiaDate = Array.intersect(dayall,GY.goGY(1,year,month));
+			//console.log(shangDate,dangDate,xiaDate)
+		    //console.log(GY.goGY(-1,year,month),dayall);
+			
+    	 $.each( items, function(i, item){	
+    		 if ($(item).hasClass('old')){
+    			 $.each(shangDate, function(i, it){
+   		     		var day = new Date(it).getDate();  
+    			if ($(item).text() == day){
+     				$(item).children("div").css("visibility","visible");
+     			}
+    			 }); 
+    		}
+    		 else if($(item).hasClass('new')){
+    			 $.each(xiaDate, function(i, it){
+    		     		var day = new Date(it).getDate();  
+    		     		 //console.log($(item).text())
+     			if ($(item).text() == day){
+      				$(item).children("div").css("visibility","visible");
+      			}
+     			 }); 
+    		 }
+    		 else {
+    			
+    			 $.each(dangDate, function(i, it){
+    		     		var day = new Date(it).getDate();  
+    		     		// console.log($(item).text())
+     			if ($(item).text() == day){
+      				$(item).children("div").css("visibility","visible");
+      			}
+     			 }); 
+    		 }
+    		 
+		}); 
+    	}
+    }
+	//获取当月异常数据
+	function getAbnormalDay(){
+    	var year = $('.calendar-display').text();
+    	year = year.substr(0,4);
+    	var month = $('.m').text();
+    	month = month.replace("月","");
+
+        var url=__ctx +"/kaoqin/kaoqin/api/myMonthInfo.ht"; 
+    	var param="year="+year+"&month="+month;
+    	
+    	$.get(url,param,function(data){
+    		//console.log("benGY",data);
+    		/* $.each( data, function(i, item){
+        		//var day = new Date(item).getDate();    
+        		setAbnormalState(item);
+    		}); */
+    		setAbnormalState(data);
+    	});
+    	
+    }
+	//获取当天考勤数据
+	function getNowData(){
+    	var year = $('.calendar-display').text();
+   	 	year = year.replace("年", "-");
+   	 	year = year.replace("月", "-");
+   	 	var day = $('.now').text();
+   		day = year+day;
+   	 	getData(day);
+    }
+	
+	//获取某天考勤数据
+	function getSomeDayData(){
+		 var year = $('.calendar-display').text();
+    	 year = year.replace("年", "-");
+    	 year = year.replace("月", "-");
+    	 var day = $('.activea').text();
+    	 day = year+day;
+    	 getData(day);
+	}
+    
+    //获取某一天的考勤数据
+    function getData(date){
+    	//先清楚原有数据
+		$("#chart-div").remove();
+        var url=__ctx +"/kaoqin/kaoqin/api/myDayInfo.ht"; 
+    	var data="attendanceDate="+date;
+    	$.get(url,data,function(data){
+    		console.log(data);
+    		if( data.shiftName && typeof(data.shiftName)!="undefined"){
+    			$('#info-span2').text("排班："+ data.shiftName)
+    		}
+    		else{$('#info-span2').text("排班：无")}
+    		var content = "今日打卡：" + data.checkTimes + "次";
+        	$("#info-label").text(content);
+        	var html = "";
+         	if (data.list != null){
+        		for(var i=0; i< data.list.length; i++){
+        			var type = "";
+        			var state = "";
+        			var contentHtml = "";
+        			var signLink = "";
+        			if (data.list[i].checkType==1){
+        				contentHtml = "<div id='chart-div' class='chart-div'><i class='chart-i'></i></div>";
+
+            			var content = $('#content-div').html();
+            			$('#content-div').append(contentHtml);
+        			}
+        			//插入子内容
+        			if (data.list[i].checkResult == 0){
+        				type = "info-state";
+        				state = "正常";
+        				signLink = "";
+        			}else if (data.list[i].checkResult == 1){
+        				type = "info-state cyel";
+        				state = "迟到" + data.list[i].overTime + "分钟";
+        			}else if (data.list[i].checkResult == 2){
+        				type = "info-state cyel";
+        				state = "早退" + data.list[i].overTime + "分钟";
+        			}else if (data.list[i].checkResult == 3){
+        				type = "info-state cyel";
+        				state = "未登记";
+        				var link = "href='../bpm/startFlow.html?flowType=lclx.qk'";
+        				signLink = "<a class='sign-a' "+ link +">签卡</a>";
+        			}
+        			var childHtml = "<div class='state-div'><span class='info-time'>"
+        			+ data.list[i].realTime
+        			+ "</span><span class='"+type+"'>"
+        			+ state + "</span>"
+        			+ signLink + "</div>";
+        			
+        			$("#chart-div").append($("#chart-div").val()+childHtml); 
+        		} 
+        	}
+    	});   	
+    }
+</script>
+</body>
+</html>

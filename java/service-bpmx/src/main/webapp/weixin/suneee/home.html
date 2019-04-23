@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+  <script type="text/javascript" src="../../js/cordova/cordova.js"></script>
+</head>
+<style>
+div{
+	background-image:url('homeBg.png');
+	position:absolute;
+	float:left;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+}
+
+button{
+	position:absolute;
+	width:120px;
+	height:30px;
+	top:532px;
+	background-color: transparent;
+	border-style:none;
+	color:white;
+	font-size:18px;
+	font-weight:900;
+}
+
+a{
+	position:absolute;
+	width:120px;
+	height:30px;
+	top:532px;
+	background-color: transparent;
+	border-style:none;
+	color:white;
+	font-size:18px;
+	font-weight:900;
+}
+
+.new-flow{
+	left:30px;
+}
+
+.my-flow{
+	left:160px;
+}
+</style>
+<script type="text/javascript">
+
+function onNewFlow(){
+    cordova.exec(null, null, "CPlugin", "startNewPage", ["myFlowList.html"]);
+}
+
+function onMyFlow(){
+    cordova.exec(null, null, "CPlugin", "startNewPage", ["myWork.html"]);
+}
+</script>
+<body>
+<div>	
+	<!-- <button class="new-flow" onclick="onNewFlow()">新建流程</button>
+	<button class="my-flow" onclick="onMyFlow()">我的办公</button> -->
+	<a class="new-flow" href='myFlowList.html'>新建流程</a><a class="my-flow" href='myWork.html'>我的办公</a>
+</div>
+</body>
+</html>

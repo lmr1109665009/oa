@@ -1,0 +1,100 @@
+<!doctype html>
+<html class="no-js"  ng-app="approveFlow">
+<head>
+<title>任务审批</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css",
+           "/weixin/assets/css/mobiscroll.custom-2.5.2.min.css",
+           "/weixin/assets/css/form.css",
+           "/weixin/assets/css/formValid.css"]);
+
+importJs(["/weixin/assets/js/angular.min.js",
+          "/weixin/assets/js/BaseService.js",
+          "/weixin/assets/js/zh_CN.js",
+          "/weixin/assets/js/CustomValid.js",
+          "/weixin/assets/js/mobiscroll.custom-2.5.2.min.js",
+          "/js/hotent/platform/form/rule.js",
+          "/weixin/assets/js/jquery.qtip.js",
+          "/weixin/assets/js/ztree/js/jquery.ztree.core-3.5.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js",
+          "/weixin/assets/js/dialog/Dialogs.js",
+          "/weixin/assets/js/formDirective.js",
+          "/weixin/assets/js/bpm/FlowService.js",
+          "/weixin/assets/js/bpm/FormService.js",
+          "/weixin/assets/js/bpm/approveFlowController.js",
+          "/weixin/assets/editor/ueditor.config.js",
+          "/weixin/assets/editor/ueditor.all.min.js"]);
+
+		
+$(function() {
+	var flowType = request.QueryString("subject");
+	if(flowType){$("#lc-title").html(decodeURI(flowType));}
+    window.addEventListener('message',function(event){
+            if(event.data == 'data send'){
+                var appElement = document.querySelector('[ng-controller=ctrl]');
+                var $scope = angular.element(appElement).scope();
+                event.source.postMessage(JSON.stringify($scope.data) ,event.origin)
+            }
+    },false);
+
+})
+
+</script>
+<style type="text/css">
+#contentDiv{
+	height:-webkit-calc(100% -40px);
+	height:calc(100% );
+	overflow:auto ;
+}
+</style>
+</head>
+<body ng-controller="ctrl">
+<!--<header data-am-widget="header" class="am-header am-header-default am-header-fixed">-->
+  <!--<div class="burger-arr"  onclick="history.back();"><i></i><i></i><i></i></div>-->
+  <!--<h1 class="am-header-title" id="lc-title"><span>任务审批 </span></h1>-->
+<!--</header>-->
+<div id="formHtml" ht-bind-html="formHtml" style="width: 100%;height: 100%;overflow: auto;padding-top: 43px"></div>
+<!--<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default am-navbar-footer">-->
+	<!--&lt;!&ndash; 同意，反对，退回，退回发起人，会签同意，会签弃权，会签反对， &ndash;&gt;-->
+	<!--<ul class="am-navbar-nav am-cf am-avg-sm-4">-->
+		<!--<li ng-if="flowParam.isSignTask!=true">-->
+			<!--<button type="button" class="am-btn am-btn-secondary am-radius"  ng-click="approveFlow('agree')">同意</button>-->
+		<!--</li>-->
+		<!--&lt;!&ndash; <li ng-if="isSignTask==true">-->
+			<!--<a href="#" class="" ng-click="approveFlow('notAgree')" >-->
+				<!--<i class="am-icon fa fa-check"></i>-->
+				<!--<span class="am-navbar-label">反对</span>-->
+			<!--</a>-->
+		<!--</li> &ndash;&gt;-->
+		<!--<li ng-if="flowParam.isSignTask==true">-->
+			<!--<button type="button" class="am-btn am-btn-secondary am-radius" ng-click="approveFlow('agree_sign')" >同意</button>-->
+		<!--</li>-->
+		<!--<li ng-if="flowParam.isSignTask==true">-->
+			<!--<button type="button" class="am-btn am-btn-danger am-radius"  ng-click="approveFlow('notAgree_sign')" >反对</button>-->
+		<!--</li>-->
+		<!--<li ng-if="flowParam.isSignTask==true">-->
+			<!--<button type="button" class="am-btn am-btn-warning am-radius"  ng-click="approveFlow('abandon')">弃权</button>-->
+		<!--</li>-->
+
+		<!--<li ng-if="flowParam.isCanBack==true">-->
+			<!--<button type="button" class="am-btn am-btn-danger am-radius" ng-click="approveFlow('reject')">退回</button>-->
+		<!--</li>-->
+		<!--<li ng-if="flowParam.isCanBack==true && !flowParam.isFirstNode">-->
+			<!--<button type="button" class="am-btn am-btn-danger am-radius"  ng-click="approveFlow('rejectToStart')" >退回发起人</button>-->
+		<!--</li>-->
+
+		<!--<li>-->
+			<!--<button type="button" class="am-btn am-btn-warning am-radius"  ng-click="showOpinion()" >审批历史</button>-->
+		<!--</li>-->
+		<!--&lt;!&ndash; <li>-->
+			<!--<button type="button" class="am-btn am-btn-warning am-radius"   ng-click="showFlowPic()">流程图</button>-->
+		<!--</li> &ndash;&gt;-->
+	<!--</ul>-->
+<!--</div>-->
+
+</body>
+</html>

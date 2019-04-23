@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=320.1, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Access-Control-Allow-Origin" content="*"><!--Ajax跨域问题浏览器兼容性-->
+<link rel="shortcut icon" href="site/favicon.ico" type="image/x-icon" />  
+<title>假期结余</title>
+
+<script src="../assets/js/importJs.js"></script>
+
+</head>
+<style>
+body{overflow: scroll;}
+.item-ul{
+    margin-top: 0;
+    width: 100%;
+    display:inline-block;
+    padding: 0;
+    font-size: 16px;
+}
+
+.item-li:nth-child(n){
+    /* height: 44px; */
+    list-style:none;
+    background-color: white;
+    text-align: center;
+    color: #797b7b;
+    border-bottom: 1px solid #f2f4f4;
+    /* line-height: 44px; */
+    /* position: relative; */
+    float:left;
+}
+.content-div, .item-li ,.item-li .content{
+	width:100%;
+	overflow:hidden;
+}
+.item-li .bg{
+	background-color:#f2f4f4;
+	height:15px;
+	width:100%;
+}
+.item-li .title{
+	padding:10px 20px;
+	font-size:15px;
+	font-weight:bold;
+	text-align:left;
+	border-bottom:1px solid #f2f4f4;
+}
+.item-li .title img{
+	width:25px;
+	height:25px;
+	margin-right:15px;
+}
+.item-li .content span{
+	width:33.3%;
+	float:left;
+	text-align:center;
+	font-size:14px;
+}
+.item-li .content{padding:6px 0;}
+.item-li .content span .word{font-size:16px;}
+.item-li .span1,.item-li span i{ color: #53c7ed; font-size: 16px;display:inline-block;}
+</style>
+<script>
+	var url=__ctx +"/kaoqin/kaoqin/api/userVacationRemains.ht"; 
+	$.get(url,function(data){
+		var html = "";
+		var htmlMid = "";
+		var image = "";
+		var htmlBegin = "<ul class=\"item-ul\"></div>";		
+		for(var i=0; i< data.length; i++){
+			if(data[i].vacationName == "年假"){
+				image = "<img src='../assets/css/suneee/nj.png'/>";
+			}else if(data[i].vacationName == "产假"){
+				image = "<img src='../assets/css/suneee/cj.png'/>";
+			}else if(data[i].vacationName == "病假"){
+				image = "<img src='../assets/css/suneee/bj.png'/>";
+			}else if(data[i].vacationName == "调休假"){
+				image = "<img src='../assets/css/suneee/tx.png'/>";
+			}else if(data[i].vacationName == "哺乳假"){
+				image = "<img src='../assets/css/suneee/brj.png'/>";
+			}else if(data[i].vacationName == "陪产假"){
+				image = "<img src='../assets/css/suneee/pcj.png'/>";
+			}else if(data[i].vacationName == "婚假"){
+				image = "<img src='../assets/css/suneee/hj.png'/>";
+			}
+			var total = parseInt(data[i].remained) + parseInt(data[i].used);
+			htmlMid += "<li class=\"item-li\"><div class='bg'></div><div class='title'>"+ image + data[i].vacationName +"</div>"
+				+ "<div class='content'><span><div><i>"+ total +"</i>小时</div><div class='word'>年分配</div></span>"
+				+ "<span><div><i>"+ data[i].used +"</i>小时</div><div  class='word'>已用</div></span>"
+				+ "<span><div><i>"+ data[i].remained +"</i>小时</div><div  class='word'>剩余</div></span></div>"
+				+ "</li>";
+			
+		}
+		var htmlEnd = "</ul>"; 
+
+		html += (htmlBegin + htmlMid + htmlEnd);
+		$('#content-div').append(html);
+	});
+	
+</script>
+
+<body>
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger" onclick="history.back()"><i></i><i></i><i></i></div>
+	<h1 class="am-header-title"><span>假期结余</span></h1>	
+</header>
+<div id="content-div" class="content-div">
+	<!-- <ul class="item-ul">
+		<li class="item-li"><span>年休假</span><span>已使用：3天</span><span>剩余：5天</span></li>
+		<li class="item-li"><span>婚假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>丧假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>产假假</span><span>已使用：52天</span><span>剩余：75天</span></li>
+		<li class="item-li"><span>陪产假</span><span>已使用：9天</span><span>剩余：12天</span></li>
+		<li class="item-li"><span>哺乳假</span><span>已使用：12天</span><span>剩余：36天</span></li>
+		<li class="item-li"><span>工伤假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>病假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>事假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>特殊假</span><span>已使用：1天</span><span>剩余：3天</span></li>
+		<li class="item-li"><span>调休假</span><span>已使用：8小时</span><span>剩余：7.5小时</span></li>
+		<li class="item-li"><span>产检假</span><span>已使用：44天</span><span>剩余：2天</span></li>
+		<li class="item-li"><span>探亲假</span><span>已使用：0</span><span>剩余：0天</span></li>
+		<li class="item-li"><span>外出假</span><span>已使用：0</span><span>剩余：0天</span></li>
+	</ul> -->
+</div>
+</body>
+</html>

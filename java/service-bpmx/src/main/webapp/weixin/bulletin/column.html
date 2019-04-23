@@ -1,0 +1,73 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<title>BPMX 微信端</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+	//导入JS
+	importJs(["/weixin/assets/js/pageScroll.js"]);
+</script>
+</head>
+<body>
+
+<div class="page">
+  <header data-am-widget="header" class="am-header am-header-default">
+  	<div class="am-header-left am-header-nav">
+		<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>
+	</div>
+    <h1 class="am-header-title" id="colTitle">
+      公告栏目
+    </h1>
+  </header>
+
+  <div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+	  <div class="am-list-news-bd">
+	  	<ul class="am-list" id="wrapperList"></ul>
+	  </div>
+  </div>
+  
+</div>
+
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+{{#each this}}
+      <li class="am-g am-list-item-dated">
+          <a href="colList.html?columnId={{id}}" class="am-list-item-hd ">{{name}}</a>
+      </li>
+{{/each}}
+</script>
+
+
+
+<script>
+
+$(function() {
+	var url="columns.ht";
+	var $tpl = $('#tpi-list-item');
+	var $modal = $('#my-modal-loading');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl);
+	
+	$.get(url,function(data){
+		html = template(data);
+		$("#wrapperList").html(html);
+		$modal.modal('close');
+	});
+});
+
+
+
+
+</script>
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在加载数据请稍候...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+

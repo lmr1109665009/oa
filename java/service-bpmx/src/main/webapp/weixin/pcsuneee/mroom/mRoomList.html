@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<title>会议室预定列表</title>
+<link type="text/css" rel="Stylesheet" href="../assets/css/mroom.css" />
+<link type="text/css" rel="Stylesheet" href="../assets/css/alert.css" />
+<link type="text/css" rel="Stylesheet" href="../assets/css/jquery.pagination.css" />
+
+<script src="../assets/js/jquery.min.js"></script>	
+<script src="../../assets/js/headers.js"></script>	
+<script src="../assets/js/alert.js"></script>	
+<script src="../assets/js/handlebars.min.js"></script>	
+<script src="../assets/js/jquery.pagination-1.2.7.js"></script>	
+<script type="text/javascript"> 
+/**
+ * 修复list页面滚动条的bug ，用法 在对应的页面 的body上面加上 onload事件  如 ： <body style="overflow: hidden;" onload="changeHeight()">
+ */
+function changeHeight(noNeedFoldHeight,time){
+	window.setTimeout(function(){
+		$("body").css("overflow-y","hidden");
+		var currentThead=$(".table-grid.table-list thead");
+		var currentTable=$(".table-grid.table-list tbody");
+		//currentThead.find("tr th:eq(0)").width(currentTable.find("tr td:eq(0)").width());
+		
+		if($(".table-grid.table-list tbody .empty").length){
+
+		}
+		else
+			{
+			$(".table-grid.table-list thead tr th").each(function(index,element){
+				$(this).width(currentTable.find("tr td:eq("+index+")").width());
+				$(this).attr("style",currentTable.find("tr td:eq("+index+")").attr("style"));
+			  });
+			}
+		if(! currentTable) return; 
+		var tableBody=currentTable,foldHeight=0;
+		//if(!parent.document.querySelectorAll("#logoImg")[0])foldHeight =  $("#searchForm").height();
+		var moreHeight = $('.panel-search').attr("moreHeight")||0;
+		var panelTtopHeight=$(".panel-search").height()||0 ;
+		if($(".panel-search .row").length){panelTtopHeight= panelTtopHeight + 25 + 10}else{
+			$(".panel-search").css({"border-top":"0","margin-top:":"0","padding-top":"0"});
+		}
+		var panelNav=$(".panel-nav").height()||0;
+		var panelToolbar=$(".panel-toolbar").height()||0;
+		var dialogButtons=$(".l-dialog-buttons").height()||0;
+		if($(".panel-nav").length){ panelNav=panelNav+10 }
+		var panelPage=$(".l-panel-bbar-inner").height()||0;
+		if($(".l-panel-bbar-inner").length){ 
+			panelPage= 57;
+			if($(".myappleBody").length){
+			$(".l-panel-bbar-inner").css({"padding-top":"15px","bottom":"inherit"});
+			panelPage=panelPage+60 ;}
+			}
+		if($(".table-grid.table-list thead").length){ var panelthead = 44 }		
+		tableBody.height($(window).height()-panelTtopHeight-panelPage-panelNav-panelToolbar-dialogButtons-panelthead);		
+		tableBody.css("overflow-y","auto");
+		tableBody.css("border","1px solid #e9e9e9");
+		tableBody.css("border-width","0 1px 0 1px");
+		currentTable.css("margin-top","0px"); 
+	},time||10)
+}
+/* function getData(){
+	var $tpl = $('#mroom-list');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl);
+	var url=__ctx+"/me/conference/conferenceInfo/list.ht?currentPage=1&pageSize=200";
+	$.get(url,function(result){
+		if(result.status==0){
+			if(result.data.rowList.length){
+			var html = template(result.data.rowList);
+			$("#mroom-ul").html(html);
+			changeHeight();
+			}
+			else 
+			$("#mroom-ul").html('<tr class="empty"><td  colspan="5"><span class="am-icon-smile-o pull-label"> 没有数据!</span></td><tr>');
+		}
+		else {
+		$("#mroom-ul").html(result.message);
+		}
+	})	
+} */
+
+function getData(param) {  
+    /* 先销毁pagination容器 */  
+    $("#page").html(""); 
+    /* 重新生成容器 */  
+    $("#page").html("<div class='m-pagination'></div>"); 
+    var $tpl = $('#mroom-list');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl);
+	var url=__ctx+"/me/conference/conferenceInfo/list.ht";
+    $(".m-pagination").eq(0).page({  
+        firstBtnText : '首页',  
+        lastBtnText : '尾页',  
+        prevBtnText : '上一页',  
+        nextBtnText : '下一页',  
+        showInfo : true,  
+        showJump : true,  
+        jumpBtnText : '跳转', 
+        showPageSizes : true,  
+        infoFormat : '{start} ~ {end}条，共{total}条',  
+        pageSize: 10,
+        debug: true,
+        showFirstLastBtn: true,
+        remote : {  
+            url : url, // 请求地址  
+            params : {},  
+            beforeSend : function(XMLHttpRequest) {  
+                $("#mroom-ul").html("");  
+            },  
+            success : function(result, currentPage) { 	
+            	if(result.status==0){
+        			if(result.data.rowList.length){
+        			var html = template(result.data.rowList);
+        			$("#mroom-ul").html(html);
+        			changeHeight();
+        			}
+        			else 
+        			$("#mroom-ul").html('<tr class="empty"><td  colspan="5"><span class="am-icon-smile-o pull-label"> 没有数据!</span></td><tr>');
+        		}
+        		else {
+        		$("#mroom-ul").html('<tr class="empty"><td  colspan="5"><span class="am-icon-smile-o pull-label">'+result.message+'</span></td><tr>');
+        		}
+            	
+                //data为响应返回的json数据  
+                //...do somethings ?currentPage=1&pageSize=200  
+               /*  var c="";  
+                for (var i = 0; i < data.list.length; i++) {  
+                    c+="<tr><td>"+data.list[i].id+"</td><td>"+data.list[i].name+"</td><td>"+data.list[i].age+"</td></tr>";  
+                }  
+                $("#mroom-ul").html(c); */
+                
+            },  
+            complete : function(XMLHttpRequest, textStatu) {  
+                //...  
+            },  
+            pageIndexName: 'currentPage',     //请求参数，当前页数，索引从0开始
+            pageSizeName: 'pageSize',       //请求参数，每页数量
+            totalName: 'totalCount'              //指定返回数据的总数据量的字段名
+        }  
+    });  
+} 
+
+function delData(conferenceId,evt){
+	salert('确认删除吗？','3',conferenceId);
+	 var e = evt || event || window.event;
+	 e.stopPropagation ? e.stopPropagation() : (e.cancelBubble=true);
+}
+function delDataS(conferenceId){
+	var url=__ctx+"/me/conference/conferenceInfo/del.ht?conferenceId="+ conferenceId;
+	$.get(url,function(result){
+		if(result.status==0){
+			toast('top-right','success',JSON.stringify(result.message),'success');
+			getData();console.log("fffff");
+		}
+		else {
+			toast('top-right','error',JSON.stringify(result.message),'error');
+		}
+	})	
+}
+function getDataDetail(conferenceId){
+	location.href="mRoomDetail.html?sessionId="+sessionId+"&conferenceId="+conferenceId;	
+}
+function dialogClose(){$('#panelDialog').animate({right:"-420px"});}
+function dialogCloseCe(){$('#panelDialogCe').hide();}
+
+$(function() {
+	getData();	 
+})	
+</script>
+<script type="text/x-handlebars-template" id="mroom-list">
+{{#each this}}
+<tr onClick=getDataDetail({{conferenceId}})>
+<td>{{roomName}}</td>
+<td style="width:20%">{{theme}}</td>
+<td style="text-align:center">{{convokeDateText}} {{beginTime}}-{{endTime}}</td>
+<td style="width:30%">{{participantsText}}</td>
+<td><span class="link edit" onClick=delData({{conferenceId}},event)>删除</span></td></tr>
+{{/each}}
+</script>
+</head>
+<body>
+<div class="panel-table">
+<table id="conferenceRoomItem" cellpadding="1" class="table-grid table-list" cellspacing="1">
+<thead>
+<tr>
+<th>会议室名称</th><th>会议主题</th><th>会议时间</th><th>参会人员</th><th>操作</th></tr></thead>
+<tbody id="mroom-ul">
+</tbody></table></div>
+<div id="page">  
+    <!-- pagination所需容器 -->  
+        <div class="m-pagination"></div>  
+</div>  
+
+
+<div class="panel-page" style="display: none;">		
+	<div class="l-panel-bbar-inner">
+		<div class="l-bar-group l-bar-selectpagesize">
+			每页记录&nbsp;&nbsp;<select id="pageSize" name="pageSize" onchange="changePageSize(this,'d-636069-');" class="select_short">
+				<option value="5">5</option>
+				<option value="10">10</option>
+				<option value="15">15</option>
+				<option value="20" selected="selected">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+			</select>
+		</div>
+		<div class="l-bar-group">
+			<div class="l-bar-button l-bar-btnload">
+				<a href="javascript:window.location.reload()">
+					<span class=""></span>
+				</a>
+			</div>
+		</div>
+			<div class="l-bar-group">
+				<span class="l-bar-text">显示记录从1到18，总数 18条</span>
+			</div>
+			
+	<div class="l-bar-group-right">
+	<div class="l-bar-pad"></div>
+	<div class="l-bar-group-text">
+		<div class="l-bar-group">
+			<div class="l-bar-button l-bar-btnfirst">
+				<a href="javascript:;" onclick="first('d-636069-')" title="首页">
+					<span class=""></span>
+				</a> 
+			</div>
+			<div class="l-bar-separator"></div>
+			<div class="l-bar-button l-bar-btnprev">
+				<a href="javascript:;" onclick="previous('d-636069-');" title="上一页">
+					<span class=""></span>
+				</a>
+			</div>
+		</div>
+		<div class="l-bar-separator"></div>
+		<div class="l-bar-group">
+			<span class="pcontrol"> 
+				<input size="4" value="1" style="width: 20px;text-align:center" maxlength="3" class="inputText pageInput" type="text" tableidcode="d-636069-" id="navNumd-636069-" name="navNum">
+				<div class="l-bar-separator"></div>
+				<span class="totalPage"> / <span>1</span></span>
+			</span>
+		</div>
+		<div class="l-bar-separator"></div>
+		<div class="l-bar-group">
+			<div class="l-bar-button l-bar-btnnext">
+				<a href="javascript:;" onclick="next('d-636069-')" title="下一页">
+					<span></span>
+				</a>
+			</div>
+			<div class="l-bar-separator"></div>
+			<div class="l-bar-button l-bar-btnlast">
+				<a href="javascript:;" onclick="last('d-636069-')" title="尾页">
+					<span></span>
+				</a>
+			</div>
+		</div>
+		</div>
+		<div class="l-bar-pad"></div>
+		<div class="l-bar-group">
+			<span>
+				<input type="button" id="btnGo" value="GO" class="btn-go" onclick="jumpTo('d-636069-');">
+			</span>
+		</div>
+	</div>		
+	<div class="l-clear"></div>
+		<input type="hidden" id="currentPaged-636069-" name="currentPage" value="1">
+		<input type="hidden" id="totalPaged-636069-" name="totalPage" value="1">
+		<input type="hidden" id="oldPageSized-636069-" name="oldPageSize" value="20">
+		<a id="_navd-636069-" href="/bpmx/mh/sework/myApplyCompletedList.ht?sessionId=c4a245082e2045f2900c2ef41f6e8c9f" style="display:none"></a>
+	</div>
+</div>
+<body>
+</html>

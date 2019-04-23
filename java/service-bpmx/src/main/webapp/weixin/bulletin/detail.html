@@ -1,0 +1,90 @@
+<!doctype html>
+<html class="no-js" >
+<head>
+<title>BPMX 微信端</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+	//导入JS
+	importJs(["/weixin/assets/js/amazeui.widgets.helper.js"]);
+</script>
+<style type="text/css">
+#title,#creatorDiv{
+	text-align: center;
+}
+#content{
+	padding-left: 5px;padding-right: 5px;
+}
+.h2{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+</style>
+</head>
+<body>
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="am-header-left am-header-nav">
+		<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>
+	</div>
+	<h1 class="am-header-title">
+		<a href="#" class="" id="columnTitle" > 公告[] </a>
+	</h1>
+</header>
+<h2 id="title"  class="h2"></h2>
+<div id="creatorDiv">发布人:<span id="creator"></span>  发布时间:<span id="createtimeStr"></span></div>
+<div id="content" ></div>
+
+<div id="attachment">
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+	var bulletinId=HtUtil.getParameter("bulletinId");
+	var url="detail.ht?bulletinId=" + bulletinId;
+	var $modal = $('#my-modal-loading');
+	$modal.modal();
+	$.get(url,function(data){
+		
+		$("#title").html(data.subject);
+		$("#content").html(data.content);
+		$("#creator").html(data.creator);
+		$("#createtimeStr").html(data.createtimeStr);
+		$("#columnTitle").text("栏目["+data.columnname +"]");
+		$("#columnTitle").attr("href",'colList.html#' + data.columnid);
+		addAtts(data.attachment);
+		$modal.modal('close');
+	});
+	
+});
+
+function addAtts(atts){
+	if(!atts) return;
+	atts = eval('(' + atts + ')');
+	if(typeof atts == "undefined" || atts.length <= 0)  return ;
+	var temp ="<ul>";
+	for(i in atts){
+		var att = atts[i];
+		temp = temp + "<li><span><a target='_blank' href='../../platform/system/sysFile/download.ht?fileId="+att.id+"'>"+att.name+"</a></span></li>";
+	}
+	temp = temp+"</ul>";
+	$("#attachment").html(temp);
+}
+
+
+
+</script>
+
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在加载数据请稍候...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+
+	
+
+</body>
+</html>

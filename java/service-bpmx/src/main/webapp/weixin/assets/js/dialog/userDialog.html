@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html ng-app="userDialog">
+<head>
+<meta charset="UTF-8">
+<title>用户选择对话框</title>
+<script src="../importJs.js"></script>
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css"]);
+
+importJs(["/weixin/assets/js/angular.min.js",
+          "/weixin/assets/js/ztree/js/jquery.ztree.all-3.5.min.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js",
+          "/weixin/assets/js/BaseService.js",
+          "/weixin/assets/js/dialog/userDialogController.js"]);
+
+</script>
+
+<style type="text/css">
+	.am-popup-inner {margin-top: 2px;padding-top:1px; }
+	.am-input-group{padding-left: 1px;padding-right: 1px;}
+	.am-modal-footer{border-top: 1px solid silver;}
+	.am-g{margin-top: 2px;}
+	#selectHeader{margin-top: 4px;}
+	html, body {
+    height: 100%;
+    overflow: hidden;
+    }
+    .am-popup-inner{}
+</style>
+<script type="text/javascript">
+	
+	function BlurOrFocus(){
+	     var obj = document.getElementsByClassName('input')[0];
+	   var  docTouchend = function(event){
+
+	       if(event.target!=obj){
+	           setTimeout(function(){
+	               obj.blur();
+	               document.removeEventListener('touchend',docTouchend,false);
+	           },1000);
+
+	       }
+	   }
+	     if(obj){
+	         obj.addEventListener('touchstart',function(){
+	             document.addEventListener('touchend',docTouchend,false);
+	         },false);
+	     }
+
+	}
+	$(function() {
+		var $dropdown = $('#dropdown'), data = $dropdown.data('amui.dropdown');
+		  $dropdown.on('close.dropdown.amui', function (e) {
+			  $dropdown.dropdown('open');
+			});
+	$('.am-popup-inner').height($(window).height()-102);	
+	BlurOrFocus();
+	var u = navigator.userAgent;
+	var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+	var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+	if(isAndroid){
+	var $height = $(window).height();	  
+	var $element = $('.am-topbar-fixed-top');
+	 $('.am-topbar-fixed-top input').on('focus',function(event){            
+	       var $top = $height/2-$(window).height()/2;
+	       var $top2 = $height/2-130;
+	        if($top==0){ 
+	    	   $element.css({"top": $top2 });
+	        }
+	       else { $element.css({"top": $top });}
+	    	   $('.am-popup-inner').hide()
+	    });
+	  $('.am-topbar-fixed-top input').on('blur',function(event){ $element.css({"top": "0px"});
+	  $('.am-popup-inner').show()});
+	}
+  });
+
+</script>
+
+</head>
+	
+<body ng-controller="UserDialogController">
+  	<div class="am-topbar-fixed-top" id="selectHeader">
+    	<div class="am-input-group am-input-group-sm  am-u-sm-12 m-u-md-12">
+			<input type="text" class="am-form-field am-radius"  placeholder=${placeholder}  ng-model="pageParam.commonFilter" >
+			<span class="am-input-group-btn"> 
+				<button class="am-btn am-btn-default" type="button" ng-click="reload(true)">搜索 </button>
+			</span>
+		</div>
+	</div>
+	<div class="am-popup-inner">
+	<div class="am-tabs" data-am-tabs id="tabs">
+	  <ul class="am-tabs-nav am-nav am-nav-tabs">
+	    <li class="am-active"><a href="#orgTreeTab"> 组织查找</a></li>
+	    <li><a href="#dataListTab">查找结果</a></li>
+	    <li><a href="#returnDataTab">已选(${returnData.length})</a></li>
+	  </ul>
+	
+     <div class="am-tabs-bd">
+	  	<!-- 组织树 -->
+	    <div class="am-tab-panel am-fade am-in am-active" id="orgTreeTab">
+	    	<div class="am-g am-form" style="min-height: 400px">
+	        	<select ng-model="pageParam.org_dimId" ng-options="(dim.demId) as dim.demName for dim in dimensionList"
+	 			  ht-select-ajax="{url:'/weixin/orgDialog/getDimList.ht',field:'dimensionList'}"
+	 			  ng-change="loadOrgTree()">
+	 			 </select>
+	        	<ul id="orgTree" class="ztree" ></ul>
+	        </div>
+	    </div>
+	    <div class="am-tab-panel am-fade" id="dataListTab">
+		   <div class="am-scrollable-horizontal" id="scrollTest" style="min-height: 400px">
+		    <!-- 表格数据  -->
+	 		<table class="am-table am-table-striped am-table-hover">
+		          <thead>
+		            <tr>
+		              <th >名称</th>
+		              <th >账号</th>
+		              <th class="am-hide-sm-only">Email</th>
+		              <th class="am-hide-sm-only">部门</th>
+		            </tr>
+		        </thead> 
+		        <tbody>
+		          <tr ng-repeat="user in dataList" ng-click="selectOne($index)">
+		            <td>${user.fullname}</td>
+		            <td>${user.account}</td>
+		             <td class="am-hide-sm-only">${user.org}</td>
+		            <td class="am-hide-sm-only">${user.email}</td> 
+		          </tr>
+		          </tbody>
+		       </table>
+				<ul class="am-pagination">
+				  <li><a href="" class="disabled"  ng-click="prewPage()"><span class="am-icon-angle-double-left"></span></a></li>
+				  <li><span>${pageParam.page}<!-- <input class="am-input-sm" size="1" ng-model="pageParam.page"> -->/${pageParam.pageCount}页</span></li>
+				  <li><a href="" ng-click="nextPage()"><span class="am-icon-angle-double-right"></span></a></li>
+				  <li>每页条数</li>
+				  <li>
+				  	<select ng-model="pageParam.pageSize" ng-change="reload()"> 
+				  		<option value="5">5</option>
+				  		<option value="10">10</option>
+				  	</select>
+				  </li>
+				   <li>共${pageParam.count}条</li>
+				</ul>
+			</div>
+	    </div>
+	    <div class="am-tab-panel am-fade" id="returnDataTab">
+	    	<div class="am-u-sm-12" style="min-height: 400px">
+				<span ng-repeat="user in returnData" >
+					<button style="margin: 4px" class="am-btn am-btn-secondary  fa-remove" title="移除该项" ng-click="unChoiceOne($index)">${user.fullname}</button>
+				</span>
+			</div>
+	    </div>
+	  </div>
+	</div>
+	</div>
+	<div class="am-topbar-fixed-bottom">
+		<div class="am-g">
+		  	<div class="am-u-sm-11 am-u-sm-centered" style="text-align: center;">
+	    		<button type="button" class="am-btn  am-radius am-btn-danger" ng-click="closeDialog()">取消</button>
+	    		<button type="button" class="am-btn  am-radius am-btn-warning" ng-click="cleanSelect()">清除</button>
+	    		<button type="button" class="am-btn  am-radius am-btn-primary" ng-click="dialogOk()">确定</button>　
+			</div>
+  		</div>
+	</div>
+</body>
+</html>
+
+

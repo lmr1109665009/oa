@@ -1,0 +1,31 @@
+ /**琛ㄥ崟label鍙冲榻�*/
+ .am-form-horizontal .am-form-label{text-align: right;}
+ 
+ .ng-pristine input{  
+	       background-color: white;
+} 
+input.ng-valid,textarea.ng-valid ,select.ng-valid ,.edui-editor.ng-valid {
+    /* border-color: #5eb95e !important;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+} 
+.ng-dirty input{ 
+	background-color: white; 
+} 
+
+input.ng-invalid,textarea.ng-invalid,select.ng-invalid,.edui-editor.ng-invalid ,span.ng-invalid input
+{
+	/* border-color: #fb8e8a  !important;;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+}
+span.ng-invalid label, span.ng-invalid a{
+	color:red;
+}
+
+table.ng-invalid {
+	border-color: #fb8e8a !important;
+	/* -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+}
+

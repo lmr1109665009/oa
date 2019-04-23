@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="../assets/js/importJs.js"></script>
+  <script>/**/
+$(document).ready(function() {   
+	$('.tab-content').height($(window).height()-50);
+	$(window).resize(function(){$('.tab-content').height($(window).height()-50);})
+	 //更改点击后菜单样式
+	//jQuery 当元素滚动到顶部后固定位置	
+	
+	var pcBaseURL = _ctx+'/weixin/bpm/';	
+	
+	var mrhref = $('.active .opent-content').attr('title');
+	$('#frame').attr('src', pcBaseURL+mrhref+'?sessionId='+sessionId);
+
+	$('.opent-content').on('click', function (e) {
+		  var href = $(this).attr('title');
+		  $('#frame').attr('src', pcBaseURL+href+'?sessionId='+sessionId);
+		  $('.opent-content').parent().removeClass('active');
+		  $(this).parent().addClass('active');
+		});
+});
+</script>
+
+   <style type="text/css">
+   .bgwhile{ background: #f8f8f8;}
+    ul, ol{ padding: 0;margin: 0} 
+   /**tab**/   
+.tabframe{position:relative;z-index:1;}
+.tabframe:after{clear:both;content:".";display:block;height:0;visibility:hidden;}
+.tabframe_title{position:relative; font-weight:normal;display:block;height:47px;background: #fff;}
+.tabframe_ul{position: absolute;  color:#484848;left:0; top:0; z-index:9;width:100%;
+  display: -webkit-flex; /* Safari */ border-bottom:1px solid #eaeaea;
+  display: flex;}
+.tabframe_ul li{ font-size:16px;float:left; display:inline;flex:1; text-align: center; }
+.tabframe_ul li:hover{ border-bottom: 2px solid #eaeaea;}
+.tabframe_ul .active,.tabframe_ul li:hover.active{color:#03aded;border-bottom: 2px solid #03aded;}
+.tabframe_ul li span{height:44px;line-height:44px; }
+.tabframe_ul a{color:#484848; display: block;}
+.tabframe_ul .active a,.tabframe_ul li:hover.active a{color:#03aded;}
+.tab-content {
+	position: absolute;
+	width: 100%;
+	top: 100px;
+	left: 0;
+	bottom:0;
+	right:0;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	-lh-property: 0;
+	height: -webkit-calc(100% - 40px);
+	height: -moz-calc(100% - 40px);
+	height: calc(100% - 40px);
+}
+   </style>
+</head>
+ <body class="am-with-fixed-header bgwhile">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger"><i></i><i></i><i></i></div>	
+	<h1 class="am-header-title"><span>我的流程</span></h1>	 
+	</header>   
+	<div class="tabframe">
+		   <div class="tabframe_title">
+           <ul class="tabframe_ul">
+           <li class="active"><a title="myRequestList.html" href="javascript:;" target="frame" class="opent-content"><span>我的申请</span></a></li>     
+           <li><a title="myCompleteReqList.html" href="javascript:;" target="frame" class="opent-content"><span>我的办结</span></a></li></ul>
+		</div>
+		</div>
+    <iframe id="frame" class="tab-content" frameborder="0" name="frame">
+    </iframe>
+</body>
+</html>

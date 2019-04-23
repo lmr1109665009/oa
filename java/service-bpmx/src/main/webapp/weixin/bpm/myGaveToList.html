@@ -1,0 +1,96 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <title>我的加签</title>
+    <meta charset="utf-8">
+    <script src="../assets/js/importJs.js"></script>
+    <script type="text/javascript">
+        importCss(["/weixin/assets/css/page.css"]);
+        //导入JS
+        importJs(["/weixin/assets/js/pageScroll.js"]);
+        var searchUrl=__ctx +"/oa/oaTask/mattersListJson.ht";
+        importJs(["/weixin/assets/js/searchList.js","/weixin/assets/js/brushList.js","/weixin/assets/js/burger.arr.js"]);
+    </script>
+    <link rel="stylesheet" type="text/css" href="../../styles/suneee/phone.css" />
+</head>
+<body>
+
+<div class="page">
+    <header data-am-widget="header" class="am-header am-header-default">
+        <div class="am-header-left am-header-nav">
+            <!--<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>-->
+            <div class="burger-arr" onclick="history.back();"><i></i><i></i><i></i></div>
+        </div>
+        <h1 class="am-header-title" id="colTitle">
+            我的加签
+        </h1>
+        <div id="lcListInput" class="searchData"></div>
+        <div class="am-header-right am-header-nav">
+            <a href="../index.html" class=""  title="返回主页">
+                <i class="am-header-icon fa fa-home" ></i>
+            </a>
+        </div>
+    </header>
+
+    <div id="wrapper" data-am-widget="list_news"
+         class="am-list-news am-list-news-default">
+        <div class="am-list-news-bd">
+
+            <div class="pull-action loading" id="pull-down">
+        <span class="am-icon-arrow-down pull-label"
+              id="pull-down-label"> 下拉刷新</span>
+                <span class="am-icon-spinner am-icon-spin"></span>
+            </div>
+            <ul class="am-list" id="events-list">
+                <li class="am-list-item-desced">
+                    <div class="am-list-item-text">正在加载内容... </div>
+                </li>
+            </ul>
+            <div class="pull-action" id="pull-up">
+                <span class="am-icon-arrow-up pull-label"    id="pull-up-label"> 上拉加载更多</span>
+                <span class="am-icon-spinner am-icon-spin"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+    {{#each this}}
+    <li class="am-list-item-desced" data-id="{{runId}}">
+        <a href="getProcessRun.html?runId={{runId}}" class="am-list-item-hd" style="color: #404040">{{{subject}}}</a><span class="am-list-date">发起时间:{{formatDate createtime 'yyyy-MM-dd hh:mm'}}</span>
+    </li>
+    {{/each}}
+</script>
+<script type="text/x-handlebars-template" id="tpi-list-search">
+    {{#each this}}
+    <a href="getProcessRun.html?runId={{runId}}&subject={{processName}}">{{{subject}}}</a>
+    {{/each}}
+</script>
+<script>
+
+    $(function() {
+
+        var callBack=function(data){
+        }
+
+        var url = searchUrl;
+        var app = new EventsList(null, {
+            url: url,
+            params: {
+                page: 1,
+                startFromMobile: 1,
+                pageSize: 20,
+                callback:callBack
+            }
+        });
+        app.init();
+
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, false);
+    });
+
+</script>
+</body>
+</html>
+

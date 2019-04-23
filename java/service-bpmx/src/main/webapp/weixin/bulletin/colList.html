@@ -1,0 +1,83 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<title>公告列表</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+	importCss(["/weixin/assets/css/page.css"]);
+	//导入JS
+	importJs(["/weixin/assets/js/pageScroll.js"]);
+</script>
+</head>
+<body>
+
+<div class="page">
+  <header data-am-widget="header" class="am-header am-header-default">
+  	<div class="am-header-left am-header-nav">
+		<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>
+	</div>
+    <h1 class="am-header-title" id="colTitle">
+      公告列表
+    </h1>
+  </header>
+
+  <div id="wrapper" data-am-widget="list_news"
+       class="am-list-news am-list-news-default">
+    <div class="am-list-news-bd">
+    	
+      <div class="pull-action loading" id="pull-down">
+        <span class="am-icon-arrow-down pull-label"
+              id="pull-down-label"> 下拉刷新</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+      <ul class="am-list" id="events-list">
+        <li class="am-list-item-desced">
+          <div class="am-list-item-text">正在加载内容... </div>
+        </li>
+      </ul>
+      <div class="pull-action" id="pull-up">
+        <span class="am-icon-arrow-up pull-label"    id="pull-up-label"> 上拉加载更多</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+  {{#each this}}
+  <li class="am-list-item-desced" data-id="{{id}}">
+    <a href="detail.html?bulletinId={{id}}" class="am-list-item-hd" >{{title}}</a><span class="am-list-date">{{date}}</span>
+  </li>
+  {{/each}}
+</script>
+
+<script>
+
+$(function() {
+	var columnId=HtUtil.getParameter("columnId");
+	
+	var callBack=function(data){
+		$("#colTitle").text(data.title);
+	}
+	
+	var app = new EventsList(null, {
+        url: 'getListByColumn.ht',
+        params: {
+          page: 1,
+          columnid: columnId,
+          pageSize: 10,
+          callback:callBack
+        }
+    });
+    app.init();
+      
+    document.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+    }, false);
+});
+
+</script>
+</body>
+</html>
+

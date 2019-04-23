@@ -1,0 +1,87 @@
+<!doctype html>
+<html class="no-js" >
+<head>
+<title>BPMX 微信端</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+$(function() {
+	var runId=HtUtil.getParameter("runId");
+	var url=__ctx +"/platform/bpm/taskOpinion/listJson.ht?runId=" + runId;
+	var $wrapperList=$("#wrapperList");
+	
+	var tpl = $('#tpi-list-item').html();
+	var template = Handlebars.compile(tpl);
+
+	$.get(url,function(data){
+		var tmp=template(data);
+		$wrapperList.html(tmp);
+	});
+});
+
+Handlebars.registerHelper("ifExeUserId",function(exeUserId,options){
+    if(exeUserId){
+      //满足添加继续执行
+      return options.fn(this);
+    }else{
+      //不满足条件执行{{else}}部分
+      return options.inverse(this);
+    }
+});
+
+</script>
+<style type="text/css">
+li.title {font-weight: bold;}
+li.title  li {font-weight: normal;list-style-type:none;}
+.wrapper-div{-webkit-overflow-scrolling:touch;overflow: hidden;overflow-y:auto;
+	-lh-property: 0;
+	height: 100% ;
+}
+.am-list{}
+</style>
+</head>
+<body>
+
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在加载数据请稍候...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+	{{#each taskOpinionList}}
+       <div class="Opinion-list">{{taskName}}</div>
+			{{#with list}}
+			{{#each this}}
+			<ul  class="Opinion-ul">
+				<li><span>执行人：</span>
+					{{#ifExeUserId exeUserId}}
+						{{exeFullname}}
+					{{else}} 
+						{{#if candidateUsers}}
+						{{#each candidateUsers}}
+							<p style="display: inline-block;margin: 0">{{fullname}}</p>
+						{{/each}}
+						{{/if}}
+					{{/ifExeUserId}}
+					
+				</li>
+		    	<li><span>开始时间：</span>{{startTimeStr}}</li>
+		    	<li><span>结束时间：</span>{{endTimeStr}}</li>
+		    	<li><span>状态：</span>{{{status}}}</li>
+		    	<li><span>意见：</span>{{opinion}}</li>
+		    </ul>
+			{{/each}}
+			{{/with}}
+	{{/each}}
+</script>
+
+<div id="contentDiv" class="wrapper-div" >
+	<ul class="am-list" id="wrapperList" style="min-height: 200px"></ul>
+</div>
+
+</body>
+</html>

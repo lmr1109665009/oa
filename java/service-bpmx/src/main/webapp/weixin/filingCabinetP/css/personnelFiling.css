@@ -1,0 +1,217 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+header {
+    height:0;
+}
+body,html {
+    font-size:14px;
+    color:#000;
+    font-family: 'microsoft yahei';
+    min-width:1050px;
+}
+li {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    color:#000;
+}
+#file_cabinet .fc_header {
+    height: 60px;
+    border-bottom:1px solid #e6e6e6;
+}
+#file_cabinet .fc_header h2 {
+    height:60px;
+    line-height: 60px;
+    font-size:20px;
+    font-weight: 400;
+    padding-left:20px;
+}
+#file_cabinet .fc_navlist {
+    height: 50px;
+    border-bottom:1px solid #e6e6e6;
+}
+#file_cabinet .fc_navlist li {
+    float:left;
+}
+#file_cabinet .fc_navlist li a {
+    display: inline-block;
+    height:50px;
+    line-height: 50px;
+    font-size:14px;
+    color:#979DA2;
+    padding:0 20px;
+    margin-bottom:-5px;
+}
+#file_cabinet .fc_navlist li.active a {
+    border-bottom:5px solid #32A5F6;
+    color:#32A5F6;
+}
+#file_cabinet .Breadcrumb ul {
+    height: 50px;
+    line-height: 50px;
+    font-size:14px;
+    padding-left:20px;
+    border-bottom:1px solid #e6e6e6;
+}
+#file_cabinet .Breadcrumb ul li {
+    float:left;
+    cursor: pointer;
+}
+#file_cabinet .Breadcrumb ul li .uploadFile {
+    background:#37A7F7 !important;
+    padding:6px 7px !important;
+    border:1px solid #37A7F7 !important;
+    border-radius: 3px !important;
+    color:#fff !important;
+    margin-right:10px !important;
+    height:30px;
+    line-height: 12px;
+}
+/* 新增文件夹样式 */
+#file_cabinet .Breadcrumb ul li .newFileFold,#file_cabinet .Breadcrumb ul li .deleteFile {
+    background:#fff !important; 
+    padding:6px 7px !important;
+    border:1px solid #37A7F7 !important;
+    border-radius: 3px !important;
+    color:#37A7F7 !important;
+    margin-right:10px !important;
+    height:30px;
+    line-height: 12px;
+}
+#file_cabinet .Breadcrumb ul li .deleteFile {
+	display:none;
+}
+/*table鍐呭鏍峰紡*/
+#file_cabinet .fc_content,#file_cabinet .fc_content table {
+    width:100%;
+    border:none;
+    border-collapse: collapse;
+    cellspacing:0;
+    cellpadding:0;
+    padding-bottom:61px;
+}
+table,td,th{border:none;}
+#file_cabinet .fc_content table tr {
+    height: 40px;
+    width:100%;
+    border-bottom:1px solid #EAEAEA;
+    display:inline-block;
+    box-sizing: border-box;
+    position:relative;
+}
+#file_cabinet .fc_content table thead{
+    width:100%;
+    background: #F3F7F9;
+    border-bottom:1px solid #EAEAEA;
+}
+#file_cabinet .fc_content table thead th{
+  width:15%;
+  color:#979DA2;
+  float: left;
+  height: 40px;
+  line-height: 40px;
+}
+#file_cabinet .fc_content table thead th:nth-child(2){
+    width:30%;
+    color:#979DA2;
+    text-align: left;
+    box-sizing: border-box;
+    padding-left:50px;
+}
+#file_cabinet .fc_content table thead th:nth-child(6){
+	width:25%;
+}
+#file_cabinet .fc_content table tbody tr:nth-child(even){
+    background: #FBFCFD;
+}
+#file_cabinet .fc_content table tbody td {
+    width:15%;
+    text-align: center;
+    display:inline-block;
+    height: 40px;line-height: 40px;
+}
+#file_cabinet .fc_content table tbody td.docName{
+    width:30%;
+    text-align: left;
+    box-sizing: border-box;
+    padding-left:50px;
+    text-overflow:ellipsis;
+    white-space:nowrap;/* 涓嶆崲琛� */
+    overflow:hidden;/* 鍐呭瓒呭嚭瀹藉害鏃堕殣钘忚秴鍑洪儴鍒嗙殑鍐呭 */
+}
+#file_cabinet .fc_content table tbody td:nth-child(6n+6){
+	width:25%;
+}
+.progress {
+    width:90%;
+    height:30px;
+    background: #EBEBEB;
+    position:fixed;
+    top:50px;
+    left:80px;
+    border:1px solid #EBEBEB;
+    border-radius: 8px;
+    display:none;
+}
+.progress .comProgress {
+    position:absolute;
+    top:0;
+    left:0;
+    height:30px;
+    width:0%;
+    background:#fff;
+}
+.fileName {
+    position:absolute;
+    top:0;
+    left:20px;
+    font-size: 16px;
+    line-height: 30px;
+}
+.speed {
+    position:absolute;
+    top:0;
+    right:300px;
+    font-size: 16px;
+    line-height: 30px;
+}
+.newFile {
+    display:none;
+}
+.docName img {
+    margin-right:12px;
+    margin-bottom:-2px;
+
+}
+/* 选择框样式 */
+#file_cabinet .fc_content .checkAll {
+	position:absolute;
+	width:30px !important;
+	top:0;
+	left:8px;
+}
+#file_cabinet .fc_content .checkOne {
+	position:absolute;
+	width:30px !important;
+	top:0;
+	left:8px;
+}
+/* 操作部分a的样式 */
+#file_cabinet .fc_content table tbody td a {
+	cursor:pointer;
+	padding:7px;
+	border:1px solid #eee;
+}
+#file_cabinet .fc_content .newName {
+	width:200px;
+	height:21px;
+	border:1px solid #37A7F7;
+}
+/* 确定、否定两个图标样式 */
+#file_cabinet .fc_content .sure,#file_cabinet .fc_content .cancle {
+	vertical-align:middle;
+	margin:0 0 0 5px;
+}

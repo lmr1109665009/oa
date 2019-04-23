@@ -1,0 +1,12 @@
+<div >
+	<div id="dropDown${treeId}" ng-show="permission=='w' || permission=='b'" >
+		<div class="am-dropdown" id="dropBody${treeId}" style="width: 100%">
+			<input ng-model="dicData.value" readonly="readonly" class="am-dropdown-toggle am-form-field" placeholder="点击选择">
+			<div class="am-dropdown-content">
+			<div style="height:100px;overflow:auto;">
+			<ul id=${treeId} class="ztree"></ul>
+			</div></div>
+		</div>
+	</div>
+	<div ng-show="permission=='r'">${dicData.value}</div>
+</div>

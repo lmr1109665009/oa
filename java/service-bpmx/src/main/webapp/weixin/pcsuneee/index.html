@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="msapplication-TileColor" content="#fff">
+<title>基线企业</title>
+<link rel="stylesheet" href="assets/index/css/index.css">
+<script src="assets/js/jquery.min.js"></script>
+<style type="text/css">.body_wapper_box a{ display: block;}</style>
+<script type="text/javascript">
+var request = 
+{ 
+QueryString : function(val) 
+{ 
+var uri = window.location.search; 
+var re = new RegExp("" +val+ "=([^&?]*)", "ig"); 
+return ((uri.match(re))?(uri.match(re)[0].substr(val.length+1)):null); 
+} 
+}
+var sessionId = request.QueryString("sessionId") == null ? '' : request.QueryString("sessionId");
+$(document).ready(function() {
+$('.panel a').on('click', function (e) {
+	  var href = $(this).attr('data');
+	  $(this).attr('href', href.split("sessionId=")[0] + "sessionId=" + sessionId);
+	  location.href = href.split("sessionId=")[0] + "sessionId=" + sessionId;
+	});
+	
+});	
+</script>
+</head>
+<body>
+
+
+<div class="body_wapper_box">
+<div class="body_head">
+<div class="body_head_c">
+<span class="picon piocn_logo"></span><span class="logo_text">基线企业</span>
+</div></div>
+<div class="panel_wapper">
+
+<div class="panel_c panel_left">
+<div class="panel">
+<a href="javascript:;" data="http://suneee.oa.weilian.cn/command-web/#/?sessionId=">
+<div class="panel_box bg-1">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">指挥中心</div>
+<p>提供企业大事件的指挥和部署功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_center">
+<div class="panel">
+<a href="javascript:;" data="http://xpsgbak.weilian.cn:33086/xiangpuweb/?sessionId=">
+<div class="panel_box bg-2">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">学习中心</div>
+<p>提供企业文化、业务及技能培训功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_right">
+<div class="panel">
+<a href="javascript:;" data="http://www.suneee.com?sessionId=">
+<div class="panel_box bg-3">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">官方网</div>
+<p>提供企业形象宣传功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+</div>
+
+
+<div class="panel_wapper">
+<div class="panel_c panel_left">
+<div class="panel">
+<a href="javascript:;" data="http://suneee.ucp.weilian.cn:3008/home?sessionId=">
+<div class="panel_box bg-4">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">定子链</div>
+<p>提供企业通信管理功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_center">
+<div class="panel">
+<a href="javascript:;" data="http://suneee.oa.weilian.cn/frame/index.html?type=4&sessionId=">
+<div class="panel_box bg-5">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">转子链</div>
+<p>提供企业流程管理功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_right">
+<div class="panel">
+<a href="javascript:;" data="http://suneee.oa.weilian.cn/frame/index.html?type=5&sessionId=">
+<div class="panel_box bg-6">
+<div class="panel_head"><span class="picon panel_img"></span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">粒子链</div>
+<p>提供企业资产管理功能</p>
+</div>
+<div class="panel_bottom">
+<span class="picon panel_logo"></span>
+<div  class="panel_bottomr">
+<span class="picon ib-1"></span>
+<span class="picon ib-2"></span>
+<span class="picon ib-3"></span>
+</div>
+</div>
+</div></a></div></div>
+
+
+</div></div>
+</body>
+</html>

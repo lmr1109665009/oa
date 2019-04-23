@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="msapplication-TileColor" content="#fff">
+<title>企业流程</title>
+<link rel="stylesheet" href="../assets/css/index.css">
+<script src="../../assets/js/importJs.js"></script>
+<script src="../assets/js/index.js"></script>
+<script type="text/javascript">
+window.onload=loadMyToDo(); 
+function loadMyToDo() {
+	var url = __ctx +"/weixin/bpm/getMyTask.ht";
+	$.post(url, function(data){
+		$('.panel_tit.my-todo').text("待办流程（" + data.totalCount + "）");			
+	});
+}
+</script>
+</head>
+<body class="panel_wapper_body">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger menu-opened"><i></i><i></i><i></i></div>	
+	<h1 class="am-header-title"><span>制度管理</span></h1>	 
+	</header>
+<div class="panel_wapper">
+
+
+
+<div class="panel_c panel_left">
+<div class="panel">
+<a href="javascript:;" datapc="/mh/sework/myTaskList.ht?sessionId=" datawap="/weixin/bpm/myToDo.html?sessionId=">
+<div class="panel_box bg-1">
+<div class="panel_head"><img src="../assets/images/in-t-1.png" class="panel_img1"><span>版本: 17.11.2 &nbsp; 发布: 2017.06.30</span></div>
+<div class="panel_body">
+<div class="panel_tit my-todo">待办流程（0）</div>
+<p>提供行政、人事、财务待我审批流程处理功能</p>
+</div>
+<div class="panel_bottom">
+<img src="../assets/images/index-b-logo.png"  class="panel_img2">
+<img src="../assets/images/index-b-bg.png"  class="panel_img3">
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_right">
+<div class="panel">
+<a href="javascript:;" datapc="/weixin/pcsuneee/myApplyFrame.html?sessionId=" datawap="/weixin/suneee/myApplyFrame.html?sessionId=">
+<div class="panel_box bg-2">
+<div class="panel_head"><img src="../assets/images/in-t-2.png" class="panel_img1"><span>版本: 17.11.2 &nbsp; 发布: 2017.06.30</span></div>
+<div class="panel_body">
+<div class="panel_tit">我的流程</div>
+<p>提供行政、人事、财务等流程新建、查询功能</p>
+</div>
+<div class="panel_bottom">
+<img src="../assets/images/index-b-logo.png"  class="panel_img2">
+<img src="../assets/images/index-b-bg.png"  class="panel_img3">
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_left">
+<div class="panel">
+<a href="javascript:;" datapc="/weixin/pcsuneee/flow/calendar.html?sessionId=" datawap="/weixin/pcsuneee/flow/calendar.html?sessionId=">
+<div class="panel_box bg-3">
+<div class="panel_head"><img src="../assets/images/in-t-3.png" class="panel_img1"><span>版本: 17.11.2 &nbsp; 发布: 2017.06.30</span></div>
+<div class="panel_body">
+<div class="panel_tit">我的日程</div>
+<p>提供个人日常重要工作备忘、查询、提醒功能</p>
+</div>
+<div class="panel_bottom">
+<img src="../assets/images/index-b-logo.png"  class="panel_img2">
+<img src="../assets/images/index-b-bg.png"  class="panel_img3">
+</div>
+</div></a></div></div>
+
+<div class="panel_c panel_right">
+<div class="panel">
+<a href="javascript:;" datapc="/weixin/pcsuneee/tabFrame.html?sessionId=" datawap="/weixin/filingCabinetM/personnelFiling.html?sessionId=">
+<div class="panel_box bg-4">
+<div class="panel_head"><img src="../assets/images/in-t-4.png" class="panel_img1"><span>版本: 17.11.2 &nbsp; 发布: 2017.06.30</span></div>
+<div class="panel_body">
+<div class="panel_tit">知识管理</div>
+<p>提供组织或个人日常知识共享、文件归档功能</p>
+</div>
+<div class="panel_bottom">
+<img src="../assets/images/index-b-logo.png"  class="panel_img2">
+<img src="../assets/images/index-b-bg.png"  class="panel_img3">
+</div>
+</div></a></div></div>
+
+</div>
+</body>
+</html>

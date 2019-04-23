@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="msapplication-TileColor" content="#fff">
+<title>企业流程</title>
+<link rel="stylesheet" href="assets/css/startFrame.css">
+<script src="assets/js/jquery.min.js"></script>
+<script src="../assets/js/headers.js"></script>	
+<script>/**/
+$(document).ready(function() {    
+	$('.tab-content').height($(window).height()-50);
+	$(window).resize(function(){$('.tab-content').height($(window).height()-50);})
+	 //更改点击后菜单样式
+	//jQuery 当元素滚动到顶部后固定位置	
+	
+	var pcBaseURL = _ctx+'/mh/sework/';	
+	
+	var mrhref = $('.active .opent-content').attr('id');
+
+    //这下面的代码对超链接条件进行判断，如果aim=1，自动加载，如果aim=2，更改自动加载路径
+    var searchStr = location.search;
+//由于searchStr属性值包括“?”，所以除去该字符
+    searchStr = searchStr.substr(1);//将searchStr字符串分割成数组，数组中的每一个元素为一个参数和参数值
+    if(searchStr.indexOf("&")>-1) {
+        var searchs = searchStr.split("&");//将条件进行分割成数组.判断条件加载sessionId的后面
+        var cond = searchs[1].split("=");//获得第二个参数和值
+        switch (cond[1]) {
+            case 1://如果第二个条件值为1，则不变
+                break;
+            default://如果第二个条件是其他，那么就将地址更改到第二个
+                mrhref = "flowToMe.ht";//这个是第二个地址。如果不止2个选项，则需要根据条件带的值进行选择。
+                break;
+        }
+    }
+	$('#frame').attr('src', pcBaseURL+mrhref+'?sessionId='+sessionId);
+
+	$('.opent-content').on('click', function (e) {
+		  var href = $(this).attr('id');
+		  $('#frame').attr('src', pcBaseURL+href+'?sessionId='+sessionId);
+		  $('.opent-content').parent().removeClass('active');
+		  $(this).parent().addClass('active');
+		});
+});
+</script>
+</head>
+<body>
+<div class="tabframe">
+		   <div class="tabframe_title">
+           <ul class="tabframe_ul">
+           <li class="active"><a href="javascript:;" target="frame" class="opent-content" id="myTaskList.ht"><span>待我审批</span></a></li>
+           <li><a href="javascript:;" target="frame" class="opent-content" id="flowToMe.ht"><span>我已审批</span></a></li>
+           <!-- <li><a title="#" target="frame" href="javascript:;"  class="opent-content"><span>我的草稿</span></a></li> -->
+           </ul>
+		</div>
+		</div>
+		
+  <iframe id="frame" class="tab-content" frameborder="0" name="frame">
+  </iframe>
+</body>
+</html>

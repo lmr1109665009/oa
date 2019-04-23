@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="msapplication-TileColor" content="#fff">
+<title>企业流程</title>
+<link rel="stylesheet" href="assets/css/startFrame.css">
+<script src="assets/js/jquery.min.js"></script>
+<script src="../assets/js/headers.js"></script>	
+<script>/**/
+$(document).ready(function() {    
+	var windowHeight=window.localStorage.getItem("windowHeight");
+	if(windowHeight){windowHeight=windowHeight-60-50;}
+	$('.tab-content').height(windowHeight||$(window).height()-50);
+	$(window).resize(function(){$('.tab-content').height($(window).height()-50);})
+	 //更改点击后菜单样式
+	//jQuery 当元素滚动到顶部后固定位置	
+    var pcBaseURL = _ctx+'/weixin/pcsuneee/mroom/';	
+	
+	var mrhref = $('.active .opent-content').attr('title');
+	$('#frame').attr('src', pcBaseURL+mrhref+'?sessionId='+sessionId);
+
+	$('.opent-content').on('click', function (e) {
+		  var href = $(this).attr('title');
+		  $('#frame').attr('src', pcBaseURL+href+'?sessionId='+sessionId);
+		  $('.opent-content').parent().removeClass('active');
+		  $(this).parent().addClass('active');
+		});
+});
+</script>
+</head>
+<body>
+<div class="tabframe">
+		   <div class="tabframe_title">
+           <ul class="tabframe_ul">
+           <li class="active"><a title="addRoom.html" href="javascript:;" target="frame" class="opent-content"><span>会议预定</span></a></li>
+           <li><a title="mRoomList.html" href="javascript:;" target="frame" class="opent-content"><span>会议记录</span></a></li>
+		</div>
+		</div>
+		
+  <iframe id="frame" class="tab-content" frameborder="0" name="frame">
+  </iframe>
+</body>
+</html>

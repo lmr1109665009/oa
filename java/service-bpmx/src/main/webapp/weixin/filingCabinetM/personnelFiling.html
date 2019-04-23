@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>个人文件柜</title>
+    <link rel="stylesheet" href="css/personnelFiling.css">
+</head>
+<body class="am-with-fixed-header">
+<!-- <header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+ <div class="burger-arr"><i></i><i></i><i></i></div>	
+ <h1 class="am-header-title"><span>公共文件柜</span></h1>
+</header> -->
+<div id="file_cabinet">
+    <header class='fc_header am-header am-header-default am-header-fixed'>
+        <div class="gohistory burger-arr"><i></i><i></i><i></i></div>
+        <div class="logoNav burger"><i></i><i></i><i></i></div>
+        <h2>文件柜</h2>
+        <div class="uploadImg"><img src="images/upload.png" width='20'></div>
+    </header>
+    <nav class="fc_nav" style="display:none">
+        <ul class="fc_navlist">
+            <li class="departDoc active"><a href="###">部门文件柜</a></li>
+            <li class="publicDoc"><a href="###">公共文件柜</a></li>
+        </ul>
+    </nav>
+    <div class="Breadcrumb">
+        <ul class="breadList">
+            <li>文件柜</li>
+        </ul>
+    </div>
+    <div class="tabframe">
+		   <div class="tabframe_title">
+           <ul class="tabframe_ul">
+           <li class="active"><a title="personnelFiling.html" href="javascript:;" class="opent-content"><span>个人文件柜</span></a></li>
+           <li><a title="departmentFiling.html" href="javascript:;" class="opent-content"><span>部门文件柜</span></a></li>
+           <li><a title="publicFiling.html" href="javascript:;" class="opent-content"><span>公共文件柜</span></a></li>
+           </ul>
+		</div>
+		</div>
+    <div class="fContent_mobileb"><div id="fContent_mobile" class="fc_content"></div>
+    </div>
+</div>
+<div class="progress">
+    <div class="comProgress"></div>
+    <span class="fileName"></span>
+    <span class="speed"></span>
+</div>
+<div id="mask">
+</div>
+<div id="deleteTran">
+   <p>确定删除文件？</p>
+   <div><button class="sure">确定</button><button class="cancle">取消</button></div>
+</div>
+<div id="renameTran">
+   <p>重命名</p>
+   <div class="inputName"><input type="text" class="newName" ><img class="clearName" src="images/close.png"></div>
+   <div><button class="sure">确定</button><button class="cancle">取消</button></div>
+</div>
+<input type="file" name="myfile" class="newFile">
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/LABjs.js"></script>
+<script src="../assets/js/headers.js"></script>
+<script src="js/personnelFiling.js"></script>
+</body>
+</html>

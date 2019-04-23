@@ -1,0 +1,135 @@
+<!DOCTYPE　html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link type="text/css" rel="stylesheet" href="./css/common.css">
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/index.js"></script>
+    </head>
+    <body>
+        <div class="main-container">
+            <div class='map' onclick="hideDetail()">
+               <div class="data" id='posdata'>
+                   <div class="content-div pos1">
+                       <div class="pos-bg pos1" onclick="showContent(1, 1)">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">象翌集团公司</span>
+                            <!--<ul class="content-list">
+                                <li class="content-li"><i class="content-i"></i><span class="content-span">集团15楼</span></li>
+                                <li class="content-li"><i class="content-i"></i><span class="content-span">集团16楼</span></li>
+                                <li class="content-li"><i class="content-i"></i><span class="content-span">集团17楼</span></li>
+                                <li class="content-li"><i class="content-i"></i><span class="content-span">IDC机房</span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos1" onclick="showContent(1, 1)"></i> 
+                    </div>
+
+                   <div class="content-div pos2">
+                       <div class="pos-bg pos2">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">深圳公司</span>
+                            <!--<ul class="content-list">-->
+                                <!--<li><i class="content-i"></i><span class="content-span"></span></li>-->
+                            <!--</ul>-->
+                        </div>
+                        <i class="pos-icon pos2"></i> 
+                    </div>
+
+                   <div class="content-div pos3">
+                       <div class="pos-bg pos3">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">广州公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span"></span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos3"></i> 
+                    </div>
+                    
+                    <div class="content-div pos4">
+                       <div class="pos-bg pos4">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">北京公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span"></span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos4"></i> 
+                    </div>
+
+                    <div class="content-div pos5">
+                       <div class="pos-bg pos5">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">上海公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span"></span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos5"></i> 
+                    </div>
+
+                    <div class="content-div pos6">
+                       <div class="pos-bg pos6">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">西安公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span"></span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos6"></i> 
+                    </div>
+
+                    <div class="content-div pos7">
+                       <div class="pos-bg pos7" onclick="showContent(7, 1)">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">翌捷公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span">五号仓</span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos7" onclick="showContent(7, 1)"></i> 
+                    </div>
+
+                    <div class="content-div pos8">
+                       <div class="pos-bg pos8" onclick="showContent(8, 1)">
+                            <i class="div-bottom"></i>
+                            <span class="div-span">翌方公司</span>
+                            <!--<ul class="content-list">
+                                <li><i class="content-i"></i><span class="content-span">五号仓</span></li>
+                            </ul>-->
+                        </div>
+                        <i class="pos-icon pos8" onclick="showContent(8, 1)"></i> 
+                    </div>
+                   <!--<span class='pos-bg pos01'>翌捷公司<a class="pos-icon"></a></span>-->
+                   <!--<span class='pos-bg pos02'>北京公司<a class="pos-icon"></a></span>
+                   <span class='pos-bg pos03'>西安公司<a class="pos-icon"></a></span>
+                   <span class='pos-bg pos04'>上海公司<a class="pos-icon"></a></span>
+                   <span class='pos-bg pos05'>集团公司<a class="pos-icon"></a></span>
+                   <span class='pos-bg pos06'>广州公司<a class="pos-icon"></a></span>
+                   <span class='pos-bg pos07'>深圳公司<a class="pos-icon"></a></span>-->
+               </div>
+            </div>
+            <a class="linkblock">
+            <div class="detail-box" style="display: none"  id="index-demo">
+                <div class="common-detail-box commonbg">
+                    <img class="company-pic"/>
+                    <div class="detail-word">
+                        <ul>
+                        <li class="hearder"><span class="top-title">公司场地</span><span class="status">状态：使用中</span></li>
+                        <li><span class="title">翌捷公司</span></li>
+                        <li><span class="zichan-key">最大可容库存：</span><span class="zichan-value">28378个货位</span></li>
+                        <li class="address-key">公司地址：<span class="address-value">南宁市玉洞保税物流园</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="common-box-bip">
+                    <a class="logo icon"></a>
+                    <span class="pull-right"><a class="icon ic-phone"><a class="icon ic-laptop"></a></a><a class="icon ic-star"></a></span>
+                </div>
+            </div>
+            </a>
+        </div>
+    </body>
+</html>

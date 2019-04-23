@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=320.1, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"><!--Ajax跨域问题浏览器兼容性-->
+    <link rel="shortcut icon" href="site/favicon.ico" type="image/x-icon" />  
+    <title>我的</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/sea.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/my.css">
+</head>
+<body>
+<div class="main_page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+ <div class="burger"><i></i><i></i><i></i></div>	
+ <h1 class="am-header-title"><span id="lc-title">我的</span></h1>
+ <!-- <div id="lcListInput" class="searchData"></div> -->
+</header>
+<div class="h60"></div> 
+<div class="mainBox">
+	<div class="my">
+    <div class="avatar">
+        <img  id="photoUrl" src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2566486927,2639138961&fm=58">
+        <div class="name" id="name">江小鱼<i></i></div>
+    </div>
+
+    <div class="org">
+        <div class="container"> <div class="content" id="userName">猫鱼</div><div class="title">字号</div><i></i></div>
+        <div class="container"> <div class="content">92</div><div class="title">活跃度</div><i></i></div>
+        <div class="container"> <div class="content" id="userzuzhi">无</div><div class="title">组织</div><i></i></div>    
+    </div>
+    </div>
+
+    <div class="bg"></div>
+
+    <div class="workflow">
+        <ul>
+            <li class="tab_kq"><a href="../suneee/myTimeSheet.html"><span><img src="../assets/css/sea/icon_kq.png"></span><div class="name">考勤<i></i></div></a></li>
+            <li class="tab_jq"><a href="../suneee/holidayBalance.html"><span><img src="../assets/css/sea/icon_qj.png"></span><div class="name">假期<i></i></div></a></li>
+          	<li class="tab_jb"><a href=""><span><img src="../assets/css/sea/icon_jb.png"></span><div class="name">加班<i></i></div></a></li>
+        </ul>
+    </div>
+
+    <div class="bg"></div>
+    
+        <div class="workflow">
+            <ul>
+                <li class="tab_xc"><a href=""><span><img src="../assets/css/sea/icon_xc.png"></span><div class="name">薪酬<i></i></div></a></li>
+                <li class="tab_jx"><a href=""><span><img src="../assets/css/sea/icon_jx.png"></span><div class="name">绩效<i></i></div></a></li>
+                <li class="tab_ht"><a href=""><span><img src="../assets/css/sea/icon_ht.png"></span><div class="name">合同<i></i></div></a></li>
+            </ul>
+        </div>
+</div>
+<!--/mainBox--->
+<!--<div class="h60"></div> 
+<footer>
+    <article class="footerBar">
+    <a class="tab_1" id="tab_1" href="schedule.html">日程</a>
+    <a class="tab_2" id="tab_2" href="workflow.html">工作流</a>
+    <a class="tab_3" id="tab_3" href="fileCabinet.html">文件柜</a>
+    <a class="tab_4 cur" id="tab_4" href="my.html">我的</a>
+    </article>
+    </footer><!--/主页面层--->
+    </div>
+<script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="../assets/js/headers.js"></script>
+<script type="text/javascript">
+/**
+ * burger
+ */
+$(function() {
+	var userData=window.sessionStorage.getItem("userData");
+	//console.log(userData);
+	if(userData){
+	userData=JSON.parse(userData);
+	$('#photoUrl')[0].src=userData.photoUrl;
+	$('#userName').html(userData.userName);
+	$('#name').html(userData.name);
+	}
+	$.post("/bpmx/platform/mobile/userCenter/userInfo.ht", function(data){
+		if(data.orgName){$('#userzuzhi').text("" + data.orgName+ "");}
+	});
+	
+	var obj = {}; 
+	obj.firstPage = false;
+	$(this).removeClass("menu-opened");
+	window.parent.postMessage(obj,'*');
+	$('.burger').on("click", function(){ 
+		window.sessionStorage.setItem('Number',"2");
+	    obj.firstPage = true; 
+	    window.parent.postMessage(obj,'*');
+	    if($(this).hasClass("menu-opened")){$(this).removeClass("menu-opened");}
+	    else{ $(this).addClass("menu-opened");}
+	    //resultUserInfo()
+	    //console.log("resultUserInfo():",resultUserInfo());
+	    });
+	
+	 $(".tab_kq a").on("click",function(e){
+		   if(iPad||iVersion == 'iPad'){
+			   e.preventDefault();
+				var obj = {}; 
+				obj.pageHrefTitle = "个人考勤";
+				obj.pageHref = "http://"+window.location.host+"/bpmx/mh/punched/list.ht?sessionId=" + sessionId;
+				window.parent.postMessage(obj,'*');
+			    location.href = obj.pageHref;
+			    sessionStorage.setItem('title',obj.pageHrefTitle);
+			    sessionStorage.setItem('href',obj.pageHref);
+			} 
+			
+		})
+		
+		$(".tab_jq a").on("click",function(e){
+		   if(iPad||iVersion == 'iPad'){
+			   e.preventDefault();
+				var obj = {}; 
+				obj.pageHrefTitle = "假期结余";
+				obj.pageHref = "http://"+window.location.host+"/bpmx/mh/vacationLeft/list.ht?sessionId=" + sessionId;
+				window.parent.postMessage(obj,'*');
+			    location.href = obj.pageHref;
+			    sessionStorage.setItem('title',obj.pageHrefTitle);
+			    sessionStorage.setItem('href',obj.pageHref);
+			} 
+			
+		})
+})
+</script>    
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<title></title>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/indexImportJs.js"></script>
+</head>
+<body class="panel_wapper_body">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger"><i></i><i></i><i></i></div>	
+	<h1 class="am-header-title"><span>我的日程</span></h1>	
+</header>
+ 
+<div class="panel_wapper">
+<div id="calendar_box" >
+<div class="widget-calendar" id="calendar" >    
+</div>
+</div>
+</div>
+      
+<!-- style="display: none;" -->
+<div class="layer-hidden-line" style="display: none;">
+        <form role="form" class="layui-form" id="Form" >
+            <input name="id" id="id" type="hidden" value="">
+                <input name="allDay" id="allDay" type="hidden" value="">
+	            <div class="layui-form-item">
+			    <label class="layui-form-label">日程内容 </label>
+			    <div class="layui-input-block">
+			      <textarea type="text" id="content" name="title"  autocomplete="off" data-required="true" data-descriptions="content" maxlength="50" class="layui-input">请输入日程内容</textarea>
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">开始时间 </label>
+			    <div class="layui-input-inline">
+			      <input type="text" readonly="readonly" name="start" datefmt="yyyy-MM-dd HH:mm:ss" class="layui-input date-text" id="startTime"
+                            placeholder="请输入开始时间" data-required="true" data-descriptions="startTime" maxlength="50">
+                  <input id="startTime1" type="hidden" name="startTime">    
+			    </div>
+			  </div>
+			  
+			  
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">结束时间 </label>
+			    <div class="layui-input-inline">
+			      <input type="text" readonly="readonly" name="end" datefmt="yyyy-MM-dd HH:mm:ss" class="layui-input  date-text" id="endTime"
+                            placeholder="请输入结束时间" maxlength="50">
+                   <input id="endTime1" type="hidden" name="endTime">         
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item layui-form-item-no">
+			    <label class="layui-form-label">&nbsp;</label>
+			    <div class="layui-input-block">
+			      <!-- <input type="checkbox" name="like1[write]" lay-skin="primary" title="全天" checked=""><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>全天</span><i class="layui-icon"></i></div>
+			     -->
+			     <label> 
+                 <input type="checkbox"  id="allDayChk" name="allDayChk"> 
+                 <span class="text">全天</span>
+                 </label>
+			    </div>
+			  </div>
+			  
+			  <div class="layui-form-item  layui-form-item-center">
+			    <div class="layui-input-block">		    
+			      <button class="layui-btn" type="submit">提 交</button>
+			      <button type="button" class="layui-btn layui-btn-primary" onclick="resetData()">重 置</button>
+                  <button type="button" class="layui-btn layui-btn-danger" id="del" onclick="delData()">删 除</button>
+			    </div>
+			  </div>
+        </form>
+    </div>
+</body>
+</html>

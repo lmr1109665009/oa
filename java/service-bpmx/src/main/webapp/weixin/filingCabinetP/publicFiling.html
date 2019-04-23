@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公共文件柜</title>
+    <link rel="stylesheet" href="css/filingCabinet.css">
+</head>
+<body>
+<div id="file_cabinet">
+    <header class='fc_header' style="display:none">
+        <h2>公共文件柜</h2>
+    </header>
+    <nav class="fc_nav">
+        <ul class="fc_navlist" style="display:none">
+            <li class="departDoc active"><a href="###">部门文件柜</a></li>
+            <li class="publicDoc"><a href="###">公共文件柜</a></li>
+        </ul>
+    </nav>
+    <div class="Breadcrumb">
+        <ul class="breadList">
+            <li>全部文件</li>
+        </ul>
+    </div>
+    <div class="fc_content">
+        <table>
+            <thead class="fContent_thead">
+            <tr>
+                <th>文件名</th>
+                <th>文件大小</th>
+                <th>上传时间</th>
+                <th>创建人</th>
+            </tr>
+            </thead>
+            <tbody id="fContent_tbody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="progress">
+    <div class="comProgress"></div>
+    <span class="fileName"></span>
+    <span class="speed"></span>
+</div>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="../assets/js/headers.js"></script>
+<script src="js/publicFiling.js"></script>
+</body>
+</html>

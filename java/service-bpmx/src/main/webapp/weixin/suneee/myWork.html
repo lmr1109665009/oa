@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="../assets/css/suneee/phone.css" />
+<script type="text/javascript" src="../assets/js/cordova/cordova.js"></script>
+<title>Insert title here</title>
+</head>
+
+<script type="text/javascript">
+function onBack(){
+    cordova.exec(null, null, "CPlugin", "backToUPC", []);
+}
+</script>
+<body class="am-with-fixed-header">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="am-header-left am-header-nav">
+		<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>
+	</div>	
+	<h1 class="am-header-title">
+			<a href="#" class="" id="columnTitle" >我的办公 </a>
+	</h1>	
+</header>	
+	<div id="content-div" class="content-div">
+		<div class="header-list">我的信息</div>
+	    <ul class="item-ul">
+	        <li class="item-li"><a class="list-a" href='myTimeSheet.html'>我的打卡</a><i class="narrow-i"></i></li>
+	        <li class="item-li"><a class="list-a" href='holidayBalance.html'>我的结余</a><i class="narrow-i"></i></li>
+	    	<li class="item-li"><a class="list-a">我的档案</a><i class="narrow-i"></i></li>
+	    </ul>
+	
+	    <div class="header-list">我的工作</div>
+		<ul class="item-ul">
+			<li class="item-li"><a class="list-a" href='../bpm/myToDo.html'>待我审批</a><i class="narrow-i"></i></li>
+			<li class="item-li"><a class="list-a" href='../bpm/myRequestList.html'>我的申请</a><i class="narrow-i"></i></li>
+			<li class="item-li"><a class="list-a" href='../bpm/myCompleteReqList.html'>我的办结</a><i class="narrow-i"></i></li>
+		 </ul>
+		  <div class="header-list">行政办公</div>
+		<ul class="item-ul">
+			<li class="item-li"><a class="list-a" href='../suneee/addRoom.html'>会议室预定</a><i class="narrow-i"></i></li>
+	        <li class="item-li"><a class="list-a" href='../suneee/mRoomList.html'>会议室预定记录</a><i class="narrow-i"></i></li>
+	        </ul>
+    </div>
+</body>
+</html>

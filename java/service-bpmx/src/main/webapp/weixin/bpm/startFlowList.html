@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>发起流程</title>
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css",
+           "/weixin/assets/css/app.css"]);
+
+importJs(["/weixin/assets/js/ztree/js/jquery.ztree.all-3.5.min.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js"]);
+
+$(function() {
+	loadFlowCat();
+});
+
+function loadFlowCat(){
+	var url=__ctx + "/platform/system/globalType/getByCatKeyForBpmNewPro.ht?catKey=FLOW_TYPE&isMobile=true";
+	var catTree = new ZtreeCreator("flowTree",url)
+	.setOutLookStyle()
+	.setCallback({onClick:treeClick})
+	.setDataKey({idKey:"typeId",pIdKey:"parentId",name:"typeName"})
+	.initZtree({},1,function(treeObj,treeId){
+		
+	});
+}
+
+function treeClick(event, treeId,treeNode){
+	var typeId=treeNode.typeId;
+	//if(treeNode.parentId==0) return;
+	var $tpl = $('#tpi-list-item');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl);
+	var url=__ctx +"/weixin/bpm/getMyDef.ht?typeId="+ typeId;
+	$.get(url,function(data){
+		var html = template(data);
+		$("#wrapperList").html(html);
+		$("#tabs").tabs('open',1);
+	})
+}
+
+</script>
+<style type="text/css">
+#wrapperList  a::after{
+	display:inline-block;
+	font:normal normal normal 1.6rem/1 FontAwesome,sans-serif;
+	font-size:inherit;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+	transform:translate(0,0);
+	content:"\f054";
+	position:absolute;
+	right:10px;
+	color:#ccc;
+	top:50%;
+	margin-top:-8px
+}
+
+</style>
+
+</head>
+<body>
+	<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+		<div class="am-header-left am-header-nav">
+			<span class="am-icon-chevron-left" id="btn-back" onclick="history.back();"></span>
+		</div>
+		<h1 class="am-header-title">
+			<a href="#" class="" id="columnTitle" >发起流程 </a>
+		</h1>
+		
+		<div class="am-header-right am-header-nav">
+          <a href="../index.html" class=""  title="返回主页" >
+                <i class="am-header-icon fa fa-home" ></i>
+          </a>
+      	</div>
+	</header>
+
+	<div class="am-tabs" data-am-tabs="{noSwipe: 0}" id="tabs">
+	  <ul class="am-tabs-nav am-nav am-nav-tabs">
+	    <li class="am-active"><a href="javascript: void(0)">流程分类</a></li>
+	    <li><a href="javascript: void(0)">流程列表</a></li>
+	  </ul>
+	
+	  <div class="am-tabs-bd">
+	    <div class="am-tab-panel am-active">
+	      <ul id="flowTree" class="ztree" style="min-height: 200px"></ul>
+	    </div>
+	    
+	   
+	    <div class="am-tab-panel">
+	    	 <ul class="am-list" id="wrapperList" style="min-height: 200px"></ul>
+	    </div>
+	   
+	  </div>
+	</div>
+
+	<script type="text/x-handlebars-template" id="tpi-list-item">
+	{{#each this}}
+      <li class="am-g am-list-item-dated">
+          <a href="startFlow.html?defId={{defId}}&flowKey={{defKey}}&actDefId={{actDefId}}&subject={{subject}}" class="am-list-item-hd">{{subject}}</a>
+      </li>
+	{{/each}}
+	</script>
+	
+</body>
+</html>

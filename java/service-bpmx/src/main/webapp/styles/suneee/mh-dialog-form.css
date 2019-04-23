@@ -1,0 +1,134 @@
+@CHARSET "UTF-8";
+
+/** 界面右侧按钮窄条div **/
+.right-div{
+    position: absolute;
+    right: 0;
+    float: right;
+    background: #ffffff;
+    top: 0;
+    width: 0;
+    height: 100%;
+    border-left: 1px solid #eaeaea;
+    overflow:hidden;
+}
+
+/** 右侧弹出的div样式 */
+.mh-div {
+	position: fixed;
+    float: right;
+    right: -440px;
+    z-index: 1;
+    top: 0;
+    background: #f2f2f5;
+    width: 440px;
+    height: 100%;
+    text-align: center;
+    transition-timing-function: ease;
+    overflow: auto;
+}
+
+/** 弹出div 的header **/
+.head-div {
+	width:100%; 
+	height: 40px; 
+	font-size: 20px
+}
+
+/** 弹出div 中的菜单样式 **/
+.ulbox {
+	padding: 0 20px;
+	text-align:left;
+}
+
+.ulbox .ulboxtit{
+	line-height:40px; 
+	padding-top: 20px;
+	font-size: 16px;
+	color: #333;
+	clear: both
+} 
+
+.ulbox ul {
+	line-height:30px; 
+	width: 100%;
+} 
+
+.ulbox ul li { 
+	float:left; 
+	list-style:none; 
+	color: #677175;
+	font-size: 14px; 
+	width: 33.33%;
+	overflow: hidden; 
+	text-overflow:ellipsis; 
+	white-space: nowrap;
+	cursor:pointer;
+}
+
+/** 搜索界面元素样式 **/
+.mh-search-div table {
+	background: #f2f2f5;
+	width:100%
+}
+
+.mh-search-div table tr {
+	height:55px;
+	display:table-row;
+	vertical-align: inherit;
+}
+
+.mh-search-div table tr:nth-of-type(first) {
+    width: 20%;
+    text-align: right;
+}
+
+.mh-search-div table tr:nth-of-type(last) {
+    width: 70%;
+    float: left;
+    text-align: left;
+}
+
+.search-input {
+	padding-left: 30px;
+	display: block;
+	height: 36px;
+    line-height: normal;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 2px 8px;
+    position: relative;
+    width: 90%;
+    outline: none;
+    border-style: solid;
+}
+
+.mh-form span {
+	float: left;
+    font-size: 15;
+    height: 100%;
+    width: 100%;
+    text-align: right;
+    background: #f2f2f5;
+    margin：0;
+    padding:0;
+    line-height: 2.2;
+}
+
+.mh-form select, .dialogFrom input {
+	float: left;
+}
+
+.mh-form select {
+	width: 90%;
+    background-color: #fff;
+    height: 34px;
+}
+
+.mh-form .submit {
+	padding: 6px 35px;
+	background: #00AAF3; 
+	width:90%; 
+	height:40px;
+	float: left;
+}

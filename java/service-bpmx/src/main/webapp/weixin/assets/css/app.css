@@ -1,0 +1,52 @@
+html,body{height:100%; overflow: hidden;}
+
+
+.am-thumbnails li{
+	text-decoration: none;
+	text-align: center;
+	
+}
+
+.am-thumbnails a{
+	text-decoration: none;
+}
+
+.am-icon-btn.am-lg{
+	 width: 60px;
+  height: 60px;
+  font-size:36px;
+  line-height: 60px;
+}
+
+
+.am-icon-share-alt-square{ 
+	margin-bottom:5px;
+  .am-icon-font; 
+  content: @fa-var-share-alt-square;
+}
+
+.am-navbar-nav  li a  span{
+	margin-top: 5px;
+}
+
+
+/*.am-list a::after {*/
+	/*position:absolute;*/
+    /*display: inline-block;*/
+    /*content: "";*/
+    /*font-size: 15px;*/
+    /*padding-left: 14px;*/
+    /*width:14px;*/
+    /*height:30px;*/
+    /*background: url(iroom/narrow.png) no-repeat;*/
+    /*background-position: right center;*/
+    /*background-size:12px auto ;color: #666;*/
+    /*text-rendering: auto;*/
+    /*-webkit-font-smoothing: antialiased;*/
+    /*-moz-osx-font-smoothing: grayscale;*/
+    /*transform: translate(0,0);*/
+    /*right: 10px;*/
+    /*color: #ccc;*/
+    /*top: 50%;*/
+    /*margin-top: -15px;*/
+/*}*/

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=320.1, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"><!--Ajax跨域问题浏览器兼容性-->
+    <meta http-equiv="Expires" content="0">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-control" content="no-cache">
+	<meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="site/favicon.ico" type="image/x-icon" />  
+    <title>公共文件柜</title>
+	<link rel="stylesheet" type="text/css" href="../assets/css/amazeui.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/sea.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/fileCabinet.css">
+</head>
+<body>
+<div class="main_page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+    <div class="burger-arr" onclick="location='/app'">
+        <i></i><i></i><i></i>
+    </div>
+ <!--<div class="logoNav burger"><i></i><i></i><i></i></div>		-->
+ <h2 class="am-header-title"><span id="lc-title">知识管理</span></h2>
+ <div id="lcListInput" class="searchData"></div>
+</header>
+
+<div class="searchList" style="display:none;">
+	<div><input type="search" placeholder="请输入文件名称" id="topSearchTxt"/></div>
+	<span class="qxBtn"><i>取消</i></span>	
+</div>
+
+
+<div class="h60"></div> 
+<div class="mainBox">
+	
+	<nav class="fc_nav" style="display:none">
+        <ul class="fc_navlist">
+            <li class="departDoc active"><a href="###">部门文件柜</a></li>
+            <li class="publicDoc"><a href="###">公共文件柜</a></li>
+        </ul>
+    </nav>
+    
+    <div class="tabframe_title">
+        <ul  class="tabframe_ul">
+            <li><a title="fileCabinet.html" href="javascript:;" class="opent-content"><span>个人文件柜</span><i></i></a></li>
+            <li><a title="departmentFile.html" href="javascript:;" class="opent-content"><span>部门文件柜</span><i></i></a></li>
+            <li class="active"><a title="publicFile.html" href="javascript:;" class="opent-content"><span>公共文件柜</span><i></i></a></li>
+        </ul>
+    </div>
+
+    <div class="Breadcrumb">
+        <ul class="breadList">
+            <li>文件柜</li>
+        </ul>
+    </div>
+
+    <div class="files" id="fContent_mobile">
+         <ul></ul>
+    </div>
+
+</div>
+<!--/mainBox--->
+<!--<div class="h60"></div> 
+<footer>
+    <article class="footerBar">
+    <a class="tab_1" id="tab_1" href="schedule.html">日程</a>
+    <a class="tab_2" id="tab_2" href="workflow.html">工作流</a>
+    <a class="tab_3  cur" id="tab_3" href="fileCabinet.html">文件柜</a>
+    <a class="tab_4" id="tab_4" href="my.html">我的</a>
+    </article>
+    </footer><!--/主页面层--->
+    </div>
+    
+     <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../assets/js/LABjs.js"></script>
+    <script type="text/javascript" src="../assets/js/headers.js"></script>
+    <script type="text/javascript" src="../assets/js/publicFile.js"></script>
+    <script type="text/javascript" src="../assets/js/departmentFile.js"></script>
+</body>
+</html>

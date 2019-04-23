@@ -1,0 +1,68 @@
+
+<html ng-app="base">
+<head>
+	<title>系统附件上传</title>
+	<meta charset="UTF-8">
+	<script src="../importJs.js"></script>
+	<script type="text/javascript">
+
+	importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+	           "/weixin/assets/js/ztree/css/outLook.css"]);
+	
+	importJs(["/weixin/assets/js/angular.min.js",
+	         "/weixin/assets/js/handlebars.min.js",
+          	 "/weixin/assets/js/angular-file-upload.js",
+         	 "/weixin/assets/js/dialog/uplaodDialogController.js"]);
+</script>
+</head>
+<body ng-controller="uploadCtrl" class="uploadCtrl">
+	<div style="margin-top: 10px">
+		<div>
+			<div class="am-form-group am-form-file am-u-sm-7 m-u-md-7">
+				 <button type="button" class="am-btn am-btn-success am-btn-sm">
+				   <i class="am-icon-cloud-upload"></i> 选择</button>
+				 <input type="file" multiple uploader="uploader" nv-file-select>
+			</div>
+			<div class="am-input-group am-input-group-sm  am-u-sm-4 m-u-md-4">
+				<span class="am-input-group-btn am-u-sm-12"> 
+					<a ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="am-btn am-btn-default"><span>全部上传</span></a>
+				</span>
+			</div>
+        </div>
+		<div style="margin: 0 0;">
+			<div class="" title="上传队列" style="padding: 0 0;">
+				<table class="am-table am-tablenone">
+					<tbody>
+						<tr ng-repeat="item in uploader.queue">
+							<td>
+								<div>
+									<div class="am-u-sm-12 m-u-md-12">
+										文件：<a class="am-btn am-btn-text">{{ item.file.name }}/{{ item.file.size/1024/1024|number:2}} MB</a>
+									</div>
+									<div class="am-progress-striped am-u-sm-3 m-u-md-3 am-text-nowrap" >
+									   <div class="am-progress-bar-danger" style="width:{{item.progress}}%">{{item.progress+'%'}}</div>
+									</div>
+									<div class="am-u-sm-9 m-u-md-9"> 
+			                            <a ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" class="am-btn am-btn-primary fa-upload am-btn-xs"><span>上传</span></a>
+			                            <a ng-click="item.cancel()" ng-disabled="!item.isUploading" class="am-btn am-btn-secondary fa-undo am-btn-xs"><span>取消</span></a>
+										<a ng-click="item.remove()" class="am-btn am-btn-danger am-btn-xs"><span>删除</span></a>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="am-alert am-alert-secondary" data-am-alert ng-show="uploader.queue.length==0">
+				  	请选择附件上传...
+				</div>
+			</div>
+		</div>
+		<div class="am-modal-footer am-topbar-fixed-bottom">
+			<div style="text-align: center;">
+	    		<button type="button" class="am-btn  am-radius am-btn-danger" ng-click="closeDialog()">取消</button>
+	    		<button type="button" class="am-btn  am-radius am-btn-primary" ng-click="dialogOk()">确定</button>　
+	  		</div>	
+  		</div>
+	</div>
+</body>
+</html>

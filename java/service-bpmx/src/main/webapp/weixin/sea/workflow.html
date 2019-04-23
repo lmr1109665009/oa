@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="startFlow">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>工作流</title>
+<script src="../assets/js/importJs.js"></script>	
+<script type="text/javascript">
+importCss(["/weixin/assets/css/sea.css"]);
+importJs(["/weixin/assets/js/TouchSlider.js","/weixin/assets/js/workflow.js"]);
+</script>    
+</head>
+<body>
+<div class="main_page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+ <div class="burger menu-opened"><i></i><i></i><i></i></div>	
+ <h1 class="am-header-title"><span id="lc-title">办公流程</span></h1>
+<!--  <div id="lcListInput" class="searchData"></div> -->
+</header>
+<div class="h60"></div> 
+<div class="mainBox">
+
+<div class="main_banner">
+ <div class="swipe">
+    <ul id="slider">
+        <a href=""><li style="display:block" class="liad">
+        <div class="slider_div"><img src="../assets/css/sea/workflow_himg.png">
+        </div></li></a><!-- 
+        <a href=""><li class="liad">
+        <div class="slider_div"><img src="../assets/css/sea/workflow_himg.png">
+        </div></li></a>
+        <a href=""><li class="liad">
+        <div class="slider_div"><img src="../assets/css/sea/workflow_himg.png">
+        </div></li></a> -->
+    </ul> 
+</div>
+<div id="pagenavi"> 
+    <a href="javascript:void(0);">1</a>
+   <!--  <a href="javascript:void(0);" >2</a>
+    <a href="javascript:void(0);" >3</a> -->
+</div>
+</div>
+
+<div class="ulTab">
+<ul>
+<li class="my-todo"><a href=""><div class="ulTabtop"><span><em>0</em></span></div><p>待办事宜</p></a></li>
+<li class="my-request"><a href=""><div class="ulTabtop"><span><em>0</em></span></div><p>我的申请</p></a></li>
+<li class="my-flow-tome"><a href=""><div class="ulTabtop"><span><em>0</em></span></div><p>我的交办</p></a></li>
+<li class="my-complete-req"><a href=""><div class="ulTabtop"><span><em>0</em></span></div><p>我的加签</p></a></li>
+</ul>
+</div>
+
+<div id="tabBox1" class="tabBox">
+<div class="tabBoxTit">常用流程</div>
+<ul>
+<li class="tb_0"><a href="../bpm/startFlow.html?defId=10000001660062&flowKey=fwlc&actDefId=fwlc:1:10000001660066&subject=集团公司发文流程"><div class="otb"><i></i><span>发文</span></div></a></li>
+<li class="tb_1"><a href="../bpm/task.html?taskId=10000002042879&defId=10000001741838&runId=10000001762022&subject=文件处理"><div class="otb"><i></i><span>文件处理</span></div></a></li>
+<li class="tb_2"><a href="../bpm/startFlow.html?defId=10000001742332&flowKey=hthq&actDefId=hthq:1:10000001750597&subject=合同会签流程"><div class="otb"><i></i><span>合同</span></div></a></li>
+<li class="tb_6"><a href="../bpm/startFlow.html?defId=10000001742635&flowKey=yzsy&actDefId=yzsy:1:10000001751092&subject=印章使用流程"><div class="otb"><i></i><span>印章</span></div></a></li>
+</ul>
+<ul>
+<li class="tb_4"><a href="../bpm/startFlow.html?defId=10000001971456&flowKey=jtgsbgypcgsqb&actDefId=jtgsbgypcgsqb:1:10000001971455&subject=集团公司办公用品采购申请表"><div class="otb"><i></i><span>采购</span></div></a></li>
+<li class="tb_3"><a href="../bpm/startFlow.html?defId=10000001972570&flowKey=jtgsbgyplysqb&actDefId=jtgsbgyplysqb:1:10000001972569&subject=集团公司办公用品领用申请表"><div class="otb"><i></i><span>领用</span></div></a></li>
+<li class="tb_5"><a href="../bpm/startFlow.html?defId=10000001810006&flowKey=ygqjsqd&actDefId=ygqjsqd:1:10000001810010&subject=集团公司员工请假流程"><div class="otb"><i></i><span>请假</span></div></a></li>
+<li class="tb_7"><a href="../suneee/myFlowList.html?sessionId="><div class="otb"><i></i><span>更多</span></div></a></li>
+</ul>
+</div>
+
+
+<div id="tabBox2" class="tabBox">
+<div class="tabBoxTit">常用工具</div>
+<div id="tools" class="tabBoxBd">
+<ul>
+<li class="tb_b1"><a href="schedule.html?sessionId="><div class="otb"><i></i><span>日程</span></div></a></li>
+<li class="tb_b2"><a href="../suneee/mRoomList.html?sessionId="><div class="otb"><i></i><span>会议</span></div></a></li>
+<li class="tb_b3"><a href="fileCabinet.html?sessionId="><div class="otb"><i></i><span>文件柜</span></div></a></li>
+</ul>
+</div>
+</div>
+
+
+</div>
+<!--/mainBox--->
+<!--<div class="h60"></div>
+<footer>
+    <article class="footerBar">
+    <a class="tab_1" id="tab_1" href="schedule.html">日程</a>
+    <a class="tab_2 cur" id="tab_2" href="workflow.html">工作流</a>
+    <a class="tab_3" id="tab_3" href="fileCabinet.html">文件柜</a>
+    <a class="tab_4" id="tab_4" href="my.html">我的</a>
+    </article>
+    </footer>/主页面层--->
+    </div>
+
+<!--<script type="text/x-handlebars-template" id="tpi-list-search">-->
+  <!--{{#each this}}-->
+  <!--<a href="../bpm/task.html?taskId={{id}}&defId={{defId}}&runId={{runId}}">{{{subject}}}</a>-->
+  <!--{{/each}}-->
+<!--</script>-->
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<title>已办事宜</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+	importCss(["/weixin/assets/css/page.css"]);
+	//导入JS
+	importJs(["/weixin/assets/js/pageScroll.js"]);
+	var searchUrl=__ctx+"/weixin/bpm/getflowToMeListFront.ht";
+	importJs(["/weixin/assets/js/searchList.js","/weixin/assets/js/brushList.js","/weixin/assets/js/burger.arr.js"]);		
+</script>
+
+<!--<style type="text/css">#wrapper{ top:117px}.am-with-fixed-header{padding-top: 117px;}</style>-->
+<style type="text/css">#wrapper{ top:61px}.am-with-fixed-header{padding-top: 61px;}</style>
+<link rel="stylesheet" type="text/css" href="../../styles/suneee/phone.css" />
+</head>
+<body onload='onload();'>
+<div class="page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+  <div class="burger-arr" onclick="history.back()"  id="goBack"><i></i><i></i><i></i></div>
+  <!--<div class="burger-arr" id="goBack" ><i></i><i></i><i></i></div>-->
+	<h1 class="am-header-title"><span>已办事宜</span></h1>
+	<div id="lcListInput" class="searchData"></div>
+	<!--<div id="brushList" class="brushData"></div>-->
+</header>
+<!--<div class="tabframe">-->
+		   <!--<div class="tabframe_title">-->
+           <!--<ul class="tabframe_ul">-->
+            <!--<li><a href="myToDo.html" class="opent-content"><span>待我审批</span></a></li>-->
+            <!--<li class="active"><a href="myAlreadyMatters.html" class="opent-content"><span>我已审批</span></a></li></ul>-->
+		<!--</div>-->
+		<!--</div>-->
+  <div id="wrapper" data-am-widget="list_news"
+       class="am-list-news am-list-news-default">
+    <div class="am-list-news-bd">
+    	
+      <div class="pull-action loading" id="pull-down">
+        <span class="am-icon-arrow-down pull-label"
+              id="pull-down-label"> 下拉刷新</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+      <ul class="am-list" id="events-list">
+        <li class="am-list-item-desced">
+          <div class="am-list-item-text">正在加载内容... </div>
+        </li>
+      </ul>
+      <div class="pull-action" id="pull-up">
+        <span class="am-icon-arrow-up pull-label"    id="pull-up-label"> 上拉加载更多</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+  {{#each this}}
+  <li class="am-g am-list-item-dated" data-id="{{runId}}">
+    <a href="getProcessRun.html?runId={{runId}}&subject={{processName}}" class="am-list-item-hd" >{{{subject}}}</a><span class="am-list-item-text">发起时间：{{formatDate createtime 'yyyy-MM-dd hh:mm'}}</span>
+  </li>
+  {{/each}}
+</script>
+<script type="text/x-handlebars-template" id="tpi-list-search">
+  {{#each this}}
+  <a href="getProcessRun.html?runId={{runId}}&subject={{processName}}">{{{subject}}}</a>
+  {{/each}}
+</script>
+<script>
+
+$(function() {
+	
+	var callBack=function(data){
+	}
+	
+/* 	var url=__ctx +"/weixin/bpm/getAlreadyMattersList.ht"; */
+ 	var url= searchUrl;
+	var app = new EventsList(null, {
+        url: url,
+        params: {
+          page: 1,
+         // startFromMobile: 1,
+          pageSize: 20,
+          callback:callBack
+        }
+    });
+    app.init();
+
+    document.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+    }, false);
+
+
+
+});
+
+
+function setupWebViewJavascriptBridge(callback) {
+    if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+    if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+    window.WVJBCallbacks = [callback];
+    var WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+}
+setupWebViewJavascriptBridge(function(bridge) {
+
+    bridge.registerHandler('testJSFunction', function(data, responseCallback) {
+        alert('JS方法被调用:'+data);
+        responseCallback('js执行过了');
+    })
+
+
+})
+function shareClick() {
+    var params = {'title':'测试分享的标题','content':'测试分享的内容','url':'http://www.baidu.com'};
+    WebViewJavascriptBridge.callHandler('shareClick',params,function(response) {
+
+        console.log(response);
+
+
+    });
+}
+
+//
+//function setupWKWebViewJavascriptBridge(callback) {
+//    if (window.WKWebViewJavascriptBridge) { return callback(WKWebViewJavascriptBridge); }
+//    if (window.WKWVJBCallbacks) { return window.WKWVJBCallbacks.push(callback); }
+//    window.WKWVJBCallbacks = [callback];
+////    var WVJBIframe = document.createElement('iframe');
+////    WVJBIframe.style.display = 'none';
+////    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+////    document.documentElement.appendChild(WVJBIframe);
+////    setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+//}
+//setupWKWebViewJavascriptBridge(function(bridge) {
+//
+//    /* Initialize your app here */
+//
+////    bridge.registerHandler('nativeToJs', function(data, responseCallback) {
+////        var responseData = { 'js -> native':'js传参给iOS' }
+////        alert(response);
+////        responseCallback(responseData);
+////    })
+//    bridge.registerHandler('testJSFunction', function(data, responseCallback) {
+//        alert('JS方法被调用:'+data);
+//        responseCallback('js执行过了');
+//    })
+//
+//    bridge.callHandler('goBack', {'foo': 'bar'}, function(response) {
+//        console.log('JS got response', response)
+//    })
+//
+//    var goBack = document.getElementById('goBack');
+//    goBack.onclick = function (e) {
+//        e.preventDefault()
+//        console.log('js 执行了 "jsToNative" 方法')
+//        bridge.callHandler('jsToNative', {'key': 'value'}, function(response) {
+//            alert(response);
+//            console.log('js 得到原生的响应数据 ---> ', response, 'js')
+//        })
+//    }
+//
+//})
+
+function liOnClick(taskId, defId, runId,processName){
+	location.href = "getProcessRun.html?taskId=" + taskId +"&defId=" + defId + "&runId=" +runId+"&subject="+processName;
+};
+</script>
+</body>
+</html>
+

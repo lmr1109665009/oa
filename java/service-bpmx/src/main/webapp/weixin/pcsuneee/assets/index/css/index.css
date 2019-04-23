@@ -1,0 +1,67 @@
+*{margin: 0;padding: 0;list-style: none;}
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote,dl, dt, dd, ul, ol, li,pre,form, fieldset, legend, button, input, textarea, th, td {
+  margin: 0;padding: 0;
+}
+body{ background: #fff;}
+body,button, input, select, textarea /* for ie */ {font: 12px/1.5 "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;}
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+address, cite, dfn, em, var { font-style: normal; }
+code, kbd, pre, samp { font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;; }
+small { font-size: 12px; } 
+ul, ol { list-style: none; }
+a { text-decoration: none; }
+a:hover { text-decoration: none; }
+legend { color: #000; } /* for ie6 */
+fieldset, img { border: 0; }
+button, input, select, textarea { font-size: 100%; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+body{ background: #f1f1f2;}
+.body_wapper_box{clear: both;width:100%; text-align: center; padding-bottom: 10px;}
+.body_wapper_box a {color: #fff; text-decoration: none; }
+.body_wapper_box a:hover { color: #fff;text-decoration: none; }
+
+.body_head{ height:140px;width:80%;margin: 0 auto; min-width: 680px;max-width: 980px;}
+.body_head_c{height:26px; padding-top: 56px; text-align: left; padding-left: 10px;}
+.body_head_c .piocn_logo{width:165px;height:26px;float: left;background-image: url("../images/logo.png");}
+.body_head_c .logo_text{width:165px;height:20px;height:20px; top:-2px; position:relative;
+float: left; margin-left: 20px; padding-left: 20px; color: #424242;
+font-size: 22px; font-weight: 500; border-left: 1px solid #ccc;}
+
+.panel_wapper{clear: both; width:80%;display: inline-block; margin: 0 auto;text-align: left;min-width: 680px;max-width: 980px;}
+.panel_wapper .picon{ background-repeat: no-repeat; background-position: center;}
+
+.panel{padding:10px;}
+.bg-1{ background: #6868ad;}
+.bg-2{ background: #529b89;}
+.bg-3{ background: #528bb1;}
+.bg-4{ background: #607ea9;}
+.bg-5{ background: #5c6ca1;}
+.bg-6{ background: #4c93a9;}
+.bg-1 .panel_img{background-image: url("../images/i-1.png");}
+.bg-2 .panel_img{background-image: url("../images/i-2.png");}
+.bg-3 .panel_img{background-image: url("../images/i-3.png");}
+.bg-4 .panel_img{background-image: url("../images/i-4.png");}
+.bg-5 .panel_img{background-image: url("../images/i-5.png");}
+.bg-6 .panel_img{background-image: url("../images/i-6.png");}
+
+.panel_box{color: #fff; padding: 20px 20px 15px 20px;}
+.panel_head{font-size: 14px; height: 28px;line-height: 28px;overflow: hidden; }
+.panel_head .panel_img{ width:30px;height:30px;float: left;}
+.panel_head span{ float: right}
+.panel_body{ clear: both;overflow-y: auto;font-size: 16px;padding: 28px 0 10px 0}
+.panel_body .panel_tit{font-size: 22px; padding-bottom: 5px;}
+.panel_body p{font-size: 14px;filter:alpha(opacity=70);  -moz-opacity:0.7;   -khtml-opacity: 0.7; 
+ opacity: 0.7;
+ height: 48px;line-height: 24px; overflow: hidden;
+ }
+.panel_bottom{clear: both;height: 20px;}
+.panel_bottom .panel_logo{ width:66px;height:20px;float: left;background-image: url("../images/ib-logo.png");}
+.panel_bottomr{width:91px;float: right;}
+.panel_bottomr .picon{ width:30px;height:20px;float: left;}
+.panel_bottom .ib-1{background-image: url("../images/ib-1.png");}
+.panel_bottom .ib-2{background-image: url("../images/ib-2.png");}
+.panel_bottom .ib-3{background-image: url("../images/ib-3.png");}
+.panel_c{ width:33.33%; float: left;}
+
+

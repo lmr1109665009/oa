@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<title>会议室预定列表</title>
+<link type="text/css" rel="Stylesheet" href="../assets/css/mroom.css" />
+<link type="text/css" rel="Stylesheet" href="../assets/css/alert.css" />
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../../assets/js/headers.js"></script>	
+<script src="../assets/js/alert.js"></script>	
+<script src="../assets/js/handlebars.min.js"></script>	
+<script src="../assets/js/mroom/addMroom.js"></script>	
+<script src="../assets/js/mroom/chosen.jquery.js"></script>	
+<link rel="stylesheet" href="../assets/js/mroom/chosen.css" />
+<script type="text/javascript"> 
+function dialogCloseCe(){$('#panelDialogCe').hide();}	
+</script>
+<script type="text/x-handlebars-template" id="tpi-option-item">
+	{{#each this}}
+     <option value={{dicId}}>{{itemName}}</option>
+	{{/each}}
+</script>	
+<script type="text/x-handlebars-template" id="tpi-option-room">
+	{{#each this}}
+     <option value={{roomId}}>{{roomName}}</option>
+	{{/each}}
+</script>
+<script type="text/x-handlebars-template" id="doc-room-detail">
+     位置：{{location}}<span>设备情况：{{deviceCondition}}</span><span>描述：{{description}}</span>
+</script>
+<script type="text/x-handlebars-template" id="tpi-option-user">
+	{{#each this}}
+     <option value={{userId}} dataname={{fullname}}><span>{{fullname}}</span><small> {{email}}</small></option>
+	{{/each}}
+</script>
+<script type="text/x-handlebars-template" id="tpi-checkbox-sb">
+	{{#each this}}
+     	<div class="am-checkboxli" id={{deviceId}}>
+		 <div class="am-checkbox">
+		  <label>
+		    <i></i><span>{{deviceName}}</span><small class="am-fr">位置：{{roomName}}</small>
+		  </label>
+		 </div>
+	   </div>
+	{{/each}}
+</script>
+
+
+
+</head>
+<body>
+<!-- <div id="toast-container" class="toast-top-right" aria-live="polite" role="alert">
+<div class="toast toast-warning"><div class="toast-message">资料保存成功</div>
+</div></div> -->
+
+
+   
+    
+<!-- <div class="panel-dialog panel-dialog-center" id="panelDialogCe"><div class="pane-dialog__close" onClick="dialogCloseCe()">X</div>
+<div class="pane-dialog__body">
+<div class="pane-dialog__header">预定详情</div> -->
+<div class="mroom-meeting">
+
+
+<div class="wrapperbox">
+<form name="form1" action="" id="form1">
+<!--top-->
+<div class="TableContent" align="left">
+<b>地区选择：</b>
+       <select id="doc-select-dq" class="bigSelect" onChange="checkRegion();">
+      </select>
+      <span></span>
+    <b>会议室选择：</b>
+    <select id="doc-select-room" class="bigSelect" onChange="checkRoom();" name="roomId">
+    </select>
+    <span id="doc-room-detailbox"></span>
+</div>
+
+
+<div class="contentwrapper">
+<!--left-->
+<div class="content_left">
+<div class="table-title"><span>时间</span></div>
+<div class="axis-y-date" id="meeting_date">
+</div>
+</div>
+<!--right-->
+<div style="overflow:hidden;overflow-y:hidden;position:relative;">
+            <div class="booker-title" id="booker_title">
+                <div class="axis-x">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div> 
+                <div style="clear:left;"></div>
+                <div id="meeting_more" style="display:none;"></div>
+                <div id="meeting"></div>
+            </div>
+        </div>
+</div>
+ <div align="center" style="clear:both;"></div>
+<!--bottom-->
+
+<div>
+
+<input type="hidden" id="date" name="convokeDate" value="">
+<input type="hidden" id="timestart" name="beginTime" value="">
+<input type="hidden" id="timeend" name="endTime" value="">
+<input type="hidden" id="participants" name="participants" value="">
+<input type="hidden" id="devices" name="devices" value="">
+<input type="reset" style="display:none;" /> 
+
+        <table class="TableList" align="center" width="100%">
+         <tr>
+            <td class="">会议主题：</td>
+            <td class="">
+                <input type="text" class="bigInput"  id="doc-ipt-them" placeholder="输入你的会议主题" name="theme">
+            </td>
+            <td class=""> 会议设备：</td>
+            <td class="">
+            <div class="mroom-wrap" id="meetingSb">
+            <div class="bigInput c9" id="doc-ipt-sb">选择你的会议设备</div>
+			   <div id="tpi-checkbox-sb-box" class="mroom-checkbox ">
+			   </div>
+			</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="">参会人员：</td>
+            <td class="">
+            <select data-placeholder="+添加人员" class="bigSelect chosen-select" multiple>
+	        </select>
+            </td>
+            <td class=""> 会议描述：</td>
+            <td class="">
+               <textarea rows="4" class="bigInput" id="
+" name="description"></textarea>
+            </td>
+        </tr>
+        </table>
+        <br />
+        <div class=bigButtonBox><input type="button" class="bigButton" value="确定" onClick="saveData()" /></div>
+        
+    </div>
+</form></div>
+
+
+</div>
+<!-- 
+</div>
+</div>
+ -->
+
+<body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<title>会议室预定列表</title>
+<link type="text/css" rel="Stylesheet" href="../assets/css/mroom.css" />
+<link type="text/css" rel="Stylesheet" href="../assets/css/alert.css" />
+<script src="../assets/js/jquery.min.js"></script>	
+<script src="../../assets/js/headers.js"></script>	
+<script src="../assets/js/alert.js"></script>	
+<script src="../assets/js/handlebars.min.js"></script>	
+<script type="text/javascript"> 
+var conferenceId = request.QueryString("conferenceId"); 
+function getData(){
+	var $tpl = $('#mroomDetail');
+	var tpl = $tpl.text();
+	var template = Handlebars.compile(tpl);
+	var url=__ctx+"/me/conference/conferenceInfo/get.ht?conferenceId="+ conferenceId;
+	$.get(url,function(result){
+		if(result.status==0){
+		var html = template(result.data);
+		$(".mroom-detail").html(html);
+		}
+		else {
+			console.log(result.message); 
+		}
+	})	
+}
+function getmRoomList(){ location.href="mRoomList.html?sessionId="+sessionId+"";}
+$(function() {
+	getData();
+})	
+</script>
+<script type="text/x-handlebars-template" id="mroomDetail">
+      <div class="am-g" style="margin-top:10px;">
+		  <div class="am-u-sm-2 am-text-right">会议室名称：</div>
+		  <div class="am-u-sm-4">{{roomName}}</div>
+		  <div class="am-u-sm-2 am-text-right">会议主题：</div>
+		  <div class="am-u-sm-4">{{theme}}</div>
+	  </div>
+
+	 <div class="am-g">
+		  <div class="am-u-sm-2 am-text-right">会议室时间：</div>
+		  <div class="am-u-sm-4">{{convokeDateText}} {{beginTime}}至{{endTime}}</div>
+		  <div class="am-u-sm-2 am-text-right">会议设备：</div>
+		  <div class="am-u-sm-4">{{devicesText}}</div>
+	 </div>
+	 <div class="am-g">
+		  <div class="am-u-sm-2 am-text-right">参会人员：</div>
+		  <div class="am-u-sm-10">{{participantsText}}</div>
+	 </div>
+	 <div class="am-g">
+		  <div class="am-u-sm-2 am-text-right">会议描述：</div>
+		  <div class="am-u-sm-10">{{description}}</div>
+	 </div>
+     <div class="am-g">
+		  <div class="am-u-sm-4 am-text-right">&nbsp;</div>
+		  <div class="am-u-sm-8"> <div align="center" style="clear:both;height:10px"></div>
+          <div class="bigButtonG" onClick=getmRoomList()>返回</div></div>
+	 </div>
+</script> 
+
+</head>
+<body>
+
+<div class="panel-table">
+<div class="mroom-detail">
+
+</div>
+</div>
+<body>
+</html>

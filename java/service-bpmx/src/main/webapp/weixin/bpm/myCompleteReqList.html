@@ -1,0 +1,105 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<title>我的办结</title>
+<meta charset="utf-8">
+<script src="../assets/js/importJs.js"></script>
+<script type="text/javascript">
+	importCss(["/weixin/assets/css/page.css"]);
+	//导入JS
+	importJs(["/weixin/assets/js/pageScroll.js"]);
+	var searchUrl=__ctx+"/weixin/bpm/getMyCompletedListJson.ht";
+	importJs(["/weixin/assets/js/searchList.js","/weixin/assets/js/burger.arr.js"]);	
+</script>
+<!--<style type="text/css">#wrapper{ top:117px}.am-with-fixed-header{padding-top: 117px;}</style>-->
+<style type="text/css">#wrapper{ top:61px}.am-with-fixed-header{padding-top: 61px;}</style>
+<link rel="stylesheet" type="text/css" href="../../styles/suneee/phone.css" />
+</head>
+<body>
+
+<div class="page">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger"><i></i><i></i><i></i></div>
+	<h1 class="am-header-title"><span>我的办结</span></h1>
+	<div id="lcListInput" class="searchData"></div>
+</header>
+<!--<div class="tabframe">-->
+		   <!--<div class="tabframe_title">-->
+           <!--<ul class="tabframe_ul">-->
+           <!--<li><a href="myRequestList.html" class="opent-content"><span>我的申请</span></a></li>     -->
+           <!--<li class="active"><a href="myCompleteReqList.html" class="opent-content"><span>我的办结</span></a></li></ul>-->
+		<!--</div>-->
+		<!--</div>	-->
+		
+  <div id="wrapper" data-am-widget="list_news"
+       class="am-list-news am-list-news-default">
+    <div class="am-list-news-bd">
+    	
+      <div class="pull-action loading" id="pull-down">
+        <span class="am-icon-arrow-down pull-label"
+              id="pull-down-label"> 下拉刷新</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+      <ul class="am-list" id="events-list">
+        <li class="am-list-item-desced">
+          <div class="am-list-item-text">正在加载内容... </div>
+        </li>
+      </ul>
+      <div class="pull-action" id="pull-up">
+        <span class="am-icon-arrow-up pull-label"    id="pull-up-label"> 上拉加载更多</span>
+        <span class="am-icon-spinner am-icon-spin"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-handlebars-template" id="tpi-list-item">
+  {{#each this}}
+  <li class="am-list-item-desced" data-id="{{runId}}" onClick="liOnClick({{runId}},'{{processName}}')">
+    <div class="am-list-item-hd" >{{{subject}}}</div><span class="am-list-date">发起时间：{{formatDate createtime 'yyyy-MM-dd hh:mm'}}</span>
+  </li>
+  {{/each}}
+</script>
+<script type="text/x-handlebars-template" id="tpi-list-search">
+  {{#each this}}
+   <a href="getProcessRun.html?runId={{runId}}&subject={{processName}}">{{{subject}}}</a>
+  {{/each}}
+</script>
+
+
+<script>
+
+$(function() {
+	
+	var callBack=function(data){
+	}
+	
+	var url=__ctx +"/weixin/bpm/getMyCompletedListJson.ht";
+	var data = {
+	          page: 1,
+	          startFromMobile: 1,
+	          pageSize: 20,
+	          callback:callBack
+	};
+	// 获取请求参数
+	var queryJson = HtUtil.getParameters();
+	if(queryJson.flowType){
+		data.flowType = queryJson.flowType;
+	}
+	var app = new EventsList(null, {
+        url: url,
+        params: data
+    });
+    app.init();
+      
+    document.addEventListener('touchmove', function(e) {
+          e.preventDefault();
+    }, false);
+});
+function liOnClick(runId,processName){
+	window.location.href = "getProcessRun.html?sessionId="+sessionId+"&runId=" + runId+"&subject="+processName;
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,166 @@
+<!doctype html>
+<html manifest="weixin.appcache">
+<head>
+<title>X3手机平台</title>
+<meta charset="utf-8">
+<script src="assets/js/importJs.js"></script>
+<script type="text/javascript">
+Handlebars.registerHelper("arySize",function(ary,options){
+     if(ary.length>0){
+        return options.fn(this);
+     }else{
+       return options.inverse(this);
+     }
+});
+</script>
+<style type="text/css">
+#contentDiv{
+	height:-webkit-calc(100% );
+	height:calc(100% );
+	overflow:auto ;
+}
+</style>
+</head>
+<body onload="init()">
+
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	
+	<h1 class="am-header-title">
+		<a href="#title-link" class="" id="title"> X3手机平台 V1</a>
+	</h1>
+	<div class="am-header-right am-header-nav">
+          <a href="../logout" class=""  alt="退出系统" >
+                <i class="am-header-icon fa fa-sign-out"></i>
+          </a>
+      </div>
+</header>
+
+
+<script type="text/x-handlebars-template" id="amz-tpl">
+<div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+   <div class="am-list-news-hd am-cf">
+        <a href="bpm/myToDo.html" class="">
+          <h2>我的待办</h2>
+            <span class="am-list-news-more am-fr">更多 &raquo;</span>
+        </a>
+   </div>
+  <div class="am-list-news-bd">
+	{{#arySize task}}
+  	<ul class="am-list">
+	  {{#each task}}
+      <li class="am-g am-list-item-dated">
+          <a href="bpm/task.html?taskId={{id}}&defId={{defId}}&runId={{runId}}" class="am-list-item-hd">{{{subject}}}</a>
+		  <div class="am-list-item-text">发起时间:{{createTime}} 发起人:{{creator}}</div>
+		  <div class="am-list-item-text">当前节点:{{nodename}}</div>
+      </li>
+	  {{/each}}
+  	</ul>
+    {{else}}
+	<div class="am-badge am-badge-secondary am-radius am-icon  fa fa-info-circle am-text-xl">当前你还没有代办数据</div>
+  	{{/arySize}}
+  </div>
+</div>
+<div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+   <div class="am-list-news-hd am-cf">
+        <a href="bulletin/column.html" class="">
+          <h2>最新公告</h2>
+            <span class="am-list-news-more am-fr">更多 &raquo;</span>
+        </a>
+   </div>
+  <div class="am-list-news-bd">
+  	<ul class="am-list">
+	  {{#each bulletin}}
+      <li class="am-g am-list-item-dated">
+          <a href="bulletin/detail.html?bulletinId={{id}}" class="am-list-item-hd ">{{{subject}}}</a>
+          <span class="am-list-date">{{date}}</span>
+      </li>
+	  {{/each}}
+  	</ul>
+  </div>
+</div>
+</script>
+<script type="text/javascript">
+$(function(){
+	loadData();
+});
+
+function loadData(){
+	if(navigator.onLine){
+		var $tpl = $('#amz-tpl');
+		var $modal = $('#my-modal-loading');
+		var tpl = $tpl.html();
+		var template = Handlebars.compile(tpl);
+		var url="index.ht";
+		$modal.modal();
+		
+		$.get(url,function(obj){
+			if(!obj.curUser){
+				window.location.href = "login.html";
+				return;
+			}
+			var title="X3手机平台[" + obj.curUser +"]";
+			$("#title").html(title);
+			html = template(obj);
+			$("#contentDiv").html(html);
+			$modal.modal('close');
+		});
+	}
+	else{
+		var title="X3手机平台";
+		$("#title").html(title);
+		$("#contentDiv").html('<div class="am-badge am-badge-warning am-radius am-icon  fa fa-info-circle am-text-xl">当前网络已离线</div>');
+	}
+	
+}
+
+function init(){
+	//一分钟检查一次服务端的weixin.appcache文件。
+	setInterval(function(){
+		applicationCache.update();
+	},6000);
+	
+	//如果文件有更新那么清空本地缓存并刷新主界面。
+	applicationCache.addEventListener("updateready",function(){
+		console.info("手工更新缓存");
+		applicationCache.swapCache();
+		location.reload();
+	});
+	//离线判断
+	window.addEventListener("offline", function(e) {loadData();})
+	window.addEventListener("online", function(e) {loadData();})
+}
+
+</script>
+
+<div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在加载数据请稍候...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+
+<div id="contentDiv" >
+
+</div>
+
+	
+<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default " >
+	<ul class="am-navbar-nav am-cf am-avg-sm-4">
+		<li>
+			<a href="bulletin/column.html" class=""> 
+				<i class="am-icon-rss"></i>
+				<span class="am-navbar-label">公司公告</span>
+			</a>
+		</li>
+		<li>
+			<a href="bpm/index.html" >
+			 <i class="am-icon-share-alt-square"></i> 
+			 	<span class="am-navbar-label">流程中心</span>
+				</a>
+			</li>
+	</ul>
+</div>
+</body>
+</html>

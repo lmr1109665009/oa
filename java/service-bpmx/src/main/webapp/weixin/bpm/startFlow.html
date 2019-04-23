@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html ng-app="startFlow">
+<head>
+<meta charset="UTF-8">
+<title>启动流程</title>
+<script src="../assets/js/importJs.js"></script>
+
+<script type="text/javascript">
+
+importCss(["/weixin/assets/js/ztree/css/zTreeStyle/zTreeStyle.css",
+           "/weixin/assets/js/ztree/css/outLook.css",
+           "/weixin/assets/css/jquery.qtip.css",
+           "/weixin/assets/css/mobiscroll.custom-2.5.2.min.css",
+           "/weixin/assets/css/form.css",
+           "/weixin/assets/css/formValid.css"]);
+
+importJs(["/weixin/assets/js/angular.min.js",
+          "/weixin/assets/js/zh_CN.js",
+          "/weixin/assets/js/BaseService.js",
+          "/weixin/assets/js/CustomValid.js",
+          "/weixin/assets/js/mobiscroll.custom-2.5.2.min.js",
+          "/js/hotent/platform/form/rule.js",
+          "/weixin/assets/js/jquery.qtip.js",
+          "/weixin/assets/js/ztree/js/jquery.ztree.core-3.5.js",
+          "/weixin/assets/js/ztree/ZtreeCreator.js",
+          "/weixin/assets/js/dialog/Dialogs.js",
+          "/weixin/assets/js/formDirective.js",
+          "/weixin/assets/js/bpm/FlowService.js",
+          "/weixin/assets/js/bpm/FormService.js",
+          "/weixin/assets/js/bpm/FormUtil.js",
+          "/weixin/assets/js/bpm/startFlowController.js",
+          "/weixin/assets/editor/ueditor.config.js",
+          "/weixin/assets/editor/ueditor.all.min.js"]);
+var startFlowInput = "startFlowInput";     
+/**
+ * flowType
+ */
+$(function() {
+	var flowType = request.QueryString("subject");
+	if(flowType){$("#lc-title").html(decodeURI(flowType));};
+    window.addEventListener('message',function(event){
+        if(event.data == 'data send'){
+            var appElement = document.querySelector('[ng-controller=ctrl]');
+            var $scope = angular.element(appElement).scope();
+            console.log($scope.data);
+            event.source.postMessage(JSON.stringify($scope.data) ,event.origin)
+        }
+    },false);
+})
+
+</script>
+<style type="text/css">
+.am-form-group span{
+border:none;
+}
+.wrapper-div{-webkit-overflow-scrolling:touch;overflow: hidden;overflow-y:auto;
+	-lh-property: 0;
+	height: 100% ;
+}
+</style>
+</head>
+<body ng-controller="ctrl">
+<header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+	<div class="burger-arr"  onclick="history.back();"><i></i><i></i><i></i></div>	
+	<h1 class="am-header-title"><span id="lc-title">发起流程</span></h1>
+</header>
+<div class="wrapper-div">
+<div id="formHtml" ht-bind-html="formHtml" style="width: 99.2%;height: 100%;overflow: auto;"></div>
+</div>
+<!--<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default am-navbar-footer">-->
+	<!--<ul class="am-navbar-nav am-cf am-avg-sm-4">-->
+		<!--<li class="am-avg-sm-li-one">-->
+		<!--<button type="button" class="am-btn am-btn-secondary am-radius"  ng-click="startFlow()">提交</button>	-->
+			<!-- <a href="#" ng-click="startFlow()">
+			 <i class="am-icon fa fa-check"></i> 
+			 	<span class="am-navbar-label" >提交</span>
+				</a> -->
+		<!--</li>-->
+		<!--<li class="am-avg-sm-li-one">-->
+		<!--<button type="button" class="am-btn am-btn-success am-radius"  ng-click="saveDraft()">保存草稿</button>-->
+		<!--</li>-->
+	    <!-- <li>
+			<a href="#" class="" ng-click="saveDraft()"> 
+				<i class="am-icon fa fa-save" ></i> 
+			 	<span class="am-navbar-label">保存草稿</span>
+			</a>
+		</li>  -->
+		<!-- <li ng-if="pk">
+			<a href="#" class="" ng-click="delDraft()"> 
+				<i class="am-icon fa fa-save" ></i> 
+			 	<span class="am-navbar-label">删除草稿</span>
+			</a>
+		</li> -->
+		<!--<li>
+		<button type="button" class="am-btn am-btn-warning am-radius"  ng-click="showFlowPic()">流程图</button>
+ 			<a href="#" class=""  ng-click="showFlowPic()"> 
+				<i class="am-icon fa fa-picture-o" ></i> 
+			 	<span class="am-navbar-label">流程图</span>
+			</a>
+		</li> -->
+	<!--</ul>-->
+
+<!--</div>-->
+</body>
+</html>
